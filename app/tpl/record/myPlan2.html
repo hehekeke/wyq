@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+</head>
+<style>
+    #liColor a{
+        color: #000000;
+        font-weight: bold;
+    }
+</style>
+<script>
+    function getContent(profile_id){
+        $.post("<{$web_url}>/index.php/record/myPlanOfContent",{"id":'<{$student.fu_id}>',"a_id":profile_id},function(data){
+              $(".panel-body").html(data);
+        });
+    }
+</script>
+<body>
+<{include file='header.html'}>
+<div class="row" style="padding-top:15px;">
+    <div class="col-md-12">
+        <div class="page-header"><h3>当前位置：成长档案>成长档案详情</h3></div>
+        <{if $__userinfo__.fu_id == $student.fu_id}>
+        <center><h1><{$student.fu_grade}>级 <{$student.college_name}> <{$student.major_name}> <{$student.fu_realname}> 成长档案</h1></center>
+        <{else}>
+        <center><h1><{$bks.bks_grade}>级 <{$bks.bks_college}> <{$bks.bks_major}> <{$bks.bks_name}> 成长档案</h1></center>
+        <{/if}>
+    </div>
+    <div class="col-md-12" id="liColor">
+        <ul class="nav nav-tabs navbar-right">
+            <{if $__userinfo__.fu_id == $student.fu_id}>
+            <li class="active"><a href="<{$web_url}>/index.php/record/myplan/id/<{$student.fu_id}>">个人成长计划</a></li>
+            <li><a href="<{$web_url}>/index.php/record/achievement/id/<{$student.fu_id}>">个人成果清单</a></li>
+            <li><a href="<{$web_url}>/index.php/record/myrecord/id/<{$student.fu_id}>">辅学活动成长记录</a></li>
+            <{else}>
+            <li class="active"><a href="<{$web_url}>/index.php/record/myplan/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>">个人成长计划</a></li>
+            <li><a href="<{$web_url}>/index.php/record/achievement/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>">个人成果清单</a></li>
+            <li><a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>">辅学活动成长记录</a></li>
+            <{/if}>
+        </ul>
+    </div>
+
+    <div class="col-md-12 panel panel-default">
+        <div style="margin-top: 10px;margin-left: 21px;color: #5E005E" >
+           <{section name=pr  loop=$profile_info}>
+            <button onclick="getContent('<{$profile_info[pr].mm}>')"><{$profile_info[pr].title}></button>
+            <{/section}>
+       </div>
+
+        <div class="panel-body" style="height:500px;width: 1100px;border:solid #ffffff 1px;margin-top: 10px;margin-left: 20px">
+            <{if isset($result_info)}>
+            <{section name=info  loop=$result_info}>
+               <{$result_info[info].content}>
+            <{sectionelse}>
+               暂无数据
+            <{/section}>
+            <{else if}>
+            暂无数据
+            <{/if}>
+        </div>
+
+    </div>
+    </ul>
+</div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

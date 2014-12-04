@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<title>友情链接管理</title>
+</head>
+<body>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  	<TR height=28><TD background="<{$web_url}>/common/admin/images/title_bg1.jpg">当前位置:友情链接管理</TD></TR>
+  	<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  	<TR height=20>
+    	<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+	</TR>
+</TABLE>
+
+<div style="padding-left:30px;padding-top:0px;background-color:white;width:100px;height:30px; ">
+	<a href ="<{$web_url}>/mannkgn.php/other/addlink" >添加友情链接</a>
+</div>
+<div style="padding-left:30px;" >
+	<font color="#CC0000"><{$result|default:""}></font>
+</div>
+<div>
+<{section name = ll loop = $link.list}>
+	<div style="padding-left:30px;padding-top:10px;background-color:white;width:400px;height:160px; float:left">
+		<{if $link.list[ll].fl_istop == "" or $link.list[ll].fl_istop == "0000-00-00 00:00:00"}>
+		<div style ="width:400px; height:160px;background-color:#FFC1C1;">
+		<{else}>
+		<div style ="width:400px; height:160px;background-color:#4DB849;">
+		<{/if}>
+			<div style="height:20px; width:400px; text-align: right; ">
+    			<a style="line-height:20px; height: 20px;"  href="<{$web_url}>/mannkgn.php/other/Editlink/id/<{$link.list[ll].fl_id}>">编辑</a>
+				&nbsp;&nbsp;
+		   		<a onclick="return confirm('确认删除这个友情链接吗？');" style="line-height:20px; height: 20px;"  href="<{$web_url}>/mannkgn.php/other/linklist/do/del/id/<{$link.list[ll].fl_id}>">删除</a>
+				&nbsp;&nbsp;
+				<{if $link.list[ll].fl_istop == "" or $link.list[ll].fl_istop == "0000-00-00 00:00:00"}>
+				<a style="line-height:20px; height: 20px;"  href="<{$web_url}>/mannkgn.php/other/linklist/do/settop/id/<{$link.list[ll].fl_id}>">置顶</a>
+				<{else}>
+				<a style="line-height:20px; height: 20px;"  href="<{$web_url}>/mannkgn.php/other/linklist/do/canceltop/id/<{$link.list[ll].fl_id}>">取消置顶</a>
+				<{/if}>
+			</div>
+			<div style="height:120px; margin:10px; width:380; text-align:left;" >
+				<div style="float:left;width:360px;height:120px;margin:5px 10px 10px 10px;">
+					<div style="width:360px;height:30px;">标题:<{$link.list[ll].fl_name}></div>
+					<div style="width:360px; height:30px;">链接地址:<a href="<{$link.list[ll].fl_link}>"><{$link.list[ll].fl_link|truncate:40:'..':true:true}></a></div>
+					<div style="width:360px; height:30px;">创建者:<{$link.list[ll].admin_realname}></div>
+					<div style="width:360px; height:30px;">创建时间:<{$link.list[ll].fl_create_time}></div>
+				</div>
+			</div>
+		</div>
+	</div>
+<{sectionelse}>
+	暂时没有友情链接
+<{/section}>
+	<div style="clear: both;"></div>
+</div>
+<{page info=$link web_url=$web_url url="/mannkgn.php/link/linklist"}>
+</body>
+</html>

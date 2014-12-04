@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script src="<{$web_url}>/common/libs/highcharts/highcharts.js"></script>
+	<script src="<{$web_url}>/common/libs/highcharts/highcharts-more.js"></script>
+
+
+<script type="text/javascript">
+var zz_do = '';
+
+ page = 1;
+
+function tab1(m){
+	// alert(m);
+	if(m == 1){
+		window.location.href = "<{$web_url}>/index.php/common/AssessmentResult/mod/huping";
+	}else if(m == 2){
+		window.location.href = "<{$web_url}>/index.php/common/AssessmentResult/mod/taping";
+	}else{
+		window.location.href = "<{$web_url}>/index.php/common/AssessmentResult/mod/leida";
+	}
+
+}
+	function ajax_goodbad(flag,type,page){
+		$.ajax({
+			url:"<{$web_url}>/index.php/assessment/ajax_goodbad",
+			async:false,
+			type:'POST',
+			data:({'flag':flag,'type':type,'page':page}),
+			success:function(msg){
+				//alert(JSON.stringify(msg));
+				var obj = eval("("+msg+")");
+  				if(page<=1){
+					$("#good_shang").hide();
+					$("#bad_shang").hide();
+				}else{
+					$("#good_shang").show();
+					$("#bad_shang").show();
+				}
+  				if(obj.json.state==1){
+					$("#good_xia").hide();
+					$("#bad_xia").hide();
+				}else{  
+					$("#good_xia").show();
+					$("#bad_xia").show();
+				}
+				var str = '';
+				var dd = obj.json.data;
+				for(x in dd){
+					//var num = x+1;
+					var content = dd[x].goodorbad_content;
+					str += "<tr><td>"+x+"</td><td>"+content+"</td></tr>";
+				}
+				$("#"+zz_do+" table").html('');
+				$("#"+zz_do+" table").append(str);
+				
+			},
+				/* var obj = eval("("+msg+")");
+				var data = obj.json.data;
+				//alert(JSON.stringify(data));
+				page(data);
+				},*/
+				error:function(){
+					alert('网络发生错误');
+					} 
+							})
+	}
+	
+ function	tab2(n){
+		if(n == 1){
+			zz_do = 'do_good';
+			$("#do_good").show();
+			$("#do_bad").hide();
+			ajax_goodbad(0,1,1);
+		}else if(n == 2){
+			zz_do = 'do_bad';
+			$("#do_good").hide();
+			$("#do_bad").show();
+			ajax_goodbad(1,1,1);
+		}else{
+			alert("非法参数");
+		}
+	}
+ $(function(){
+ $("#good_shang").click(function(){
+
+	 page--;
+	 ajax_goodbad(0,1,page);
+	
+ })
+ 
+ $("#good_xia").click(function(){
+	 //alert(22);
+	 page++;
+	 ajax_goodbad(0,1,page); 
+ })
+ 
+  $("#bad_shang").click(function(){
+	 //alert(22);
+	 page--;
+	 ajax_goodbad(1,1,page); 
+ })
+ 
+  $("#bad_xia").click(function(){
+	 //alert(22);
+	 page++;
+	 ajax_goodbad(1,1,page); 
+ })
+ })
+/*  function page(data){
+	 all_nums = data.nums;
+	 all_contents = data.content;
+	 //alert(JSON.stringify(all_contents));
+	 alert(all_contents[0].goodorbad_content);
+ } */
+ 
+
+
+</script>
+<style type="text/css">
+.zz_but {color:#000;display:none};
+</style>
+</head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估>学年末评估</h3></div>
+  </div>
+<{assign var=lefttype value=5}>
+<{include file='assessment/xnm-left-function.html'}>
+  <div class="col-md-10">
+    <center><h3>评估结果-互评结果</h3></center>
+	<div class="btn-group">
+	  <button type="button" class="btn btn-info" onclick="tab1(1)">互评结果</button>
+	  <button type="button" class="btn btn-info" onclick="tab1(2)">他评结果</button>
+	  <button type="button" class="btn btn-info" onclick="tab1(3)">雷达图</button>
+	</div>
+
+	<div id="mutual" style="margin-top:20px;">
+	<{if $info.nk.exist == 1 || $info.xy.exist == 1}>
+	  <table class="table table-bordered" style="margin-top:20px;">
+		<thead>
+		  <tr><th>指标</th><th>我的定性评价</th><th>互评定性评价</th></tr>
+		</thead>
+		<tbody>
+		  <{section name = n loop = $info.row_nums}>
+		  <tr>
+		<td><{if $info.xy.exist == 1}><{$info.xy.content[n]}><{else}><{$info.nk.content[n]}><{/if}></td>
+		<td><{if $info.nk.exist == 1}><{if isset($info.nk.score[n])}><{$info.nk.score[n]}><{else}>校级评分无此数据<{/if}><{else}>尚未完成自评<{/if}></td>
+		<td><{if $info.xy.exist == 1}><{$info.xy.score[n]}><{else}>尚未有同学给你评价<{/if}></td>
+		  </tr>
+		  <{/section}>
+		  </tbody>
+		</table>
+	
+		<{else}>
+		<center>
+		<div style="height:150px;font-size:30px;">
+		尚未获得评分
+		</div>
+		</center>
+		<{/if}>
+		<div class="btn-group">
+		  <button type="button" class="btn btn-info" onclick="tab2(1)">做的最好</button>
+		  <button type="button" class="btn btn-info" onclick="tab2(2)">最需改进</button>
+		</div>
+		<div id="do_good" style="margin-top:20px;">
+		  <table class="table table-bordered">
+
+		  </table>
+		<button id='good_shang' class="zz_but">上一页</button>  <button id='good_xia' class="zz_but">下一页</button>
+		</div>
+		<div id="do_bad" style="margin-top:20px;display:none;">
+		  <table class="table table-bordered">
+
+		  </table>
+		  <button id='bad_shang' class="zz_but">上一页</button>  <button id='bad_xia' class="zz_but">下一页</button>
+		</div>
+	</div>
+
+	<div id="other" style="margin-top:20px;display:none;">
+		<table class="table table-bordered" style="margin-top:20px;">
+		  <thead style="background-color:#e7e7e7">
+		    <tr><th>一级指标</th><th>二级指标</th><th>内容</th><th>平均分值</th><th>班级排名</th></tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		      <td rowspan="3" style="vertical-align:middle">公</td>
+		      <td>公2</td>
+		      <td>公3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>公2</td>
+		      <td>公3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>公2</td>
+		      <td>公3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td rowspan="5" style="vertical-align:middle">能</td>
+		      <td>生活</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>学习</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>创新</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>文化素养</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>协作</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+
+		  </tbody>
+		</table>
+	</div>
+	<div id="radar" style="margin-top:20px;display:none;">
+		<div id="container1" style="min-width: 400px; max-width: 600px; height: 400px;float:left;"></div>
+		<div id="container2" style="min-width: 400px; max-width: 600px; height: 400px;float:right;"></div>
+	</div>
+
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

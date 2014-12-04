@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+</head>
+<style>
+    .noopen{
+        width: 78px;
+        height: 26px;
+        background-image: url("<{$web_url}>/common/app/images/noopen.png");
+    }
+    .yesopen{
+        width: 78px;
+        height: 26px;
+        background-image: url("<{$web_url}>/common/app/images/yesopen.png");
+    }
+    #syllabusTable td{
+        border: solid 1px;
+        width: 100px;
+        text-align: center;
+        height: 60px;
+    }
+    #addTable td{
+
+        color: #000000;
+
+    }
+    #addTable{
+       margin-top: 30px;
+        margin-left: 100px;
+    }
+    #mengban{
+        position:absolute;
+        top:0px;
+        left:105px;
+        background-color: #D4D0C8;
+        line-height:10px;
+        width:10px;height:10px;display:none;z-index:998;
+    }
+
+</style>
+<script>
+    var x = 0;
+    function addCourse(){
+        if(x%2==0){
+        $("#addBox").css("display","block");
+            x++;
+        }else{
+            $("#addBox").css("display","none");
+            x++;
+        }
+    }
+    function cancel(){
+        $("#addBox").css("display","none");
+        $("#editBox").css("display","none");
+        $("#deleteBox").css("display","none");
+    }
+
+    function editMon(sy_id,sy_class_address,week){
+
+        var arr = new Array();
+        arr = sy_class_address.split("(");
+        var arr2 = new Array();
+        arr2 = arr[1].split(")");
+        $("#editClass").val(arr[0]);
+        $("#editAddress").val(arr2[0]);
+        $("#sy_id").val(sy_id);
+        $("#week").val(week);
+        if(x%2==0){
+         $("#editBox").css("display","block");
+            x++;
+        }else{
+          $("#editBox").css("display","none");
+            x++;
+        }
+    }
+</script>
+<script>
+    function gaibian(o){
+        $(o).children().css("display","block");
+    }
+    function shiqu(o){
+        $(o).children().css("display","none");
+    }
+    function delete_kebiao(sy_id,week){
+        $.post("<{$web_url}>/index.php/Center/deleteSyllabus",{"sy_id":sy_id,"week":week},function(data){
+            location.href="<{$web_url}>/index.php/Center/syllabus";
+        });
+    }
+
+ function set_openflag(o){
+      $.post("<{$web_url}>/index.php/Center/update_ifopen",{"if_open":o},function(data){
+          if(o==0){
+              $("#if_noopen").css("display","none");
+              $("#if_yesopen").css("display","block");
+          }else{
+              $("#if_noopen").css("display","block");
+              $("#if_yesopen").css("display","none");
+          }
+         //alert(o);
+         // location.href="<{$web_url}>/index.php/Center/syllabus";
+     });
+
+     //alert(o);
+
+ }
+ 	 
+	function addSyllabus(){
+		if($("input[name='name']").val().length>20){
+		    alert("输入的课程名字不能超过20位");
+			return;
+		}
+		if($("input[name='name']").val().length==0){
+			alert("输入的课程名字不能为空");
+			return;
+		}
+		if($("input[name='address']").val().length>10){
+		    alert("输入的上课地点不能超过10位");
+			return;
+		}
+		if($("input[name='address']").val().length==0){
+			alert("输入的上课地点不能为空");
+			return;
+		}
+		$.post("<{$web_url}>/index.php/Center/addSyllabus",
+				{"fu_id":<{$student.fu_id}>,week:$("input[type='radio']:checked").val(),point:$("input[name='point']:checked").val(),name:$("input[name='name']").val(),address:$("input[name='address']").val()},
+				function(data){	
+                 location.href="<{$web_url}>/index.php/Center/syllabus";
+         
+		});
+		$("#addBox").hide();
+	}
+</script>
+<body>
+<{include file='header.html'}>
+<p id="pw" style="display:none;"><{$stupw.fu_pw}></p>
+<p id="salt" style="display:none;"><{$stupw.fu_salt}></p>
+<div class="row" >
+    <div class="col-md-12">
+        <div class="page-header"><h3><{$student.fu_realname}>的个人中心</h3></div>
+    </div>
+    <div class="col-md-2">
+        <div class="list-group">
+            <a href="<{$web_url}>/index.php/Center/mycenter" class="list-group-item">个人资料</a>
+            <a href="<{$web_url}>/index.php/Center/followActivity" class="list-group-item">我关注的活动</a>
+            <a href="<{$web_url}>/index.php/Center/syllabus" class="list-group-item active">我的课程表</a>
+        </div>
+    </div>
+    <div>
+    <div class="col-md-8" style="width: 82%">
+            <fieldset>
+                <legend style="color:#FFFFFF;"><span>我的课程表</span>
+                    <{if $get_ifopen==0}>
+                    <div id="if_noopen" style="float: right;" onclick="set_openflag(0)" class="noopen" ></div>
+                    <div id="if_yesopen" style="float: right;display: none" onclick="set_openflag(1)" class="yesopen" ></div>
+                    <{else}><div id="if_yesopen" style="float: right;" onclick="set_openflag(1)" class="yesopen" ></div>
+                    <div id="if_noopen" style="float: right;display: none" onclick="set_openflag(0)" class="noopen" ></div>
+                    <{/if}>
+                <span style="float:right">开启课程表&nbsp;&nbsp;</span></legend>
+            </fieldset>
+            <div id="editBox" style="color:#000000;width: 550px;height: 220px;background: #ffffff;z-index:999;position: absolute;left: 100px;top:230px;display: none">
+                <h3 style="text-align: center;background: #428bca;color: #ffffff">修改课程</h3>
+                <form action="<{$web_url}>/index.php/Center/editSyllabus" method="post" style="margin-left: 100px;margin-top: 20px;font-weight:bold">
+                    <input id="sy_id" type="hidden" name="sy_id"/>
+                    <input id="week" type="hidden" name="week"/>
+                    课程名称：<input name="sy_class" id="editClass" style="margin-bottom: 20px;width: 234px" type="text" value=""/><br>
+                    上课地点：<input name="sy_address" id="editAddress" style="width: 234px" type="text"/><br>
+                    <input style="margin-left: 70px" type="submit" value="修改"/><input style="margin-left: 70px" type="button" value="取消" onclick="cancel()"/>
+                </form>
+            </div>
+            <div id="addBox" style="width: 550px;background: #ffffff;position: absolute;z-index:1001;left: 100px;top:230px;display: none">
+                <h3 style="text-align: center;background: #428bca;color: #ffffff">添加课程</h3>
+                <form   style="font-weight: bold;margin-bottom: 50px">
+				<!-- action="<{$web_url}>/index.php/Center/addSyllabus"-->
+                    <input type="hidden" value="<{$student.fu_id}>" name="fu_id"/>
+                    <table id="addTable" style="">
+                        <tr>
+                            <td>
+                                周次：<input type="radio" name="week" value="1"/>周一<input type="radio" name="week" value="2"/>周二<input type="radio" name="week" value="3"/>周三<input name="week" type="radio" value="4"/>周四
+                                <input type="radio" name="week" value="5"/>周五<input type="radio" name="week" value="6"/>周六<input type="radio" name="week" value="7"/>周日
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                节次： <input type="radio" name="point" value="1">1<input type="radio" name="point" value="2">2<input type="radio" name="point" value="3">3<input type="radio" name="point" value="4">4<input type="radio" name="point" value="5">5
+                                <input type="radio" name="point" value="6">6<input type="radio" name="point" value="7">7<input type="radio" name="point" value="8">8<input type="radio" name="point" value="9">9<input type="radio" name="point" value="10">10
+                                <input type="radio" name="point" value="11">11<input type="radio" name="point" value="12">12
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                课程名称：<input type="text"  name="name" style="width: 263px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                上课地点：<input type="text" name="address" style="width: 263px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" value="保存" onclick="addSyllabus()" style="margin-left: 80px" /><input style="margin-left: 50px" type="button" value="取消" onclick="cancel()"/></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+         <input type="button" value="添加课程" onclick="addCourse()" style="color:#661550;margin-left:857px;"/>
+        <table id="syllabusTable" style="border: solid 1px;width: 100% ">
+
+            <tr>
+                <td>时间</td><td>星期一</td><td>星期二</td><td>星期三</td><td>星期四</td><td>星期五</td><td>星期六</td><td>星期日</td>
+            </tr>
+            <{section name=sy loop=$syllabusList}>
+			
+            <tr>
+                <td><{$syllabusList[sy].sy_number}></td>
+                <td style="cursor: pointer;position:relative;" onmouseout="shiqu(this)" onmouseover="gaibian(this)" title="<{$syllabusList[sy].sy_monday}>"  ondblclick="editMon('<{$syllabusList[sy].sy_id}>','<{$syllabusList[sy].sy_monday}>',1)"><{$syllabusList[sy].sy_monday}>
+                  <a id="mengban"  onclick="javascript:if(confirm('确实要删除吗?'))delete_kebiao('<{$syllabusList[sy].sy_id}>',1)">X</a>
+                </td>
+                <td style="cursor: pointer;position:relative;" onmouseout="shiqu(this)" onmouseover="gaibian(this)" title="<{$syllabusList[sy].sy_tuesday}>" ondblclick="editMon('<{$syllabusList[sy].sy_id}>','<{$syllabusList[sy].sy_tuesday}>',2)"><{$syllabusList[sy].sy_tuesday}>
+                    <a id="mengban" style="width:10px;height:10px;display:none;z-index:999" onclick="javascript:if(confirm('确实要删除吗?'))delete_kebiao('<{$syllabusList[sy].sy_id}>',2)">X</a>
+                </td>
+                <td style="cursor: pointer;position:relative"  onmouseout="shiqu(this)" onmouseover="gaibian(this)" title="<{$syllabusList[sy].sy_wednesday}>" ondblclick="editMon('<{$syllabusList[sy].sy_id}>','<{$syllabusList[sy].sy_wednesday}>',3)"><{$syllabusList[sy].sy_wednesday}>
+                    <a id="mengban" style="width:10px;height:10px;display:none;z-index:999" onclick="javascript:if(confirm('确实要删除吗?'))delete_kebiao('<{$syllabusList[sy].sy_id}>',3)">X</a>
+                </td>
+                <td style="cursor: pointer;position:relative"  onmouseout="shiqu(this)" onmouseover="gaibian(this)"  title="<{$syllabusList[sy].sy_thursday}>" ondblclick="editMon('<{$syllabusList[sy].sy_id}>','<{$syllabusList[sy].sy_thursday}>',4)"><{$syllabusList[sy].sy_thursday}>
+                    <a id="mengban" style="width:10px;height:10px;display:none;z-index:999" onclick="javascript:if(confirm('确实要删除吗?'))delete_kebiao('<{$syllabusList[sy].sy_id}>',4)">X</a>
+                </td>
+                <td style="cursor: pointer;position:relative"  onmouseout="shiqu(this)" onmouseover="gaibian(this)" title="<{$syllabusList[sy].sy_friday}>" ondblclick="editMon('<{$syllabusList[sy].sy_id}>','<{$syllabusList[sy].sy_friday}>',5)"><{$syllabusList[sy].sy_friday}>
+                    <a id="mengban" style="width:10px;height:10px;display:none;z-index:999" onclick="javascript:if(confirm('确实要删除吗?'))delete_kebiao('<{$syllabusList[sy].sy_id}>',5)">X</a>
+                </td>
+                <td style="cursor: pointer;position:relative"  onmouseout="shiqu(this)" onmouseover="gaibian(this)" title="<{$syllabusList[sy].sy_saturday}>" ondblclick="editMon('<{$syllabusList[sy].sy_id}>','<{$syllabusList[sy].sy_saturday}>',6)"><{$syllabusList[sy].sy_saturday}>
+                    <a id="mengban" style="width:10px;height:10px;display:none;z-index:999" onclick="javascript:if(confirm('确实要删除吗?'))delete_kebiao('<{$syllabusList[sy].sy_id}>',6)">X</a>
+                </td>
+                <td style="cursor: pointer;position:relative"  onmouseout="shiqu(this)" onmouseover="gaibian(this)" title="<{$syllabusList[sy].sy_sunday}>" ondblclick="editMon('<{$syllabusList[sy].sy_id}>','<{$syllabusList[sy].sy_sunday}>',7)"><{$syllabusList[sy].sy_sunday}>
+                    <a id="mengban" style="width:10px;height:10px;display:none;z-index:999" onclick="javascript:if(confirm('确实要删除吗?'))delete_kebiao('<{$syllabusList[sy].sy_id}>',7)">X</a>
+                </td>
+            </tr>
+            <{/section}>
+        </table>
+        </div>
+    </div>
+</div>
+<div style="margin-top: 50px">
+<{include file='footer.html'}>
+</div>
+</body>
+</html>

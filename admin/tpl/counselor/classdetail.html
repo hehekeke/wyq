@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">   
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<title>班级评估情况详情</title>
+<script type="text/javascript">
+	$(function(){
+	});
+	function show(type, fuId){
+		$("#mask").show();
+		$("#pop").show();
+		if(type == 1){
+			$("#pop-title").html("已完成互评人员信息");
+		}else if(type == 2){
+			$("#pop-title").html("已完成评分人员信息");
+		}else if (type == 3){
+			$("#pop-title").html("互评人员信息");
+		}else if(type == 4){
+			$("#pop-title").html("他评人员信息");
+		}
+		var str = "<tr>";
+		str += "<th scope=\"col\" width=\"80px\" style=\"border-left:1px solid #adceff;\" >序号</th>";
+		str += "<th scope=\"col\" width=\"100px\" >姓名</th>";
+		str += "<th scope=\"col\" width=\"200px\" >学号</th>";
+	    str += "</tr>"; 
+		$.ajax({
+			url:"<{$web_url}>/mannkgn.php/counselor/tongjirenshu/type/"+type+"/userid/"+fuId,
+			type:"POST",
+			async:false,
+			dataType:"json",
+			success:function(data){
+				if(data.json.state == 1){
+					$.each(data.json.data, function(i,item){
+						str += "<tr>";
+						var j = i + 1;
+						str += "<td style=\"border-left:1px solid #adceff;\" >"+j+"</td>";
+						str += "<td>"+item.fu_realname+"</td>";
+						str += "<td>"+item.fu_username+"</td>";
+						str += "</tr>";
+					});
+					$("#pop-mytable").html(str);
+				}else{
+					str += "<tr>";
+					str += "<th class=\"spec\" colspan=\"3\">暂时记录！</th>";
+					str += "</tr>";
+					$("#pop-mytable").html(str);
+				}
+			},
+			error:function(msg){
+				alert("网络出现问题");
+			}
+		});
+	}
+	function showclose(){
+		$("#pop-mytable").html("");
+		$("#mask").hide();
+		$("#pop").hide();
+	}
+</script>
+<style>
+.Bars{ position: relative; width:800px; border: 1px solid #B1D632; padding: 1px; float:left;}
+.Bars div{display: block; position: relative; background:#00F;color: #333333; height: 20px; line-height: 20px;}
+.Bars div span { position: absolute; width: 800px; text-align: center; font-weight: bold; }
+.container{margin:20px 0px 20px 200px; width:900px;}
+.neirong{width:300px;height:30px;color:black; font-size:20px; width:800px; height:30px;line-height:30px;float:left;}
+.xiaoneirong{color:black; font-size:10px; width:800px; height:30px;line-height:30px;float:left;}
+.info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+.info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+.info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+} 
+#pop-info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#pop-info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#pop-info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+} 
+#mask{height:100%; width:100%; position:fixed; _position:absolute; top:0; z-index:1000;  opacity:0.5; filter: alpha(opacity=50); background-color:#000; display:none;}
+.pop{width:560px;position:absolute; left:100px; top:100px;margin-top:10px; margin-left:200px; border-top:#F50 solid 2px; border-left:1px solid #CCC; border-right:1px solid #CCC; border-bottom:1px solid #CCC; background:#F0F5FB;z-index:1001; display:none;}
+.pop-form-header{ width:560px; border-bottom:solid #999 1px;}
+.add-pop-form-title{float:left;text-align:left; padding:2px 5px; width:500px; }
+.closebtn{ float:right; text-align:right; padding:2px 5px;width:30px;cursor:pointer;  font-size:11px; line-height:20px; color:#000; background:#DBEAF9; border:1px solid #CCC;}
+.closebtn:hover{background:#FCF1CA;}
+</style>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background="<{$web_url}>/common/admin/images/title_bg1.jpg">当前位置:辅导员评估工作》班级评估情况详情</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+		</TR>
+	</TABLE> 
+	<div style="width:100%; height:40px; position:relative;">
+		<div style="margin:0 auto; color:black; font-size:30px; width:800px; height:30px;line-height:30px; position:relative;">
+			 <{$grade}>级 <{$major_name}> 评估情况
+		</div>
+	</div>
+	<div class = "container">
+		<div class="neirong">自评情况</div>
+		<div class="xiaoneirong">完成自评的学生人数/专业学生总数 </div>
+		<div class="Bars">
+    		<div style="width: <{$jindu}>%;">
+        		<span><{$cur}>/<{$total}></span>
+    		</div>
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	<div class = "container">
+		<div class="neirong">专业公开展示情况</div>
+		<div class="xiaoneirong">专业公开展示人数/专业学生总数 </div>
+		<div class="Bars">
+    		<div style="width: <{$bpp}>%;">
+        		<span><{$bnum}>/<{$total}></span>
+    		</div>
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	<div class = "container">
+	       参与互评同学
+		<div class="info">
+			<table class ="mytable" cellspacing="0" >  
+  				<tr>  
+    				<th scope="col" width="80px" style="border-left:1px solid #adceff;" >序号</th>  
+    				<th scope="col" width="150px" >姓名</th> 
+    				<th scope="col" width="200px" >已完成互评人数</th>   
+  				</tr>  
+  				<{section name = hl loop = $huping}>
+ 		 		<tr>  
+    				<td style="border-left:1px solid #adceff;" ><{$smarty.section.hl.index_next}></td>
+    				<td><{$huping[hl].fu_realname}></td>
+    				<td><a href="#" onclick="show(1,<{$huping[hl].us_create_user_id}>)"><{$huping[hl].num}></a></td>
+  				</tr>
+  				<{sectionelse}>
+  					<th class="spec" colspan="3">暂无参与互评同学！</td>
+  				<{/section}>
+			</table> 
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	<div class = "container">
+		参与他评人员
+		<div class="info">
+			<table class ="mytable" cellspacing="0" >  
+  				<tr>  
+    				<th scope="col" width="80px" style="border-left:1px solid #adceff;" >序号</th>  
+    				<th scope="col" width="150px" >姓名</th> 
+    				<th scope="col" width="200px" >已完成评分人数</th>   
+  				</tr>  
+  				<{section name = tl loop = $taping}>
+ 		 		<tr>  
+    				<td style="border-left:1px solid #adceff;" ><{$smarty.section.tl.index_next}></td>
+    				<td><{$taping[tl].fu_realname}></td>
+    				<td><a href="#" onclick="show(2,<{$taping[tl].fu_id}>)"><{$taping[tl].num}></a></td>
+  				</tr>
+  				<{sectionelse}>
+  					<th class="spec" colspan="3">暂无参与他评人员！</td>
+  				<{/section}>
+			</table> 
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	<div class = "container">
+	   被评同学
+		<div class="info">
+			<table class ="mytable" cellspacing="0" >  
+  				<tr>  
+    				<th scope="col" width="80px" style="border-left:1px solid #adceff;" >序号</th>  
+    				<th scope="col" width="150px" >姓名</th> 
+    				<th scope="col" width="200px" >已完成互评人数</th> 
+    				<th scope="col" width="150px" >他评人数</th>   
+  				</tr>  
+  				<{section name = bl loop = $beiping}>
+ 		 		<tr>  
+    				<td style="border-left:1px solid #adceff;" ><{$smarty.section.bl.index_next}></td>
+    				<td><{$beiping[bl].fu_realname}></td>
+    				<td><a href="#" onclick="show(3,<{$beiping[bl].fu_id}>)"><{$beiping[bl].hupingnum}></a></td>
+    				<td><a href="#" onclick="show(4,<{$beiping[bl].fu_id}>)"><{$beiping[bl].tapingnum}></a></td>
+  				</tr>
+  				<{sectionelse}>
+  					<th class="spec" colspan="4">暂无被评同学！</td>
+  				<{/section}>
+			</table> 
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	<div class = "container">
+	    未参评同学
+		<div class="info">
+			<table class ="mytable" cellspacing="0" >  
+  				<tr>  
+    				<th scope="col" width="80px" style="border-left:1px solid #adceff;" >序号</th>  
+    				<th scope="col" width="150px" >姓名</th> 
+    				<th scope="col" width="200px" >学号</th>  
+  				</tr>  
+  				<{section name = wl loop = $wcp_stu}>
+ 		 		<tr>  
+    				<td style="border-left:1px solid #adceff;" ><{$smarty.section.wl.index_next}></td>
+    				<td><{$wcp_stu[wl].nps_name}></td>
+    				<td><{$wcp_stu[wl].nps_no}></td>
+  				</tr>
+  				<{sectionelse}>
+  					<th class="spec" colspan="3">暂无未参评同学！</td>
+  				<{/section}>
+			</table> 
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	<div id="mask"></div>
+	<div id= "pop" class="pop">
+		<div class="add-pop-form-header">
+			<div class="add-pop-form-title" id="pop-title"></div>
+			<div class="closebtn" id="closebtn" onclick="showclose();">关闭</div>
+    		<div style="clear:both;"></div>
+    	</div>
+    	</br>
+		<div id="pop-info" style=" margin-left:10px;">
+			<table id="pop-mytable" cellspacing="0" >    
+			</table> 
+ 		</div>
+ 		</br>
+	</div>
+</body>
+</html>

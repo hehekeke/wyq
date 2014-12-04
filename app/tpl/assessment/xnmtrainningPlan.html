@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+<script type="text/javascript">
+function clickSave(){
+       var txt = document.getElementById('content').value;
+	    var type = 3;
+	    var stuId =<{$stuId}>;
+       var isnew=0;
+	  <{if isset($item)}>
+	   var id = <{$item.id}>;
+	  <{else}>
+	    var id = 0;
+	  <{/if}>
+	  $.post("<{$web_url}>/index.php/assessment/saveItem02",{content:txt,id:id,type:type,isnew:isnew,stuId:stuId},function(result){
+		  var f=result;
+		     if (f>0){
+		    	  alert("保存成功！");
+		    		 location.reload();
+		    	 }else{
+		    	   alert("保存失败！");
+		    	 //alert(f);
+		     }
+	  });
+	}
+
+	function clickCommit(){
+		<{if isset($item)}>
+			var id = <{$item.id}>;
+		<{else}>
+			alert("请先点击保存按钮！");
+		<{/if}>
+         var txt = document.getElementById('content').value;
+		$.post("<{$web_url}>/index.php/assessment/commitItem",{content:txt,id:id},function(result){
+			var c=result;
+		     if (c>0){
+		    	 	alert("提交成功！");
+		    	 $('#content').prop('disabled', 'disabled');
+		    	 window.location.reload();
+		     }else{
+		    	 alert("提交失败！");
+		     }
+		});
+	}
+</script>
+  </head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估>学年末评估</h3></div>
+  </div>
+   <{assign var=lefttype value=6}>
+   <{include file='assessment/xnm-left-function.html'}>
+   
+  <div class="col-md-10">	
+
+   <{if $feedback}> <b>辅导员反馈：</b><{$feedback.content}><{/if}>
+    <{if $feedback}><p>附件：<a href="<{$web_url}>/common/upload/files/<{$feedback.file_link}>"><{$feedback.file_name}></a></p><{/if}>
+<{if $state >= 3}> 
+	<center><h3>我的成长训练计划</h3></center>
+	<h6>当前状态：
+		<{if isset($item)}>
+		  <{$item.status}>
+		<{else}>
+		  <{$status}>
+		<{/if}>
+	</h6>
+
+	<{if isset($item)}>
+	  <{if $state2 == 2  || $state2 == 3}>
+	    <textarea class="form-control" rows="15" name="content" id="content" placeholder="在此填写成长训练计划" disabled="disabled"><{$item.content}></textarea>
+	  <{else}>
+	    <textarea class="form-control" rows="15" name="content" id="content" placeholder="在此填写成长训练计划"><{$item.content}></textarea>
+	  <{/if}>
+	<{else}>
+	    <textarea class="form-control" rows="15" name="content" id="content" placeholder="在此填写成长训练计划"></textarea>
+	<{/if}>
+
+    <center>
+     <{if $state2 == 2  || $state2 == 3}>
+     <{else}>
+      <button type="button" class="btn btn-success" style="margin:10px;" onclick="clickSave()">保存</button>
+      <button type="button" class="btn btn-danger" style="margin:10px;" onclick="clickCommit()">提交</button>
+      <{/if}>
+    </center>
+  </div>
+  <{else}>
+  <center>
+		<div style="height:150px;font-size:30px;">
+	目前不可填写成长训练计划
+	</div>
+		</center>
+
+ 
+  <{/if}>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

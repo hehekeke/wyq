@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+ 	<title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+  	<script src="<{$web_url}>/common/app/js/holder.js"></script>
+  </head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-8">
+    <div class="page-header"><h3>当前位置：综合素质评估><a href="#" onClick="javascript :history.back(-1);" style="color:#FFFFFF;">各学院评估细则</a>>评估细则详情</h3></div>
+    <center>
+      <h3><{$content.asspro_title}></h3>
+      <h6><{$content.asspro_create_time}></h6>
+    </center>
+      <table class="table table-bordered">
+	  <thead style="background-color:#e7e7e7">
+	    <tr style="color:#2E3641;"><th style="text-align:center;">一级指标</th><th style="text-align:center;">二级指标</th><th style="text-align:center;">三级指标</th></tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+	      <td rowspan="<{$content.asspro_gong_num}>" style="vertical-align:middle">公</td>
+	      <td><{$content.second[0]}></td>
+	      <td><{$content.third[0]}></td>
+	    </tr>
+	    <{section name=gong loop=$content.asspro_gong_num-1}>
+		  <tr>
+		    <td><{$content.second[$smarty.section.gong.rownum]}></td>
+		    <td><{$content.third[$smarty.section.gong.rownum]}></td>
+		<{/section}>
+		<{section name=neng start=$content.asspro_gong_num loop=$content.asspro_gong_num+$content.asspro_neng_num}>
+	    <tr>
+	      <td>能</td>
+	      <td><{$content.second[neng]}></td>
+	      <td><{$content.third[neng]}></td>
+	    </tr>
+	    <{/section}>
+	  </tbody>
+	</table>
+    
+  </div>
+  <div class="col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">各学院评估细则</div>
+      <div class="list-group">
+          <{if isset($assList['list'])}>
+           <{section name=n loop=$assList['list']}>
+          <a href="<{$web_url}>/index.php/assessment/collegeAssessmentDetail/id/<{$assList['list'][n].asspro_id}>" class="list-group-item">
+              <p class="list-group-item-heading"><{$assList['list'][n].asspro_title}></p>
+              <p class="list-group-item-text">发布时间：<{$assList['list'][n].asspro_create_time}></p>
+          </a>
+          <{/section}>
+          <{else if}>
+          暂无数据
+          <{/if}>
+        <a href="<{$web_url}>/index.php/assessment/collegeAssessmentList" class="list-group-item" style="text-align: right">更多<i class="fa fa-angle-double-right"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+  <{include file='footer.html'}>
+</body>
+</html>

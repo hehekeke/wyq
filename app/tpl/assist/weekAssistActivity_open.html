@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+    <script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+
+</head>
+<style>
+    #syllabusTable td{
+        border: solid 1px;
+        width: 100px;
+        text-align: center;
+        height: 60px;
+        position: relative;
+        overflow: visible;
+    }
+    #addTable td{
+        color: #000000;
+   }
+    .pop_data{
+        position: absolute;
+        left: 30%;
+        top: 30%;
+        width: 500px;
+        max-height: 300px;
+        overflow: auto;
+        background-color: #cfc2bb;
+        z-index: 9999;
+    }
+    .one_data{
+        width: 500px;
+        height: 59px;
+        border-bottom: 1px solid #000000;
+    }
+    .one_data_p{
+        text-align:left;
+    }
+    .data_activity_title:hover{
+        text-decoration: none;
+    }
+</style>
+<script type="text/javascript">
+        var data = <{$data_json}>;
+    //查看年活动
+    $(document).ready(function() {
+        $(".big_button:last").click(function(){
+            location.href="<{$web_url}>/index.php/Assist/AssistActivity/activity_class/0"
+        });
+    });
+    //关键字搜索
+    $(function() {
+        $("#keyword_search").click(function(){
+            var search = $("#search").val();
+            //alert(search);
+            var key=encodeURI(search);
+            window.location.href= "<{$web_url}>/index.php/Assist/AssistActivity/activity_class/1/keywords/"+key;
+        });
+    });
+
+    $(function(){
+        $("#time").focus(function(){
+            WdatePicker({dateFmt:'yyyy-MM-dd'});
+        });
+    });
+
+    //活动筛选
+    $(function(){
+        $(".shaixuan").click(function(){
+            var j=0;
+            var types=$("#qurey_type input");
+            var typesValue = new Array();
+            var organizers=$("#selectOrganizer input");
+            var organizersValue  = new Array();
+            var status= $("#qurey_status input");
+            var statusValue  = new Array();
+            var recommend = $("#qurey_recommend input");
+            var time = $("#time").val();
+
+            if(recommend[0].checked){
+                var recommendValue = recommend[0].value;
+            }
+
+            var j=0;
+            for(var i=0; i<types.length; i++){
+                if(types[i].checked){
+                    typesValue[j++] = types[i].value;
+
+                }
+            }
+            var j=0;
+            for(var i=0; i<organizers.length; i++){
+                if(organizers[i].checked){
+                    organizersValue[j++] = organizers[i].value;
+                }
+            }
+            var j=0;
+            for(var i=0; i<status.length;i++){
+                if(status[i].checked){
+                    statusValue[j++] = status[i].value;
+                }
+            }
+
+            $.post("<{$web_url}>/index.php/Assist/AssistActivityQurey",{"time":time,"typesValue":typesValue,"organizersValue":organizersValue,"statusValue":statusValue,"recommendValue":recommendValue,"activity_class":1},function(d){
+                 data = d;
+            },"json");
+         });
+
+
+
+    });
+
+
+    var  cjieshu = -1;
+    var  cxinqi = -1;
+
+    function editMon(jieshu,xingqi,ele){
+
+        if( cjieshu == jieshu && cxinqi == xingqi){
+            return;
+         }
+        $(".pop_data").remove();
+        cjieshu = jieshu;
+        cxinqi = xingqi;
+        var now= new Date();
+        now.setFullYear(now.getFullYear());
+        now.setMonth(now.getMonth());
+        now.setDate(now.getDate());
+        now.setHours(00);
+        now.setMinutes(00);
+        now.setSeconds(00);
+        //将日期转换
+        var nowtime=now.getTime();
+        var Week=now.getDay();
+        var Xday=xingqi-Week;
+        var date02=parseInt(nowtime)+(Xday*24*60*60*1000);
+        var starttimes;
+       var endtimes;
+       if(jieshu==1){
+             starttimes=date02+(3600*8*1000);
+             endtimes=date02+3600*8*1000+45*60*1000;
+        }else if(jieshu==2){
+             starttimes=date02+3600*8*1000+55*60*1000;
+             endtimes=date02+3600*9*1000+40*60*1000;
+        }else if(jieshu==3){
+            starttimes=date02+3600*10*1000;
+            endtimes=date02+3600*10*1000+45*60*1000;
+        }else if(jieshu==4){
+            starttimes=date02+3600*10*1000+55*60*1000;
+            endtimes=date02+3600*11*1000+40*60*1000;
+        }else if(jieshu==5){
+              starttimes=date02+3600*14*1000;
+             endtimes=date02+3600*14*1000+45*60*1000;
+        }else if(jieshu==6){
+            starttimes=date02+3600*14*1000+45*60*1000;
+            endtimes=date02+3600*15*1000+40*60*1000;
+        }else if(jieshu==7){
+            starttimes=date02+3600*1000*16*1000;
+             endtimes=date02+3600*16*1000+45*60*1000;
+        }else if(jieshu==8){
+            starttimes=date02+3600*16*1000+55*60*1000;
+            endtimes=date02+3600*17*1000+40*60*1000;
+        }else if(jieshu==9){
+            starttimes=date02+3600*18*1000+30*60*1000;
+            endtimes=date02+3600*19*1000+15*60*1000;
+        }else if(jieshu==10){
+           starttimes=date02+3600*19*1000+25*60*1000;
+           endtimes=date02+3600*20*1000+10*60*1000;
+        }else if(jieshu==11){
+            starttimes=date02+3600*20*1000+20*60*1000;
+            endtimes=date02+3600*21*1000+5*60*1000;
+        }else if(jieshu==12){
+            starttimes=date02+3600*21*1000+15*60*1000;
+            endtimes=date02+3600*22*1000;
+        }
+     var html = "<div class='pop_data'   onmouseover='activity_list(this)'  onmouseout='lost(this)'>";
+     for(var i=0; i<data.length; i++){
+         var start_time = new Date(data[i].activity_start_time.replace(/\-/g,'/'));
+         var end_time = new Date(data[i].activity_end_time.replace(/\-/g,'/'));
+           if(endtimes>=start_time.getTime() && starttimes<= end_time.getTime()){
+             html+="<div class='one_data'>";
+             html+="<p  class='one_data_p'>";
+             html+="<span><a class='data_activity_title' href='<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/1/activityId/"+data[i].activity_id+"'>"+data[i].activity_title+"</a>";
+             html+="</span>";
+             html+="<br>";
+             html+="<span>结束时间:" +data[i].activity_end_time+ " 地点: "+data[i].activity_address +"";
+             html+="</span>";
+             html+="</p>";
+             html+="</div>";
+          }
+        }
+
+         html += "</div>";
+        if(!ele.getAttribute("data-syll_name")){
+            $(ele).append(html);
+        }
+
+    }
+
+     function bodyclick(){
+            $(".pop_data").remove();
+         cjieshu = -1;
+         cxinqi = -1;
+        }
+    function activity_list(o){
+
+        $($(o).parent()).data("holder", 1);
+    }
+    function exportExcel(){
+        location.href = "<{$web_url}>/index.php/exportAssistExcel/getAct/activity_class/1";
+    }
+   function selectOg(){
+        var inputs = $("#myModal input");
+        var selectStr = new Array();
+        var selectId = new Array();
+        var j = 0;
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].checked) {
+                selectStr[j] = $(inputs[i]).next("span").html();
+                selectId[j++] = $(inputs[i]).val();
+            }
+
+        }
+    $("#selectOgDiv").html(selectStr.join(","));
+    }
+</script>
+<body style="color: #ffffff" onclick="bodyclick()">
+<{include file='header.html'}>
+<div class="row" style="margin-bottom: 20px" >
+    <div class="col-md-12">
+        <div class="page-header"><h3>当前位置：辅学活动>周活动(课程格子)</h3></div>
+    </div>
+    <div class="col-md-8" style="width: 74%">
+        <form class="form-horizontal" id="mform">
+            <fieldset>
+                <div ><p class="p_border"><{$weekActivity.sa_content}></p></div>
+                <div><table class="table" style="border:1px solid #ddd;background:#D15606;"><tr>
+                    <td>按关键字搜索：</td>
+                    <td><input class="form-control" id="search" placeholder="请输入关键字"></td>
+                    <td><button type="button" id="keyword_search" class="btn btn-default" style="background:#FE6500;color:#fff;">搜索</button></td>
+                </tr></table></div>
+                <div class="panel panel-default" style="background:#2E3641;">
+                    <div class="panel-heading">活动筛选</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">活动类型：</label>
+                            <div class="col-sm-10" id="qurey_type">
+                                <{foreach $weekActivityType as $value}>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="<{$value['at_id']}>" ><{$value['at_name']}>
+                                </label>
+                                <{/foreach}>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">主办方：</label>
+                            <!-- Modal -->
+                            <div style="color: #000000" class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <h4 class="modal-title" id="myModalLabel">主办方</h4>
+                                        </div>
+                                        <div class="modal-body" id="selectOrganizer">
+                                            <table>
+                                                <{section name=i loop=$weekActivityOrg}>
+
+                                                <{if $smarty.section.i.index  is div by 4}>
+                                                <tr>
+                                                    <{/if}>
+
+                                                    <td>
+                                                        <input type='checkBox' name='activity_organizer[]' value='<{$weekActivityOrg[i].organizers_id}>'/><span><{$weekActivityOrg[i].organizers_name}></span>&nbsp;&nbsp;&nbsp;
+                                                    </td>
+
+                                                    <{if ($smarty.section.i.index+1)  is div by 4}>
+                                                </tr>
+                                                <{/if}>
+
+                                                <{/section}>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="selectOg()">
+                                                确定
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-10" id="selectOrganizer">
+                            <input style="float: left" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" value="选择主办方">
+                                <div style="line-height:25px;white-space:nowrap;text-overflow:ellipsis;font-weight:bold;float: left;margin-left: 10px;width: 500px;height:20px;overflow: hidden" id="selectOgDiv"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">状态：</label>
+                            <div class="col-sm-10" id="qurey_status">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox"  value="1"> 未开始
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="2"> 进行中
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="3"> 已结束
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">重点推荐：</label>
+                            <div class="col-sm-10" id="qurey_recommend">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox7" value="1" > 推荐
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" id="selectDate">日期：</label>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <input type="text" id="time" class="Wdate" style="height:30px;color:black;" />
+                                    <span class="input-group-addon" style="cursor: pointer;"><i class="shaixuan">筛选</i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+        <div class="row" id="listshows" style="">
+
+            <table id="syllabusTable" style="border: solid 1px;width: 100% ">
+                    <tr>
+                    <td>时间</td><td>星期一</td><td>星期二</td><td>星期三</td><td>星期四</td><td>星期五</td><td>星期六</td><td>星期日</td>
+                </tr>
+                <{section name=sy loop=$syllabusList}>
+                <tr>
+                    <td><{$syllabusList[sy].sy_number}></td>
+                    <td style="cursor: pointer;position:relative;" data-holder="0"  data-syll_name="<{$syllabusList[sy].sy_monday}>"  onmouseover="editMon('<{$smarty.section.sy.index+1}>',1,this)"><{$syllabusList[sy].sy_monday}>
+
+                    </td>
+                    <td style="cursor: pointer;position:relative;" data-holder="0"  data-syll_name="<{$syllabusList[sy].sy_tuesday}>"    onmouseover="editMon('<{$smarty.section.sy.index+1}>',2,this)"><{$syllabusList[sy].sy_tuesday}>
+
+                    </td>
+                    <td style="cursor: pointer;position:relative" data-holder="0" data-syll_name="<{$syllabusList[sy].sy_wednesday}>"   onmouseover="editMon('<{$smarty.section.sy.index+1}>',3,this)"><{$syllabusList[sy].sy_wednesday}>
+
+                    </td>
+                    <td style="cursor: pointer;position:relative" data-holder="0"  data-syll_name="<{$syllabusList[sy].sy_thursday}>"   onmouseover="editMon('<{$smarty.section.sy.index+1}>',4,this)"><{$syllabusList[sy].sy_thursday}>
+
+                    </td>
+                    <td style="cursor: pointer;position:relative" data-holder="0" data-syll_name="<{$syllabusList[sy].sy_friday}>"   onmouseover="editMon('<{$smarty.section.sy.index+1}>',5,this)"><{$syllabusList[sy].sy_friday}>
+
+                    </td>
+                    <td style="cursor: pointer;position:relative" data-holder="0" data-syll_name="<{$syllabusList[sy].sy_saturday}>"  onmouseover="editMon('<{$smarty.section.sy.index+1}>',6,this)"><{$syllabusList[sy].sy_saturday}>
+
+                    </td>
+                    <td style="cursor: pointer;position:relative" data-holder="0" data-syll_name="<{$syllabusList[sy].sy_sunday}>"   onmouseover="editMon('<{$smarty.section.sy.index+1}>',7,this)"><{$syllabusList[sy].sy_sunday}>
+
+                    </td>
+                </tr>
+                <{/section}>
+            </table>
+        </div>
+        </div>
+        <div class="col-md-3">
+            <button type="button" class="btn btn-default big_button" onclick="exportExcel()">下载本周活动安排</button>
+            <button type="button" id="year" class="btn btn-default big_button">查看学年活动</button>
+            <table class="table table-striped"  style="border:1px solid #ddd;">
+                <thead>
+                <tr style="background:#2E3641"><td><center>周热门活动</center></td></tr>
+                </thead>
+                <tbody style="background:#FFFFFF;color:#ADBECA;">
+                <{section name=list loop=$HotActivityList}>
+                <tr>
+                    <td>
+                        <a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/1/activityId/<{$HotActivityList[list].activity_id}>">
+                            <{if $HotActivityList[list].activity_if_import eq 1}>【推荐】 <{$HotActivityList[list].activity_title}>
+                            <{else}>⊙ <{$HotActivityList[list].activity_title}>
+                            <{/if}>
+                        </a>
+                    </td>
+
+                </tr>
+
+                <tr style="background-color:gray;"><td>发布日期：<{$HotActivityList[list].activity_create_time}></td></tr>
+                <{/section}>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <{include file='footer.html'}>
+</body>
+</html>

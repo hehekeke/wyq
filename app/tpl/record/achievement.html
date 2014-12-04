@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script src="<{$web_url}>/common/app/js/removeSpaces.js"></script>
+
+  </head>
+  <script>
+
+      function add(data){
+           var gpt = data;
+            $('#addBox').css("display","block");
+            $('.gpt').val(gpt);
+      }
+      function cancelAdd(){
+          $('#addBox').css("display","none");
+      }
+
+      function cancelEdit(){
+          $('#editBox').css("display","none");
+      }
+      function edit(gp_content,gp_id,rule){
+          var gp_content = gp_content;
+          var gp_id = gp_id;
+          var rule = rule;
+
+          if(rule==1){
+              $("#rule1").html("<input id='open' type='radio' name='rule1' value='0'/>公开<input id='limit' type='radio' name='rule1' value='1' checked/>只允许老师查看");
+              //$("#limit").attr("checked","true");
+          }else{
+              $("#rule1").html("<input id='open' type='radio' name='rule1' value='0' checked/>公开<input id='limit' type='radio' name='rule1' value='1'/>只允许老师查看");
+              //$("#open").attr("checked","true");
+          }
+          $('.e_content').val(gp_content);
+          $('.gp_id').val(gp_id);
+          $('#editBox').css("display","block");
+      }
+
+      function save(){
+
+          var gpt = $('.gpt').val();
+          var content = $('.content').val();
+          content = trim(content);
+          var rule = $("input[name='rule']:checked").val();
+          if(content ==""){
+              alert("内容不能为空！");
+          }else{
+              $.post("<{$web_url}>/index.php/record/addAchievement",{"gpt":gpt,"content":content,"rule":rule,"fu_id":'<{$student.fu_id}>'},function(data){
+                    if(data>0){
+                        alert("添加成功！");
+                        location.href="<{$web_url}>/index.php/record/achievement/id/<{$student.fu_id}>";
+                    }else{
+                        alert("添加失败");
+                    }
+
+              });
+          }
+
+      }
+
+      function modify(){
+          var gp_id = $('.gp_id').val();
+          var gp_content = $(".e_content").val();
+          gp_content = trim(gp_content);
+          var rule = $("input[name='rule1']:checked").val();
+          if(gp_content==""){
+              alert("内容不能为空！");
+          }else{
+              $.post("<{$web_url}>/index.php/record/editAchievement",{"gp_id":gp_id,"gp_content":gp_content,"rule":rule},function(data){
+                    if(data>0){
+                        alert("修改成功！");
+                        location.href="<{$web_url}>/index.php/record/achievement/id/<{$student.fu_id}>";
+                    }else{
+                        alert("修改失败");
+                    }
+              });
+          }
+      }
+
+      function btn1(){
+          if('<{$bks.bks_code}>'==false){
+              location.href="<{$web_url}>/index.php/record/achievement/id/<{$student.fu_id}>";
+          }else{
+              location.href="<{$web_url}>/index.php/record/achievement/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>";
+          }
+
+      }
+
+      function btn2(){
+          //入学年~入学年+1 = 大一
+          var data = '<{$student.fu_grade}>';
+          var start_time = '<{$student.fu_grade}>'+'-09';
+          var end_time = parseInt(data)+1+"-09";
+          if('<{$bks.bks_code}>'==false){
+              location.href="<{$web_url}>/index.php/record/achievementByYear/id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time;
+          }else{
+              location.href="<{$web_url}>/index.php/record/achievementByYear/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time;
+          }
+
+      }
+
+      function btn3(){
+          //入学年+1~入学年+2 = 大二
+          var data = '<{$student.fu_grade}>';
+          var start_time = parseInt(data)+1+'-09';
+          var end_time = parseInt(data)+2+"-09";
+          if('<{$bks.bks_code}>'==false){
+              location.href="<{$web_url}>/index.php/record/achievementByYear/id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time;
+          }else{
+              location.href="<{$web_url}>/index.php/record/achievementByYear/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time;
+          }
+
+      }
+
+      function btn4(){
+          //入学年+2~入学年+3 = 大三
+          var data = '<{$student.fu_grade}>';
+          var start_time = parseInt(data)+2+'-09';
+          var end_time = parseInt(data)+3+"-09";
+          if('<{$bks.bks_code}>'==false){
+              location.href="<{$web_url}>/index.php/record/achievementByYear/id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time;
+          }else{
+              location.href="<{$web_url}>/index.php/record/achievementByYear/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time;
+          }
+
+      }
+
+      function btn5(){
+          //入学年+2~入学年+3 = 大三
+          var data = '<{$student.fu_grade}>';
+          var start_time = parseInt(data)+3+'-09';
+          var end_time = parseInt(data)+4+"-09"
+          if('<{$bks.bks_code}>'==false){
+              location.href="<{$web_url}>/index.php/record/achievementByYear/id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time;
+          }else{
+              location.href="<{$web_url}>/index.php/record/achievementByYear/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time;
+          }
+
+      }
+
+  </script>
+  <style type="text/css">
+      #addBox,#editBox{
+          color: #000000;
+      }
+
+      #liColor a{
+          color: #000000;
+          font-weight: bold;
+      }
+
+  </style>
+<body>
+<{include file='header.html'}>
+<div class="row" style="padding-top:15px;">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：成长档案>成长档案详情</h3></div>
+      <{if $__userinfo__.fu_id == $student.fu_id}>
+      <center><h1><{$student.fu_grade}>级 <{$student.college_name}> <{$student.major_name}> <{$student.fu_realname}> 成长档案</h1></center>
+      <{else}>
+      <center><h1><{$bks.bks_grade}>级 <{$bks.bks_college}> <{$bks.bks_major}> <{$bks.bks_name}> 成长档案</h1></center>
+      <{/if}>
+  </div>
+  <div class="col-md-12" id="liColor">
+      <ul class="nav nav-tabs navbar-right">
+          <{if $__userinfo__.fu_id == $student.fu_id}>
+          <li><a href="<{$web_url}>/index.php/record/myplan/id/<{$student.fu_id}>">个人成长计划</a></li>
+          <li class="active"><a href="<{$web_url}>/index.php/record/achievement/id/<{$student.fu_id}>">个人成果清单</a></li>
+          <li><a href="<{$web_url}>/index.php/record/myrecord/id/<{$student.fu_id}>">辅学活动成长记录</a></li>
+          <{else}>
+          <li><a href="<{$web_url}>/index.php/record/myplan/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>">个人成长计划</a></li>
+          <li class="active"><a href="<{$web_url}>/index.php/record/achievement/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>">个人成果清单</a></li>
+          <li><a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>">辅学活动成长记录</a></li>
+          <{/if}>
+      </ul>
+  </div>
+  <div class="col-md-12 panel panel-default"  >
+	<div class="panel-body">
+	 阶段：
+     <{if $student.role_id == 7}>
+	 <button type="button" class="btn btn-default" onclick="btn1()">全部</button>
+	 <button type="button" class="btn btn-default" onclick="btn2()">大一</button>
+	 <button type="button" class="btn btn-default" onclick="btn3()">大二</button>
+	 <button type="button" class="btn btn-default" onclick="btn4()">大三</button>
+	 <button type="button" class="btn btn-default" onclick="btn5()">大四</button>
+     <{else if $student.role_id ==9}>
+        <button type="button" class="btn btn-default" onclick="btn1()">全部</button>
+        <button type="button" class="btn btn-default" onclick="btn2()">大一</button>
+        <button type="button" class="btn btn-default" onclick="btn3()">大二</button>
+        <button type="button" class="btn btn-default" onclick="btn4()">大三</button>
+        <button type="button" class="btn btn-default" onclick="btn5()">大四</button>
+        <button type="button" class="btn btn-default" onclick="btn5()">大五</button>
+      <{else if $student.role_id == null}>
+        <button type="button" class="btn btn-default">无数据</button>
+      <{else}>
+        <button type="button" class="btn btn-default" onclick="btn1()">全部</button>
+        <button type="button" class="btn btn-default" onclick="btn2()">大一</button>
+        <button type="button" class="btn btn-default" onclick="btn3()">大二</button>
+        <button type="button" class="btn btn-default" onclick="btn4()">大三</button>
+        <button type="button" class="btn btn-default" onclick="btn5()">大四</button>
+        <button type="button" class="btn btn-default" onclick="btn5()">大五</button>
+        <button type="button" class="btn btn-default" onclick="btn5()">大六</button>
+        <button type="button" class="btn btn-default" onclick="btn5()">大七</button>
+     <{/if}>
+
+
+        <div id="addBox" style="width: 560px;height: 233px;display: none;border: 1px solid;z-index:999;background: #ffffff;position:fixed;*position:absolute;left:30%;top: 50%" >
+            <div style="width: 500px;height: 200px;margin-left: 26px;margin-top: 20px;border: 1px solid">
+                <table>
+                    <form name="addForm">
+                        <input type="hidden" name="gpt" class="gpt">
+
+                        <tr>
+                            <td>成果内容：</td>
+                            <td><textarea  style="width: 400px;height: 120px" class="content"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>查看范围：</td>
+                            <td><input type="radio" id="rule"  name="rule" title="0" value="0" checked/>公开<input type="radio" id="rule" title="1" name="rule" value="1" />只允许老师查看</td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" value="保存" onclick="save()"/></td>
+                            <td><input type="button" value="取消" onclick="cancelAdd()"/></td>
+                        </tr>
+                    </form>
+
+                </table>
+            </div>
+        </div>
+
+        <div id="editBox" style="width: 560px;height: 233px;display: none;z-index:999;border: 1px solid;background: #ffffff;position:fixed;*position:absolute;left:30%;top: 50%" >
+            <div style="width: 500px;height: 200px;margin-left: 26px;margin-top: 20px;border: 1px solid">
+                <table>
+                    <form name="editForm">
+                        <input type="hidden" class="gp_id"/>
+                        <tr>
+                            <td>成果内容：</td>
+                            <td><textarea style="width: 400px;height: 120px" class="e_content"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>查看范围：</td>
+                            <td id="rule1"><input type="radio"  name="rule1" id="open" value="0"/>公开<input  type="radio" id="limit" name="rule1" value="1" />只允许老师查看</td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" value="修改" onclick="modify()"/></td>
+                            <td><input type="button" value="取消" onclick="cancelEdit()"/></td>
+                        </tr>
+                    </form>
+
+                </table>
+            </div>
+        </div>
+
+	 <table class="table" style="">
+
+	   <tr>
+         <{if $gpList[0].0 != null}>
+	    <{section name=gpt loop=$gpList}>
+		 <td style="float: left;border-top: none">
+		   <table class="table table-bordered">
+  	   		 <tr style="background:#28a4c9"><td style="height: 37px;width: 253px"><{$gpList[gpt].0}><{if $student.role_id==null}><a></a><{else}><a style="float: right;color: #ffffff;cursor: pointer" href="<{$web_url}>/index.php/record/moreAchievement/gpt_name/<{$gpList[gpt].0}>/isALL/1/fu_id/<{$student.fu_id}>/bks_code/<{$bks.bks_code}>">更多>></a><{/if}></td></tr>
+		   	 <{section name=gp loop=$gpList[gpt]}>
+		   	 <{if $smarty.section.gp.index==0}>
+		   	 <{else}>
+               <{if $__userinfo__.fu_id == $student.fu_id}>
+                   <{if $achievement_end_time>=time()}>
+                    <tr style="color:#2E3641;height: 57px;width: 258px"><td style="text-overflow:ellipsis;max-width:180px;white-space:nowrap;overflow: hidden"><a style="cursor:pointer;" title="<{$smarty.section.gp.index}>.<{$gpList[gpt][gp].grade_id}>年<{$gpList[gpt][gp].gp_content}>" onclick="edit('<{$gpList[gpt][gp].gp_content}>','<{$gpList[gpt][gp].gp_id}>','<{$gpList[gpt][gp].rule}>')"> <{$smarty.section.gp.index}>.<{$gpList[gpt][gp].grade_id}><{$gpList[gpt][gp].gp_content}></a> <br><i style="color: #ff0000"><{date("Y-m-d H:i:s",$gpList[gpt][gp].gp_create_time)}></i></td></tr>
+                    <{else}>
+                   <tr style="color:#2E3641;height: 57px;width: 258px"><td style="text-overflow:ellipsis;max-width:180px;white-space:nowrap;overflow: hidden"><a style="cursor:pointer;" title="<{$smarty.section.gp.index}>.<{$gpList[gpt][gp].grade_id}>年<{$gpList[gpt][gp].gp_content}>" onclick="alert('已过填写个人成果时间')"><{$smarty.section.gp.index}>.<{$gpList[gpt][gp].grade_id}><{$gpList[gpt][gp].gp_content}></a> <br><i style="color: #ff0000"><{date("Y-m-d H:i:s",$gpList[gpt][gp].gp_create_time)}></i></td></tr>
+                   <{/if}>
+               <{else}>
+                   <{if $__userinfo__.role_id ==7 && $gpList[gpt][gp].rule == 1}>
+                   <tr  style="color:#428bca;height: 57px;width: 258px;overflow:hidden"><td><{$smarty.section.gp.index}>.此成果清单只允许老师查看</td></tr>
+                   <{else}>
+                   <tr style="color:#2E3641;height: 57px;width: 258px;overflow:hidden"><td style="text-overflow:ellipsis;max-width:180px;white-space:nowrap;overflow: hidden"><a title="<{$smarty.section.gp.index}>.<{$gpList[gpt][gp].grade_id}>年<{$gpList[gpt][gp].gp_content}>"><{$smarty.section.gp.index}>.<{$gpList[gpt][gp].grade_id}>年<{$gpList[gpt][gp].gp_content}></a> <br><i style="color: #ff0000"><{date("Y-m-d H:i:s",$gpList[gpt][gp].gp_create_time)}>
+                    <{/if}>
+               <{/if}>
+		   	 <{/if}>
+		   	 <{/section}>
+                <{if $smarty.section.gp.index<6}>
+
+                <{section name=total loop=6-$smarty.section.gp.index}>
+               <tr>
+                   <td style="height: 57px;width: 255px"><br><i></i></td>
+               </tr>
+                <{/section}>
+
+                <{/if}>
+               <{if $__userinfo__.fu_id == $student.fu_id}>
+                 <{if $limitAddAndEdit == 1}>
+                     <{if $achievement_end_time>=time()}>
+                        <tr style=""><td style="float:right;"> <button type="button" class="btn btn-default" onclick="add('<{$gpList[gpt].0}>')">添加</button></tr>
+                       <{else}>
+                           <tr style=""><td style="float:right;"> <button type="button" class="btn btn-default" onclick="alert('已过填写个人成果时间！')">添加</button></tr>
+                      <{/if}>
+                  <{/if}>
+               <{/if}>
+		   </table>
+
+		 </td>
+		<{/section}>
+        <{/if}>
+	   </tr>
+
+	 </table>
+
+
+
+
+	</div>
+  </div>
+</ul>
+</div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

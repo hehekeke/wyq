@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+</head>
+
+<body>
+<{include file='header.html'}>
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header"><h3>当前位置：综合素质评估>新生入学评估</h3></div>
+    </div>
+    <{assign var=lefttype value=2}>
+    <{include file='assessment/xsrx-leftfunction.html'}>
+    <div class="col-md-10">
+        <{if $content!=0}>
+        <{if $content.asspro_state == 3}>
+        <center>
+            <h3><{$content.asspro_title}></h3>
+            <h6><{$content.asspro_create_time}></h6>
+        </center>
+        <table class="table table-bordered">
+            <thead style="background-color:#e7e7e7;color:#2E3641;">
+            <{if !isset($zz_zhibiao)}>
+            <tr><th style="text-align:center;">一级指标</th><th style="text-align:center;">二级指标</th><th style="text-align:center;">内容</th></tr>
+            <{else}>
+            <tr><th style="text-align:center;"><{$zz_zhibiao.0.zbdj_name}></th><th style="text-align:center;"><{$zz_zhibiao.1.zbdj_name}></th><th style="text-align:center;"><{$zz_zhibiao.2.zbdj_name}></th></tr>
+            <{/if}>
+
+
+            </thead>
+            <tbody>
+            <tr>
+                <td rowspan="<{$content.asspro_gong_num}>" style="vertical-align:middle">公</td>
+                <td><{$content.second[0]}></td>
+                <td><{$content.third[0]}></td>
+            </tr>
+            <{section name=gong loop=$content.asspro_gong_num-1}>
+            <tr>
+                <td><{$content.second[$smarty.section.gong.rownum]}></td>
+                <td><{$content.third[$smarty.section.gong.rownum]}></td>
+                <{/section}>
+            <tr>
+                <td rowspan="<{$content.asspro_neng_num+1}>" style="vertical-align:middle">能</td>
+            </tr>
+            <{section name=neng start=$content.asspro_gong_num loop=$content.asspro_gong_num+$content.asspro_neng_num}>
+            <tr>
+                <td><{$content.second[neng]}></td>
+                <td><{$content.third[neng]}></td>
+            </tr>
+            <{/section}>
+            </tbody>
+        </table>
+        <{if isset($file_result)}>
+        <div style="margin-bottom:15px">
+            <span>附件:</span>
+            <ul>
+                <{section name=files loop=$file_result}>
+                <a href="<{$web_url}>/<{$file_result[files].file_link}>"><li ><{$file_result[files].file_name}></li></a>
+                <{/section}>
+            </ul>
+        </div>
+        <{/if}>
+        <{else}>
+        评估细则审核中
+        <{/if}>
+        <{else}>
+        暂无数据
+        <{/if}>
+    </div>
+</div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>
+

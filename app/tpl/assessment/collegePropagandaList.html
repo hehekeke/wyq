@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+ 	<title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+  	<script src="<{$web_url}>/common/app/js/holder.js"></script>
+  </head>
+  <script type="text/javascript">
+  	$(function(){
+  		flag = $("#flag").html();
+  		if(flag == 0){
+  			$("#no_notice").show();
+  			$("#is_notice").hide();
+  		}else{
+  			$("#is_notice").show();
+  			$("#no_notice").hide();
+  		}
+  	});
+    function skip(){
+        var totalPage = parseInt('<{$assList.totalPage}>');
+        var num = $("#num").val();
+        var pattern = /^([0-9]+)$/;
+        if(num==""){
+            alert("请输入页数！");
+        }else if(!pattern.test(num)){
+            alert("请输入数字！");
+        }else if(num > totalPage){
+            alert("超过最大页码");
+        }else{
+            location.href="<{$web_url}>/index.php/assessment/collegePropagandaList/page/"+num;
+        }
+    }
+  </script>
+<body>
+<{include file='header.html'}>
+<p id="flag" style="display:none;"><{$flag}></p>
+<div class="row">
+  <div class="col-md-8">
+    <div class="page-header" style="margin: 0 ;margin-top: 10px"><h3>当前位置：综合素质评估>各学院宣讲方案</h3></div>
+    <table class="table">
+        <{if isset($assList['list'])}>
+        <{section name=n loop=$assList['list']}>
+        <tr><td><a href="<{$web_url}>/index.php/assessment/collegePropagandaDetail/a_id/<{$assList['list'][n].article_id}>"><{$assList['list'][n].article_title}></a></td>
+            <td> 发布时间：<{$assList['list'][n].article_create_time}></td></tr>
+        <{/section}>
+        <{else if}>
+        暂无数据
+        <{/if}>
+    </table>
+      <{if $assList}>
+      <div style="text-align:center;margin-top:20px" id="page">
+          <{if $assList.page>1}>
+          <a href="<{$web_url}>/index.php/assessment/collegePropagandaList/page/1">首页</a>
+          <{$prePage = $assList.page-1}>
+          <a href="<{$web_url}>/index.php/assessment/collegePropagandaList/page/<{$prePage}>">上一页</a>
+          <{/if}>
+          <{if $assList.page < $assList.totalPage}>
+          <{$nextPage =$assList.page+1 }>
+          <a href="<{$web_url}>/index.php/assessment/collegePropagandaList/page/<{$nextPage}>">下一页</a>
+          <a href="<{$web_url}>/index.php/assessment/collegePropagandaList/page/<{$assList['totalPage']}>">尾页</a>
+          <{/if}>
+          <{if $assList.totalPage>1}>
+          跳转到<input id="num" type="text" style="color:#000000;width: 40px;height:20px;margin-left: 5px">
+          <button onclick="skip()">GO</button>
+          <{/if}>
+          <span style="margin-left: 20px">当前第<{$assList.page}>页/共<{$assList.totalPage}>页</span>
+      </div>
+      <{/if}>
+  </div>
+  <div class="col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">通知公告</div>
+      <div id="is_notice" class="list-group">
+        <{section name = nat loop=$notice}>
+        	<a href="<{$web_url}>/index.php/Notice/noticeDetail/id/<{$notice[nat].notice_id}>" class="list-group-item">
+          		<p class="list-group-item-heading">【<{$notice[nat].nt_name}>】<{$notice[nat].notice_title}></p>
+          		<p class="list-group-item-text">发布时间：<{$notice[nat].notice_create_time}><!--  浏览(<{$notice[nat].notice_read_num}>) --></p>
+        	</a>
+        <{/section}>
+        <a href="<{$web_url}>/index.php/Notice/moreNotice" class="list-group-item" style="text-align: right">更多<i class="fa fa-angle-double-right"></i></a>
+      </div>
+      <div id="no_notice" style="display:none;">
+      	<center><p style="font-size:20px; margin-left:10px; margin-bottom:200px;">暂无通知</p></center>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+  <{include file='footer.html'}>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+</head>
+<body>
+<{include file='header.html'}>
+
+<div class="row" style="padding-top:15px;">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：<a href="#" onClick="javascript :history.back(-1);" style="color:#FFFFFF;">成长档案</a>>辅学活动详情</h3></div>
+    <center><h1><{$detail.activity_title}>详情</h1></center>
+  </div>
+ <div>
+ <div class="row">
+	  	<div class="col-md-2"></div>
+	  	<div class="col-md-8">
+ 	<table width="600" border="0" cellspacing="10" cellpadding="0">
+  <tr>
+    <td width="90">标题：</td>
+    <td width="480"><{$detail.activity_title}></td>
+  </tr>
+  <tr>
+    <td>主题：</td>
+    <td><{$detail.activity_theme}></td>
+  </tr>
+  <tr>
+    <td>起始时间：</td>
+    <td><{$detail.activity_start_time}></td>
+  </tr>
+  <tr>
+    <td>结束时间：</td>
+    <td><{$detail.activity_end_time}></td>
+  </tr>
+  <tr>
+    <td>主办人：</td>
+    <td><{$detail.activity_duty_preson}></td>
+  </tr>
+  <tr>
+    <td>内容：</td>
+    <td><{$detail.activity_content}></td>
+  </tr>
+</table>
+ 	</div>
+ 	</div>
+ </div>
+ </div>
+<{include file='footer.html'}>
+</body>
+</html>

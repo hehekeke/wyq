@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+  </head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+        
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：<a href="#" onClick="javascript :history.back(-1);" style="color:#FFFFFF;">小贴士</a>>小贴士详情</h3></div>
+  </div>
+  <div class="col-md-1">
+  </div>
+  <div class="col-md-11">
+    <h3><center><{$detail['article_title']}></center></h3>
+    <p><{$detail['article_content']}></p>
+     <{if isset($file_info)}>
+      <p>附件：<a style="color:#FFFFFF" href="<{$web_url}>/common/upload/files/<{$file_info['file_link']}>"><{$file_info['file_name']}></a></p>
+      <{/if}>
+
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

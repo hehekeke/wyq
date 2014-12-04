@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+</head>
+<style>
+    .content span{
+        float: right;
+    }
+    .content li{
+        list-style-type: none;
+        margin-top: 10px;
+        color: wheat;
+        letter-spacing:3px
+    }
+    input{
+        color: #000000;
+
+    }
+</style>
+<script>
+
+        function skip(){
+            var totalPage = parseInt('<{$noticeList.totalPage}>');
+            var num = $("#num").val();
+            var pattern = /^([0-9]+)$/;
+            if(num==""){
+                alert("请输入页数！");
+            }else if(!pattern.test(num)){
+                alert("请输入数字！");
+            }else if(num > totalPage){
+                alert("超过最大页码");
+            }else{
+                location.href="<{$web_url}>/index.php/Notice/moreNotice/page/"+num;
+            }
+         }
+</script>
+<body>
+<{include file='header.html'}>
+<div class="center">
+    <div>
+
+        <h3 style="border-bottom: 1px solid #eee;padding-bottom:9px ">当前位置：首页>通知公告>更多</h3>
+
+    </div>
+    <div style="width: 800px;height: 500px;float: left">
+        <div class="content" style="height:350px">
+            <ul>
+                <{section name=no loop=$noticeList.list}>
+                <li><a href="<{$web_url}>/index.php/Notice/noticeDetail/id/<{$noticeList.list[no].notice_id}>"><{($noticeList.page-1)*10 +$smarty.section.no.index + 1}>.【<{$noticeList.list[no].nt_name}>】<{$noticeList.list[no].notice_title}></a><span>浏览：<{if $noticeList.list[no].notice_read_num==null}>0<{else}><{$noticeList.list[no].notice_read_num}><{/if}>次&nbsp;<{$noticeList.list[no].notice_create_time}></span></a></li>
+                <{/section}>
+            </ul>
+        </div>
+        <div id="page" style="text-align: center;margin-top: 20px;">
+            <{if $noticeList.totalPage>1}>
+            <span>当前第<{$noticeList.page}>页/共<{$noticeList.totalPage}>页</span>
+            <a href="<{$web_url}>/index.php/Notice/moreNotice/page/1">首页</a>
+            <{if $noticeList.page>1}>
+            <{$prePage = $noticeList.page-1}>
+            <a href="<{$web_url}>/index.php/Notice/moreNotice/page/<{$prePage}>">上一页</a>
+            <{/if}>
+            <{if $noticeList.page < $noticeList.totalPage}>
+            <{$nextPage =$noticeList.page+1 }>
+            <a href="<{$web_url}>/index.php/Notice/moreNotice/page/<{$nextPage}>">下一页</a>
+            <{/if}>
+            <a href="<{$web_url}>/index.php/Notice/moreNotice/page/<{$noticeList.totalPage}>">尾页</a>
+            跳转到<input id="num" type="text" style="line-height:10px;width: 50px;height: 20px;margin-left: 5px"><input style="height: 20px;line-height: 11px" type="button" value="GO" onclick="skip()">
+            <{/if}>
+        </div>
+    </div>
+
+    <div style="width: 300px;height: 500px;float: right">
+        <table class="table table-bordered" id="newTable">
+            <thead>
+            <tr style="background:#EEAEEE">
+                <th><center>热门公告</center></th>
+            </tr>
+            </thead>
+            <tbody>
+            <{section name=no loop=$hotNotice}>
+            <tr>
+                <td><a href="<{$web_url}>/index.php/Notice/noticeDetail/id/<{$hotNotice[no].notice_id}>">【<{$hotNotice[no].nt_name}>】  <{$hotNotice[no].notice_title}></a></td>
+            </tr>
+            <tr>
+                <td><{$hotNotice[no].notice_create_time}>  浏览：<{if $hotNotice[no].notice_read_num==null}>0<{else}><{$hotNotice[no].notice_read_num}><{/if}>次</td>
+            </tr>
+            <{/section}>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

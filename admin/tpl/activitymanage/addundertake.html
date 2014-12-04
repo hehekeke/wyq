@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor-1.2.1.min.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor_lang/zh-cn.js"></script>
+<script type="text/javascript">
+	$(function() {
+		var editor = $('#content').xheditor({
+			upLinkUrl:"<{$web_url}>/common/upload.php",
+			upLinkExt:"zip,rar,txt",
+			upImgUrl:"<{$web_url}>/common/upload.php",
+			upImgExt:"jpg,jpeg,gif,png",
+			upFlashUrl:"<{$web_url}>/common/upload.php",
+			upFlashExt:"swf",
+			upMediaUrl:"<{$web_url}>/common/upload.php",
+			upMediaExt:"avi",
+			remoteImgSaveUrl:"<{$web_url}>/common/upload.php",
+			cleanPaste:2,
+			internalScript:false,
+			inlineScript:false,
+			internalStyle:false,
+			inlineStyle:false
+		});
+		
+		$("#form1").submit( function () {
+			$("#result").val("");
+			if($("#undertakename").val() == ""){
+				$("#undertakename").focus();
+				$("#result").text("承办方名字不能为空！");
+				return false;
+			}
+			
+			return true;
+		} );		
+	});
+</script>
+</head>
+<style type="text/css">/* CSS Document */   
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+}  
+</style>  
+<body>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  	<TR height=28><TD background=images/title_bg1.jpg>当前位置:添加承办方</TD></TR>
+  	<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  	<TR height=20>
+    	<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+	</TR>
+</TABLE>
+
+<div id="info" style=" margin-left:10px;">
+<font id="result" color="#CC0000"><{$result|default:""}></font>
+<form id="form1" target="_self" name="form1" method="post" action="">
+<table id="mytable" cellspacing="0" >  
+  <tr>  
+    <th scope="col" colspan="2" style="border-left:1px solid #adceff;" >添加承办方</th>
+  </tr>  
+  <tr >  
+    <td style="border-left:1px solid #adceff;" >承办方名</td>
+    <td> <input type="text" name="undertakename" id="undertakename" style="width:150px" value=""  /></td>
+  </tr>  
+
+  <tr >
+    <td style="border-left:1px solid #adceff;" >&nbsp;</td>
+    <td>
+    	<input type="submit" name="Submit" value="提交" />
+	</td>
+  </tr>
+   
+</table> 
+</form>
+</div>
+</body>
+</html>

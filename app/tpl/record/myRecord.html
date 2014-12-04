@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+
+
+
+
+
+
+</head>
+<style>
+    #news{
+        width:363px;
+        height:325px;
+        position:relative;
+    }
+    #img_bt{
+        position:absolute;
+        left:100px;
+        top:155px;
+    }
+    #img_bt li{
+        float:left;
+        color:red;
+        margin-left:10px;cursor:pointer;
+    }
+    #news img{
+        display:none;
+    }
+    #news img:first-child{
+        display:block;
+    }
+
+    li{
+        list-style: none;
+    }
+    a{
+        color: #ffffff;
+    }
+    .page a{
+        color: wheat;
+    }
+    #analysis table td{
+        border: solid 2px;
+        background: #9A2D7C;
+        text-align:center;
+    }
+
+    #liColor a{
+        color: #000000;
+        font-weight: bold;
+    }
+
+
+</style>
+<script>
+    function exportExcel(id){
+        location.href="<{$web_url}>/index.php/exportExcel/getAct/id/"+id;
+    }
+    var x = 1
+    function analysis(){
+
+        if(!(x%2==0)){
+            $("#analysis").css("display","block");
+            $("#analysisButton").html("关闭");
+            x++;
+        }else{
+            $("#analysis").css("display","none");
+            $("#analysisButton").html("分析");
+            x++;
+        }
+    }
+    function printExcel(){
+        $("#Table").css("display","block");
+        $("#bigDiv").css("display","none");
+        window.print();
+        location.reload();
+    }
+    function skip(){
+        var totalPage = parseInt('<{$activityList.totalPage}>');
+        var num = $("#num").val();
+        var pattern = /^([0-9]+)$/;
+        if(num==""){
+            alert("请输入页数！");
+        }else if(!pattern.test(num)){
+            alert("请输入数字！");
+        }else if(num > totalPage){
+            alert("超过最大页码");
+        }else{
+            location.href="<{$web_url}>/index.php/record/myrecord/id/<{$student.fu_id}>/page/"+num;
+        }
+    }
+    function skipOfOther(){
+        var totalPage = parseInt('<{$activityList.totalPage}>');
+        var num = $("#otherNum").val();
+        var pattern = /^([0-9]+)$/;
+        if(num==""){
+            alert("请输入页数！");
+        }else if(!pattern.test(num)){
+            alert("请输入数字！");
+        }else if(num > totalPage){
+            alert("超过最大页码");
+        }else{
+            location.href="<{$web_url}>/index.php/record/myrecord/id/<{$student.fu_id}>/bks_code/<{$bks.bks_code}>/page/"+num;
+        }
+    }
+
+    function subTitle(thoughtsContent,ar_id,activity_title){
+        $("#ar_id").val(ar_id);
+        $("#myModalLabel").html(activity_title);
+        $("#thoughtsContent").val(thoughtsContent);
+    }
+    function writeThoughts(){
+        var ar_id = $("#ar_id").val();
+        var thoughtsContent = $("#thoughtsContent").val();
+        $.post("<{$web_url}>/index.php/record/writeThoughts",{"ar_id":ar_id,"thoughtsContent":thoughtsContent},function(data){
+            if(data>0){
+                alert("保存成功");
+                location.reload();
+            }else{
+                alert("保存失败");
+            }
+        });
+    }
+    function readThoughts(activity_title,thoughts){
+        $("#myModalLabel2").html(activity_title);
+        $(".modal-body").html(thoughts);
+    }
+    function openPic(index){
+        var imgBoxId = "#imgBox"+index;
+        $("#lookImg").html($(imgBoxId).html());
+        $("#lookImg div").css("display","block");
+        $("#lookImg img").css("display","none");
+        $("#lookImg img:first").css("display","block");
+
+    }
+    function changePic(index,count){
+            $("#lookImg img").css("display","none");
+            var id = "#img"+index;
+            $(id).css("display","block");
+    }
+
+
+
+</script>
+<body>
+<div style="display: none" id="Table">
+   <table border="1" width=100%>
+     <tr>
+        <td>姓名</td>
+        <td>标题</td>
+        <td>内容</td>
+        <td>时间</td>
+    </tr>
+     <{section name=ac loop=$activityAllList}>
+    <tr>
+        <td><{$activityAllList[ac].fu_realname}></td>
+        <td><{$activityAllList[ac].activity_title}></td>
+        <td><{$activityAllList[ac].activity_content}></td>
+        <td><{$activityAllList[ac].activity_registration_create_time}></td>
+    </tr>
+       <{/section}>
+   </table>
+</div>
+<div id="bigDiv">
+<{include file='header.html'}>
+<div class="row" style="padding-top:15px;">
+    <div class="col-md-12">
+        <div class="page-header"><h3>当前位置：成长档案>成长档案详情</h3></div>
+        <{if $__userinfo__.fu_id == $student.fu_id}>
+        <center><h1><{$student.fu_grade}>级 <{$student.college_name}> <{$student.major_name}> <{$student.fu_realname}> 成长档案</h1></center>
+        <{else}>
+        <center><h1><{$bks.bks_grade}>级 <{$bks.bks_college}> <{$bks.bks_major}> <{$bks.bks_name}> 成长档案</h1></center>
+        <{/if}>
+    </div>
+    <div class="col-md-12" id="liColor">
+        <ul class="nav nav-tabs navbar-right">
+            <{if $__userinfo__.fu_id == $student.fu_id}>
+            <li><a href="<{$web_url}>/index.php/record/myplan/id/<{$student.fu_id}>">个人成长计划</a></li>
+            <li><a href="<{$web_url}>/index.php/record/achievement/id/<{$student.fu_id}>">个人成果清单</a></li>
+            <li class="active"><a href="<{$web_url}>/index.php/record/myrecord/id/<{$student.fu_id}>">辅学活动成长记录</a></li>
+            <{else}>
+            <li><a href="<{$web_url}>/index.php/record/myplan/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>">个人成长计划</a></li>
+            <li><a href="<{$web_url}>/index.php/record/achievement/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>">个人成果清单</a></li>
+            <li class="active"><a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$bks.bks_code}>/id/<{$student.fu_id}>">辅学活动成长记录</a></li>
+            <{/if}>
+        </ul>
+    </div>
+
+    <div class="col-md-12 panel panel-default" style="height: 560px">
+        <div class="panel-body" style="height:500px">
+            <div class="row">
+                <div class="col-md-9"></div>
+                <div class="col-md-3">
+                    <button style="float: right" id="analysisButton" type="button" class="btn btn-default" onclick="analysis()">分析</button>
+                    <button style="float: right" type="button" class="btn btn-default" onclick="exportExcel('<{$student.fu_id}>')">导出excel</button>
+                    <button style="float: right" type="button" class="btn btn-default" onclick="printExcel()">打印</button>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel" style="color: #000000"></h4>
+                        </div>
+                        <div class="modal-body" style="color: #000000">
+                                <input type="hidden" id="ar_id" name="ar_id"/>
+                                <textarea id="thoughtsContent" name="thoughtsContent" style="width: 500px;height: 280px"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" onclick="writeThoughts()">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Large modal -->
+            <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel1" style="color: #000000">照片浏览</h4>
+                        </div>
+                        <div class="modal-body" style="color: #000000" id="lookImg">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <center>本学年参加活动 <{$countActivityByYear}> 个，累计参加活动 <{$activityList.total}>个。</center>
+                    <br/><br/><br/><br/>
+                    <div style="height: 300px">
+                        <table>
+                            <{if $activityList.totalPage>0}>
+                            <{section name=stu loop=$activityList.list}>
+                            <tr>
+                                <td><a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/<{$activityList.list[stu].activity_class}>/activityId/<{$activityList.list[stu].activity_id}>"><{$student.fu_realname}>参加了“<{$activityList.list[stu].activity_title}>”活动</a>
+                                </td>
+                                <td width="30%"></td>
+                                <td>
+                                    <{$activityList.list[stu].activity_registration_create_time}>
+                                </td>
+                                <{if $__userinfo__.fu_id ==$student.fu_id}>
+
+                                <td >
+                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" style="margin-left:10px;" onclick="subTitle('<{$activityList.list[stu].activity_registration_thoughts}>','<{$activityList.list[stu].activity_registration_id}>','<{$activityList.list[stu].activity_title}>')">心得</button>
+                                    <!--<button class="btn btn-primary btn-xs">照片</button>-->
+                                </td>
+                                <td>
+                                    <div id="imgBox<{$smarty.section.stu.index}>">
+                                        <div id="imgBox" style="display: none;width: 800px" >
+
+                                             <{if $activityList.list[stu].pic[0]!=null}>
+                                               <{section name=pic loop=$activityList.list[stu].pic}>
+                                                <img style="position: relative" src="<{$web_url}><{$activityList.list[stu].pic[pic]}>" width="570" height="270" id="img<{$smarty.section.pic.index}>">
+
+                                              <{/section}>
+                                             <ul  style="position:absolute;top:295px;right:20px">
+                                                 <{section name=pic loop=$activityList.list[stu].pic}>
+                                                    <li style=" cursor:pointer;float:left;margin-right:5px;text-align:center;line-height:20px;width:20px;height:20px;background-color:#9A2D7C;color: #ffffff" onclick="changePic('<{$smarty.section.pic.index}>')"><{$smarty.section.pic.index +1 }></li>
+                                                 <{/section}>
+                                             </ul>
+
+                                            <{else}>
+                                            没有照片
+                                           <{/if}>
+
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal1" onclick="openPic('<{$smarty.section.stu.index}>')">照片</button>
+                                </td>
+
+                                <{/if}>
+                            </tr>
+                            <{/section}>
+                            <{/if}>
+                        </table>
+                    </div>
+                    <{if $activityList.totalPage > 1}>
+                    <{if  $__userinfo__.fu_id ==$student.fu_id}>
+                    <div class="page" style="margin-top: 20px;text-align: center" >
+
+                        <a href="<{$web_url}>/index.php/record/myrecord/page/1/id/<{$student.fu_id}>">首页</a>
+
+                        <{if $activityList.page>1}>
+                        <{$prePage = $activityList.page -1}>
+                        <a href="<{$web_url}>/index.php/record/myrecord/page/<{$prePage}>/id/<{$student.fu_id}>">上一页</a>
+                        <{/if}>
+
+                        <{if $activityList.page < $activityList.totalPage}>
+                        <{$nextPage = $activityList.page +1}>
+                        <a href="<{$web_url}>/index.php/record/myrecord/page/<{$nextPage}>/id/<{$student.fu_id}>">下一页</a>
+                        <{/if}>
+
+                        <a  href="<{$web_url}>/index.php/record/myrecord/id/<{$student.fu_id}>/page/<{$activityList.totalPage}>">尾页</a>
+                        跳转到<input id="num" type="text" style="color:#000000;width: 50px;height: 20px;margin-left: 5px"><input style="height:20px;line-height:10px;color: #000000" type="button" value="GO" onclick="skip()">
+                        <span style="margin-left: 20px">当前第<{$activityList.page}>页/共<{$activityList.totalPage}>页</span>
+                    </div>
+                    <{else}>
+                    <div class="page" style="margin-top: 20px;text-align: center" >
+                        <{if $activityList.totalPage >1 }>
+                        <a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$bks.bks_code}>/page/1/id/<{$student.fu_id}>">首页</a>
+                        <{/if}>
+                        <{if $activityList.page>1}>
+                        <{$prePage = $activityList.page -1}>
+                        <a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$bks.bks_code}>/page/<{$prePage}>/id/<{$student.fu_id}>">上一页</a>
+                        <{/if}>
+
+                        <{if $activityList.page < $activityList.totalPage}>
+                        <{$nextPage = $activityList.page +1}>
+                        <a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$bks.bks_code}>/page/<{$nextPage}>/id/<{$student.fu_id}>">下一页</a>
+                        <{/if}>
+                        <{if $activityList.totalPage >1 }>
+                        <a  href="<{$web_url}>/index.php/record/myrecord/id/<{$student.fu_id}>/bks_code/<{$bks.bks_code}>/page/<{$activityList.totalPage}>">尾页</a>
+                        <{/if}>
+                        跳转到<input id="otherNum" type="text" style="color:#000000;width: 50px;height: 20px;margin-left: 5px"><input style="height:20px;line-height:10px;color: #000000" type="button" value="GO" onclick="skipOfOther()">
+                        <span style="margin-left: 20px">当前第<{$activityList.page}>页/共<{$activityList.totalPage}>页</span>
+                    </div>
+                </div>
+                <{/if}>
+                <{/if}>
+                <div class="col-md-2"></div>
+
+                <{if $__userinfo__.fu_id ==$student.fu_id}>
+                <div id="analysis" style="width: 1100px;margin-left:20px;height: 500px; background:-webkit-gradient(linear, left top, left bottom,from(#9A2D7C),to(#661550));
+                       background:-moz-linear-gradient(top,#9A2D7C,#661550);
+                       background:-o-linear-gradient(top,#9A2D7C,#661550);
+                       background:-ms-linear-gradient(top,#9A2D7C,#661550);
+                       filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#9A2D7C',endColorstr='#661550');
+                       background:linear-gradient(top,#9A2D7C,#661550);display:none;position:absolute;z-index: 998;top: 0px;left:-190px">
+                    <{else if $activityList.total !=0 }>
+                    <div id="analysis" style="width: 1100px;margin-left:20px;height: 500px; background:-webkit-gradient(linear, left top, left bottom,from(#9A2D7C),to(#661550));
+                       background:-moz-linear-gradient(top,#9A2D7C,#661550);
+                       background:-o-linear-gradient(top,#9A2D7C,#661550);
+                       background:-ms-linear-gradient(top,#9A2D7C,#661550);
+                       filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#9A2D7C',endColorstr='#661550');
+                       background:linear-gradient(top,#9A2D7C,#661550);display:none;position:absolute;z-index: 998">
+                    <{else}>
+                    <div id="analysis" style="width: 1100px;margin-left:20px;height: 500px; background:-webkit-gradient(linear, left top, left bottom,from(#9A2D7C),to(#661550));
+                       background:-moz-linear-gradient(top,#9A2D7C,#661550);
+                       background:-o-linear-gradient(top,#9A2D7C,#661550);
+                       background:-ms-linear-gradient(top,#9A2D7C,#661550);
+                       filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#9A2D7C',endColorstr='#661550');
+                       background:linear-gradient(top,#9A2D7C,#661550);display:none;position:absolute;z-index: 998;top: 0px;left:-190px">
+                        <{/if}>
+                    <center>本学年参加活动 <{$countActivityByYear}> 个，累计参加活动 <{$activityList.total}>个。</center>
+                    <div style="margin-top: 10px">
+                        <div style="width: 400px;height: 220px;display:block;float: left;margin-left: 100px;">
+                            本学年
+                            <img src="<{$web_url}>/index.php/graph2/getGraph">
+                        </div>
+                        <div style="width: 400px;height:220px;display:block;float: right;margin-right: 100px;margin-top: 20px;">
+                            <table style="border: solid 1px;">
+                                <tr>
+                                    <td style="width: 200px;">类型</td>
+                                    <td style="width: 200px">数量</td>
+                                </tr>
+                                <{section name=at loop=$atByYear}>
+                                <tr>
+                                    <td><{$atByYear[at].at_name}></td>
+                                    <td><{$atByYear[at].count}></td>
+                                </tr>
+                                <{/section}>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:10px">
+                        <div style="width: 400px;height: 220px;display:block;float: left;margin-left: 100px">
+                            累计
+                            <img src="<{$web_url}>/index.php/graph/getGraph">
+                        </div>
+                        <div style="width: 400px;height:220px;display:block;float: right;margin-right: 100px;">
+                            <table style="border: solid 1px;">
+                                <tr>
+                                    <td style="width: 200px;">类型</td>
+                                    <td style="width: 200px">数量</td>
+                                </tr>
+                                <{section name=at loop=$at}>
+                                <tr>
+
+                                    <td><{$at[at].at_name}></td>
+                                    <td><{$at[at].count}></td>
+
+                                </tr>
+                                <{/section}>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+        </ul>
+    </div>
+</div>
+ </div>
+
+
+<{include file='footer.html'}>
+</div>
+</body>
+</html>

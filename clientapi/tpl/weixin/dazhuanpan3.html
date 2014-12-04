@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="keywords" content="jQueryRotate,大转盘" />
+<meta name="description" content="爱风科技大转盘" />
+<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+
+<title>幸运大转盘</title>
+<style type="text/css">
+.demo {width: 417px; height: 417px; position: relative; margin: 50px auto}
+#disk { width: 417px; height: 417px; background: url(../../../common/clientapi/images/disk.jpg) no-repeat}
+#start {width: 163px; height: 320px; position: absolute; top: 46px; left: 130px;}
+#start img {cursor: pointer}
+</style>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../../../common/clientapi/js/jQueryRotate.2.2.js"></script>
+<script type="text/javascript" src="../../../common/clientapi/js/jquery.easing.min.js"></script>
+<script type="text/javascript" src="../../../common/clientapi/js/alert.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$("#startbtn").rotate({
+			bind : {
+				click : function() {
+					var a = Math.floor(Math.random() * 360);
+					$(this).rotate({
+						duration : 3000,				//转动时间
+						angle : 0, 						//起始角度
+						animateTo : 3600 + a,			//转动角度，防止角度过小规定至少10圈以上
+						easing : $.easing.easeOutSine,	// 执行jQuery.easing.min.js中定义的动画效果
+						callback : function() {
+							if (a < 30) {
+								alert('一等奖！');
+							} else if (a >= 300 && a < 330) {
+								alert('二等奖！');
+							} else if (a >= 240 && a < 270) {
+								alert('三等奖！');
+							} else if (a >= 180 && a < 210) {
+								alert('四等奖！');
+							} else if (a >= 120 && a < 150) {
+								alert('五等奖！');
+							} else if (a >= 60 && a < 90) {
+								alert('六等奖！');
+							} else {
+								alert('七等奖！');
+							}
+						}
+					});
+				}
+			}
+		});
+	});
+</script>
+</head>
+
+<body>
+	<div id="main">
+		<div class="demo">
+			<div id="disk"></div>
+			<div id="start">
+				<img src="../../../common/clientapi/images/start.png" id="startbtn">
+			</div>
+		</div>
+	</div>
+</body>
+</html>

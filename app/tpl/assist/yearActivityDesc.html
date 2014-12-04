@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+      <script src="<{$web_url}>/common/app/js/jquery.slideBox.js"></script>
+      <script src="<{$web_url}>/common/app/js/jquery.slideBox.min.js"></script>
+      <link type="text/css" href="<{$web_url}>/common/app/css/jquery.slideBox.css" rel="stylesheet">
+  </head>
+  <style type="text/css">
+      .commentList{
+          widht:500px;
+      }
+      .word{
+          widht:500px;background-color:yellow;height:30px;
+      }
+      .comment{
+          widht:500px;margin:10px 1px;min-height:150px;border-bottom: 1px dashed #ffffff;
+      }
+      .reply{
+          widht:500px;margin:0 1px;color: #000000;
+      }
+      .comment_content_list{width:500px;}
+      .touxiang{width:120px;min-height:120px;margin:2px;float:left;}
+      .touxiang img{width:100px;height:100px;margin-bottom: 7px; margin-right: 7px;}
+      .comment_content{width:370px;margin:2px;float:right;}
+      .comment_content_reply{width:40px;margin-bottom:2px;margin-right:10px;height:20px;float:right;}
+      <!--
+      /* 星级评分 */
+      .shop-rating {
+          width:175px;
+          overflow: hidden;
+          zoom: 1;
+          position: relative;
+          z-index: 999;
+      }
+      .shop-rating span {
+          height: 23px;
+          display: block;
+          line-height: 23px;
+          float: left;
+      }
+      .shop-rating span.title {
+          width: 150px;
+          text-align: right;
+          margin-right: 5px;
+      }
+      .shop-rating ul {
+          float: left;
+          margin:0;padding:0
+      }
+      .shop-rating .result {
+          margin-left: 20px;
+          padding-top: 2px;
+      }
+      .shop-rating .result span {
+          color: #ff6d02;
+      }
+      .shop-rating .result em {
+          color: #f60;
+          font-family: arial;
+          font-weight: bold;
+      }
+      .shop-rating .result strong {
+          color: #666666;
+          font-weight: normal;
+      }
+      .rating-level,
+      .rating-level a {
+          background: url(http://www.nowamagic.net/librarys/images/veda/star_v2.png) no-repeat scroll 1000px 1000px;
+      }
+      .rating-level {
+          background-position: 0px 0px;
+          width: 120px;
+          height: 23px;
+          position: relative;
+          z-index: 1000;
+      }
+      .rating-level li {
+          display: inline;
+      }
+      .rating-level a {
+          line-height: 23px;
+          height: 23px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          text-indent: -999em;
+          *zoom: 1;
+          outline: none;
+      }
+      .rating-level a.one-star {
+          width: 20%;
+          z-index: 6;
+      }
+      .rating-level a.two-stars {
+          width: 40%;
+          z-index: 5;
+      }
+      .rating-level a.three-stars {
+          width: 60%;
+          z-index: 4;
+      }
+      .rating-level a.four-stars {
+          width: 80%;
+          z-index: 3;
+      }
+      .rating-level a.five-stars {
+          width: 100%;
+          z-index: 2;
+      }
+      .rating-level .current-rating,.rating-level a:hover{background-position:0 -28px;}
+      .rating-level a.one-star:hover,.rating-level a.two-stars:hover,.rating-level a.one-star.current-rating,.rating-level a.two-stars.current-rating{background-position:0 -116px;}
+      .rating-level .three-stars .current-rating,.rating-level .four-stars .current-rating,.rating-level .five-stars .current-rating{background-position:0 -28px;}
+      -->
+
+  </style>
+  <script>
+	 //关键字搜索
+	$(function(){
+	    $("#keyword_search").click(function(){
+            var search = $("#search").val();
+            //alert(search);
+            var key=encodeURI(search);
+            //alert(key);exit;
+            window.location.href= "<{$web_url}>/index.php/Assist/AssistActivity/activity_class/0/keywords/"+key;
+		});
+	});
+	
+	//提交评论
+    $(function(){
+		$("#tijiao_pinglun").click(function(){
+			var pinglunContent = $("#mycommentcontent").val();
+			//alert(pinglunContent);
+			if(pinglunContent !=''){
+				$.post("<{$web_url}>/index.php/Assist/UpActivityComment",{userId:<{$__userinfo__.fu_id}>,content:pinglunContent,activityId:<{$weekActivityContent.activity_id}>},function(data){
+			        window.location.reload(true);
+				});
+			}else{
+				alert('亲，评论内容不能为空！');
+			}
+		});
+	});
+	//活动评论
+	
+	
+	function liangfen(obj){
+		console.log() ;//这个就是sg_name
+		score2database(2,obj.id,$(obj).parent().parent().parent().parent().prev().prev().html());
+		
+	}
+	function sifen(obj){
+		console.log() ;//这个就是sg_name
+		score2database(4,obj.id,$(obj).parent().parent().parent().parent().prev().prev().html());
+		
+	}
+	function liufen(obj){
+		console.log() ;//这个就是sg_name
+		score2database(6,obj.id,$(obj).parent().parent().parent().parent().prev().prev().html());
+		
+	}
+	function bafen(obj){
+		console.log() ;//这个就是sg_name
+		score2database(8,obj.id,$(obj).parent().parent().parent().parent().prev().prev().html());
+		
+	}
+	function shifen(obj){
+		console.log() ;//这个就是sg_name
+		score2database(10,obj.id,$(obj).parent().parent().parent().parent().prev().prev().html());
+		
+	}
+	
+	function score2database(i,sg_id,sg_name){
+	    $.post(
+			"<{$web_url}>/index.php/Assist/fuxuepingfen",
+			{score:i,userId:<{$__userinfo__.fu_id}>,sg_name:sg_name,sg_id:sg_id,activityId:<{$weekActivityContent.activity_id}>},
+			function(re){
+			     alert(re);
+		    });
+	}
+	//---------------------丢鸡蛋-------------
+	function diujidan(obj){
+	   $.post(
+			"<{$web_url}>/index.php/Assist/AddActivityAttitudeegg",
+			{userId:<{$__userinfo__.fu_id}>,activityId:<{$weekActivityContent.activity_id}>},
+			function(re){
+			     alert(re);
+		    });
+	}
+	//---------------------献鲜花-------------
+	function xianxianhua(obj){
+		$.post(
+			"<{$web_url}>/index.php/Assist/UpActivityAttitudeflowers",
+			{userId:<{$__userinfo__.fu_id}>,activityId:<{$weekActivityContent.activity_id}>},
+			function(re){
+			     alert(re);
+		    });
+	}
+	//------------想参加-----------
+	function wantjoin(obj){
+		$.post(
+			"<{$web_url}>/index.php/Assist/AddActivityAttitudewant",
+			{userId:<{$__userinfo__.fu_id}>,activityId:<{$weekActivityContent.activity_id}>},
+			function(re){
+			     alert(re);
+		    });
+	}
+</script>
+<body style="color: #ffffff">
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：辅学活动>年活动>活动详情</h3></div>
+  </div>
+  <div class="col-md-8">
+    <div class="avtivity_title"><{$weekActivityContent.activity_title}></div>
+	<div class="activity_main_content">
+	    <div id="activity_table"  style="word-break:break-all;width:698px">
+		 <table style="table-layout:fixed">
+		    <tr>
+			     <td>ID:</td>
+				 <td><{$weekActivityContent.activity_id}></td>
+			 </tr>
+		     <tr>
+			     <td>时间:</td>
+				 <td><{$weekActivityContent.activity_start_time}></td>
+			 </tr>
+			 <tr>
+			     <td>地点:</td>
+				 <td><{$weekActivityContent.activity_address}></td>
+			 </tr>
+			 <tr>
+			     <td>主题:</td>
+				 <td><{$weekActivityContent.activity_theme}></td>
+			 </tr>
+			 <tr>
+			     <td>类型:</td>
+				 <td><{$weekActivityContent.at_name}></td>
+			 </tr>
+			 <tr>
+			     <td>主办方:</td>
+				   <td>
+				     <{section name=list loop=$weekActivityOrg}>
+				     <{$weekActivityOrg[list].organizers_name}>、
+				     <{sectionelse}>
+				     <td>无主办方</td>
+				     <{/section}>
+				   </td>
+			 </tr>
+			 <tr>
+			     <td>承办方:</td>
+			      <td>
+				 <{section name=list loop=$weekActivityUdt}>
+				  <{$weekActivityUdt[list].undertake_name}>
+				   <{sectionelse}>
+				   无承办方
+				 <{/section}>
+				 </td>
+			 </tr>
+			 <tr>
+			     <td>规模:</td>
+				 <td><{$weekActivityContent.activity_scale}>人</td>
+			 </tr>
+			 <tr>
+			     <td>专业性等级:</td>
+				 <td>
+				 <{if $weekActivityContent.activity_level eq '0'}>校级
+				 <{else}>院级
+				 <{/if}>
+				 </td>
+			 </tr>
+			 <tr>
+			     <td>活动负责人:</td>
+				 <td><{$weekActivityContent.activity_duty_preson}></td>
+			 </tr>
+		 </table>
+            <tr >
+                <td>活动简介:</td>
+                <td><{$weekActivityContent.activity_content}></td>
+            </tr>
+            <{if $picList}>
+            <tr>
+                <td>
+                    <div id="demo1" class="slideBox" style="display: block;width: 700px;height: 370px">
+                        <ul class="items">
+                            <{section name=pic loop=$picList}>
+                            <li><img style="width: 700px;height: 370px" src="<{$web_url}><{$picList[pic].pic_link}>"></li>
+                            <{/section}>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            <{/if}>
+		 </div>
+
+        <div class="activity_comment" style="width:700px">
+            <div style="width: 500px;height: 30px;">
+                <span style="font-size: 22px;">活动评分</span>
+                <{section name=al loop=$attitude}>
+                <input type="submit" name="egg" id="egg" onclick="diujidan(this)" value="扔鸡蛋"  style="margin-left: 115px;color:black;"/><label id="eggNum"><{$attitude[al].activity_egg_num}>人</label>
+                <input type="submit" name="flowers" id="flowers" onclick="xianxianhua(this)" value="献鲜花"   style="color:black;"/><label><{$attitude[al].activity_flowers_num}>人</label>
+                <input type="submit" name="want" id="want" onclick="wantjoin(this)" value="想参加"  style="color:black;"/><label><{$attitude[al].activity_iswant_num}>人</label>
+                <{sectionelse}>
+                <input type="submit" name="egg0" id="egg0" onclick="diujidan(this)" value="扔鸡蛋"  style="margin-left: 115px;color:black;"/><label>0人</label>
+                <input type="submit" name="flowers0" id="flowers0" onclick="xianxianhua(this)" value="献鲜花"   style="color:black;"/><label>0人</label>
+                <input type="submit" name="want0" id="want0" onclick="wantjoin(this)"  value="想参加"  style="color:black;"/><label>0人</label>
+                <{/section}>
+            </div>
+            <hr>
+            <div id="activity_score">
+                <table id="<{$activityGoals[al].as_id}>">
+                    <tr>
+                        <td>共<{$sumPerson['count(*)']}>人评分</td>
+                        <td>辅学目标</td>
+                        <td>评分</td>
+                    </tr>
+                    <{section name=al loop=$activityAvg}>
+                    <tr>
+                        <td><label>平均分<{$activityAvg[al]}></label></td>
+                        <td id="id<{$activityGoals[al].sg_id}>" class="pingjunfen_name"><{$activityGoals[al].sg_name}></td>
+                        <td id="jd<{$activityGoals[al].sg_id}>" style="display: none"><{$activityGoals[al].sg_id}></td>
+                        <td>
+                            <div class="shop-rating" id="">
+                                <ul class="rating-level" id="stars1">
+                                    <li><a id="<{$activityGoals[al].sg_id}>" class="one-star" data-val="2"  title="2分" onclick="liangfen(this)">2分</a></li>
+                                    <li><a id="<{$activityGoals[al].sg_id}>" class="two-stars" data-val="4"  title="4分" onclick="sifen(this)">4分</a></li>
+                                    <li><a id="<{$activityGoals[al].sg_id}>" class="three-stars" data-val="6"  title="6分" onclick="liufen(this)">6分</a></li>
+                                    <li><a id="<{$activityGoals[al].sg_id}>" class="four-stars" data-val="8"  title="8分" onclick="bafen(this)">8分</a></li>
+                                    <li><a id="<{$activityGoals[al].sg_id}>" class="five-stars" data-val="10"  title="10分" onclick="shifen(this)">10分</a></li>
+                                </ul>
+                                <span class="result" id="stars1-tips"></span>
+                                <input type="hidden" id="stars1-input" name="a" value="" size="2" />
+                            </div>
+                        </td>
+                    </tr>
+                    <{sectionelse}>
+                    <tr><td>该活动无对应辅学目标！</td></tr>
+                    <{/section}>
+                </table>
+            </div><br><hr>
+            <div id="huodongpinglun">
+                <span style="font-size: 22px;">活动评论</span>
+                <span style="float: right;">共<{$commentCounts['count(*)']}>条评论</span>
+            </div>
+            <hr>
+            <input type="hidden" id="userId" value="<{$__userinfo__.fu_id}>">
+
+
+            <{if isset($list)}>
+            <!---------------------祁长春------------------活动评论------->
+            <div class="commentList" >
+                <div class="words"><b>看看大家说什么...</b></div>
+                <div class="comment_content_list">
+                    <{section name=ll  loop=$list.list}>
+                    <{if $list.list[ll].parent_id eq 0}>
+                    <div  class="comment"  style="word-break:break-all;width:498px">
+                        <div class="touxiang">
+                            <{if $list.list[ll].pic_link != null}>
+                            <img src="<{$web_url}>/<{$list.list[ll].pic_link}>"/>
+                            <{else}>
+                            <img src="<{$web_url}>/common/app/images/headPicture.jpg"/>
+                            <{/if}>
+                            <span><{$list.list[ll].fu_realname}></span>&nbsp;&nbsp;&nbsp;<button id="userful" style="color:red;font-weight:bold" value="<{$list.list[ll].comment_id}>"onclick="userful(this)">有用</button><br>
+                            <span>已被标记有用<span style="color:mediumvioletred"><{$list.list[ll].comment_useful_num}></span>次</span>
+                        </div>
+                        <div class="comment_content" id="reply_div">
+                            说：<{$list.list[ll].toUser}><{$list.list[ll].comment_content}>
+                            <div class="comment_content_reply" ><span style="cursor:pointer" data-user_id="<{$list.list[ll].comment_user_id}>" data-parent_id=	"<{$list.list[ll].comment_id}>" data-comment_id="<{$list.list[ll].comment_id}>" onclick="reply(this)"></span>
+                            </div>
+                            <div id="comment<{$list.list[ll].comment_id}>" style="width:490px;"></div>
+                        </div>
+                        <!---回复-->
+                        <{foreach $list.list[ll].sonList as $val}>
+                        <div class="comment_content" id="reply_div">
+                            <font color="#f5deb3"><{$val.fu_realname}></font>&nbsp;&nbsp;:&nbsp;&nbsp;<font color="#f5deb3"><{$val.toUser}></font><br><{$val.comment_content}>
+                            <div class="comment_content_reply" ><span style="cursor:pointer" data-user_id="<{$val.comment_user_id}>" data-parent_id="<{$val.comment_id}>" data-comment_id="<{$val.comment_id}>" onclick="reply(this)">	</span>
+                            </div>
+                            <div id="comment<{$val.comment_id}>" style="width:490px;"></div>
+                        </div>
+                        <{/foreach}>
+                        <!---->
+                        <div style="clear:both;"></div>	<!--清除浮动-->
+                    </div>
+                    <{/if}>
+                    <{/section}>
+
+                </div>
+
+            </div>
+            <!----end----->
+            <div id="page" style="line-height: 15px;margin: 5px auto;text-align:center">
+                <span>共<{$list.totalPage}>页</span>&nbsp;&nbsp;<span>当前第<{$list.page}>页</span>
+                <a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/0/activityId/<{$activityId}>/page/1">首页</a>
+                <{if $list.page>1}>
+                <{$prePage = $list.page-1}>
+                <a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/0/activityId/<{$activityId}>/page/<{$prePage}>">上一页</a>
+                <{/if}>
+                <{if $list.page < $list.totalPage}>
+                <{$nextPage = $list.page+1}>
+                <a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/0/activityId/<{$activityId}>/page/<{$nextPage}>">下一页</a>
+                <{/if}>
+                <a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/0/activityId/<{$activityId}>/page/<{$list.totalPage}>">尾页</a>
+            </div><br>
+            <{/if}>
+        </div>
+        <div></div>
+
+
+	</div>
+  </div>
+  <div class="col-md-3">
+  	<button type="button" class="btn btn-default big_button" style="float:none;width:262px;">下载本学年活动安排</button>
+	<input type="text" id="search" placeholder="请输入关键字" style="float:left;margin-top:7px;width:200px;color:black;"/>
+  	<button type="button" id="keyword_search"  class="btn btn-default big_button" style="float:right;width:60px;">搜索</button>
+  	<table class="table table-striped"  style="border:1px solid #ddd;">
+  	  <thead>
+  	    <tr style="background:#2E3641"><td><center>年热门活动</center></td></tr>
+  	  </thead>
+  	  <tbody style="background:#FFFFFF;color:#ADBECA;" id = "listshow">
+  	  <{section name=list loop=$HotActivityList}>
+  	    <tr><td>
+  	    <a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/0/activityId/<{$HotActivityList[list].activity_id}>">
+  	     <{if $HotActivityList[list].activity_if_import eq 1}>【推荐】<{$HotActivityList[list].activity_title}>
+		  <{else}>⊙  <{$HotActivityList[list].activity_title}>
+		 <{/if}>
+		  </a>
+		</td></tr>
+		<tr style="background-color:gray;"><td>发布日期：<{$HotActivityList[list].activity_create_time}></td></tr>
+	   <{/section}>
+  	  </tbody>
+  	</table>
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    
+   <script>
+$(function(){
+var yanzhengflag = true;//验证，在后面的验证函数
+$("#shang").click(function(){
+  var page = <{$page}>;
+	page--;
+	window.location.href="<{$web_url}>/index.php/assessment/question/fangxiang/shang/pid/"+page;
+
+})
+$("#xia").click(function(){
+    var flag = 0;
+    var rdd = $(".choose");
+    var quest_id=$(".quest_id");
+    for(var i=0; i<rdd.length; i++){
+        if(rdd[i].checked){
+            flag++;
+        }
+    }
+   if(flag != quest_id.length){
+        alert("您还有暂未答完的题目");
+        return;
+    }
+	var page = <{$page}>;
+	page++;
+	addproblem();
+	window.location.href="<{$web_url}>/index.php/assessment/question/fangxiang/xia/pid/"+page;
+})
+
+var addproblem = function(fangxiang){
+     var answer = ($("#myform").serialize());
+	$.ajax({
+		url:"<{$web_url}>/index.php/assessment/question_ajax/",
+		type:"POST",
+		async:false,
+		data:{'answer':answer},
+		success:function(msg){
+			//alert(msg);
+		},
+		error:function(msg){
+			alert("网络出现问题！");
+		}
+	});
+}
+
+$("#commit").click(function(){
+    var flag = 0;
+    var rdd = $(".choose");
+    var quest_id=$(".quest_id");
+    for(var i=0; i<rdd.length; i++){
+        if(rdd[i].checked){
+            flag++;
+        }
+    }
+    if(flag != quest_id.length){
+        alert("您还有暂未答完的题目");
+        return;
+    }
+    var answer = ($("#myform").serialize());
+	//这个ajax是插入用的
+	 $.ajax({
+		url:"<{$web_url}>/index.php/assessment/question_ajax/",
+		type:"POST",
+		async:false,
+		data:({'answer':answer}),
+		success:function(json){
+		},
+		error:function(msg){
+			alert("网络出现问题！");
+		}
+	}); 
+//这个ajax是验证用的
+	$.ajax({
+		url:"<{$web_url}>/index.php/assessment/commit_ajax",
+		type:"POST",
+		async:false,
+        data:({'answer':answer}),
+		success:function(json){
+			 //alert(json);
+		     obj = eval("("+json+")");
+			if(obj.json.state == 1){
+				alert(obj.json.msg);
+				location.href = "<{$web_url}>/index.php/assessment/xnmSelfAssessment";
+			}else{
+			 alert(obj.json.msg);
+			}    
+     	},
+		error:function(msg){
+			alert("网络出现问题！");
+		}
+	});
+})
+
+
+   })
+   
+   </script>
+
+  </head>
+<body Onbeforeunload="ref()">
+<{include file='header.html'}>
+<div class="row">
+        
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：自我评估>题目</h3></div>
+  </div>
+  <div class="col-md-2">
+  </div>
+  <div class="col-md-10">
+    <form id="myform">
+        <{section name=quest loop=$problem}>
+        <h3 class="quest_id"><{$smarty.section.quest.rownum+($page-1)*6}>、问题:<{$problem[quest].title}></h3>
+        <{section name=n loop=$problem[quest].answer}>
+           <input type="radio" class="choose" name="choose_<{$problem[quest].ex_id}>" value="<{$problem[quest].answer[n].ch_id}>" <{if $problem[quest].answer[n].ch_id == $problem[quest].nowchoose}> checked = "checked"<{/if}>><{$problem[quest].answer[n].ch_content}><br/>
+        <{/section}>
+        <br/>
+        <{/section}>
+    </form>
+  <center style="color:#000000;">
+  <{if $page > $weizhi.start}><button id="shang">上一页</button><{/if}>
+  <{if $page < $weizhi.end}><button id="xia">下一页</button><{else}><button id="commit">确认提交</button><{/if}>
+  </center>
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

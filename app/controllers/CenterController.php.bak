@@ -1,0 +1,401 @@
+<?php
+
+class CenterController extends Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->view->web_url=$this->getRequest()->hostUrl;
+    }
+
+    public function mycenter(){
+        $info = $this->getData ( 'userinfo' );
+        $id = $info['fu_id'];
+        $model = new frontuser();
+        $student = $model->getUserByUserID($id);//在这方法做了修改
+        $this->view->student = $student;
+
+        $picture = new picture();
+        $headPicture = $picture->getPicById($student["pic_id"]);
+        if($headPicture==false){
+            $this->view->headPicture = "common/upload/images/headPicture.jpg";
+        }else{
+            $this->view->headPicture = $headPicture["pic_link"];
+        }
+        $this->getView()->display("center.html");
+    }
+
+
+
+    public function followActivity(){
+        $info = $this->getData ( 'userinfo' );
+        $id = $info['fu_id'];
+        $model = new frontuser();
+        $student = $model->getUserByUserID($id);//在这方法做了修改
+        $this->view->student = $student;
+
+        $activity = new activity();
+        //获取主办方
+        $organizers = $activity->getWeekActivityOrg();
+        $this->view->organizers = $organizers;
+        // var_dump($organizers);
+        //取得活动类型
+        $activityTypeList = $activity->getActivityTypeList();
+        $this->view->activityTypeList = $activityTypeList;
+        //var_dump($activityTypeList);
+        //取得关注的活动
+        $followActivity = $activity->getFollowActivity($id);
+        //合并多主办方算法
+        $arr1 = $followActivity;
+        for($i=0;$i<count($arr1);$i++){
+            for($j=0;$j<count($arr1);$j++){
+                if($i != $j){
+                    if($followActivity[$i]["au_id"]==$followActivity[$j]["au_id"]){
+                        if($i>$j){
+                           unset($followActivity[$i]);
+                        }else{
+                            $followActivity[$i]["organizers_name"] = $followActivity[$i]["organizers_name"].",".$followActivity[$j]["organizers_name"];
+                        }
+                    }
+                }
+            }
+        }
+
+
+        $this->view->followActivity = array_values($followActivity);
+
+        $this->getView()->display("followActivity1.html");
+    }
+
+    public function selectActivity(){
+        $info = $this->getData ( 'userinfo' );
+        $id = $info['fu_id'];
+        $typesValues = $_POST["typesValues"];
+        $organizersValues = $_POST["organizersValues"];
+        $statusValues = $_POST["statusValues"];
+
+
+        if(count($typesValues)!=0 && count($organizersValues)!=0){
+            $typesValues = strtr(json_encode($typesValues),"[]","()");
+            $organizersValues = strtr(json_encode($organizersValues),"[]","()");
+            $activity = new activity();
+            $activitySelectList = $activity->getSelectActivity($id,$typesValues,$organizersValues);
+        }else if(count($typesValues)!=0 && count($organizersValues)==0){
+            $typesValues = strtr(json_encode($typesValues),"[]","()");
+            $activity = new activity();
+            $activitySelectList = $activity->getSelectActivity2($id,$typesValues);
+        }else if(count($typesValues)==0 && count($organizersValues)!=0){
+            $organizersValues = strtr(json_encode($organizersValues),"[]","()");
+            $activity = new activity();
+            $activitySelectList = $activity->getSelectActivity3($id,$organizersValues);
+        }else{
+            $activity = new activity();
+            $activitySelectList = $activity->getFollowActivity($id);
+        }
+
+        if($activitySelectList==false){
+            $countNum = 0;
+        }else{
+            $countNum = count($activitySelectList);
+        }
+        //判断活动状态，判断有点多
+        $arr = array();
+        if(count($statusValues)==1){
+            if($statusValues[0]==1){
+                for($i=0;$i<$countNum;$i++){
+                    if(strtotime($activitySelectList[$i]["activity_start_time"])>time()){
+                        $arr[] = $activitySelectList[$i];
+                    }
+                }
+            }else if($statusValues[0]==2){
+                for($i=0;$i<$countNum;$i++){
+                    if(strtotime($activitySelectList[$i]["activity_start_time"])<time() && time()<strtotime($activitySelectList[$i]["activity_end_time"])){
+                        $arr[] = $activitySelectList[$i];
+                    }
+                }
+            }else if($statusValues[0]==3){
+                for($i=0;$i<$countNum;$i++){
+                    if(time()>strtotime($activitySelectList[$i]["activity_end_time"])){
+                        $arr[] = $activitySelectList[$i];
+                    }
+                }
+            }
+        }
+        if(count($statusValues)==2){
+            if($statusValues[0]==1 && $statusValues[1]==2){
+                for($i=0;$i<$countNum;$i++){
+                    if(time()<strtotime($activitySelectList[$i]["activity_end_time"])){
+                        $arr[] = $activitySelectList[$i];
+                    }
+                }
+            }else if($statusValues[0]==2 && $statusValues[1]==3){
+                for($i=0;$i<$countNum;$i++){
+                    if(time()>strtotime($activitySelectList[$i]["activity_start_time"])){
+                        $arr[] = $activitySelectList[$i];
+                    }
+                }
+            }else{
+                for($i=0;$i<$countNum;$i++){
+                    if(time()<strtotime($activitySelectList[$i]["activity_start_time"]) || time()>strtotime($activitySelectList[$i]["activity_end_time"])){
+                        $arr[] = $activitySelectList[$i];
+                    }
+                }
+            }
+        }
+        if(count($statusValues)==3 || count($statusValues)==0){
+            for($i=0;$i<$countNum;$i++){
+                $arr[] = $activitySelectList[$i];
+            }
+        }
+        $arr1 = $arr;
+        //合并多主办方算法
+        for($i=0;$i<count($arr1);$i++){
+            for($j=0;$j<count($arr1);$j++){
+                if($i != $j){
+                    if($arr[$i]["au_id"]==$arr[$j]["au_id"]){
+                        if($i>$j){
+                            unset($arr[$i]);
+                        }else{
+                            $arr[$i]["organizers_name"] = $arr[$i]["organizers_name"].",".$arr[$j]["organizers_name"];
+                        }
+                    }
+                }
+            }
+        }
+
+        $arr = array_values($arr);
+
+        if($arr==false){
+            $countNum = 0;
+        }else{
+            $countNum = count($arr);
+        }
+
+        for($i=0;$i<$countNum;$i++){
+            echo "
+            <div class='col-md-3'>
+                <div class='site-activity-table'>
+                    <div class='title' style='margin: 0px 0px'>".$arr[$i]['activity_title']."</div>
+                    <div class='description' style='width: 120px'>
+                        <p>时间：".$arr[$i]["activity_start_time"]."</p>
+                        <p>地点：".$arr[$i]["activity_address"]."</p>
+                        <p>类型：".$arr[$i]["at_name"]."</p>
+                        <p>主办方：".$arr[$i]["organizers_name"]."</p>
+                    </div>
+                    <div class='notification'>
+                        <button class='btn btn-xs btn-info'><i class='fa fa-bell'></i></button>
+                    </div>
+                </div>
+            </div>
+            ";
+        }
+    }
+
+    public function message(){
+        $info = $this->getData ( 'userinfo' );
+        $id = $info['fu_id'];
+        //得出消息总数
+        $message = new message();
+        $messageList = $message->getMessageById($id);
+        if($messageList==false){
+            $this->view->countMessage = 0;
+        }else{
+            $this->view->countMessage = count($messageList);
+        }
+        $this->view->messageList = $messageList;
+        $this->getView()->display("message.html");
+    }
+
+    public function delMessage(){
+        $info = $this->getData ( 'userinfo' );
+        $id = $info['fu_id'];
+        $comment_id = $_POST["comment_id"];
+        $message = new message();
+        $result = $message->delMessageById($comment_id);
+        if($result>0){
+            $messageList = $message->getMessageById($id);
+            if($messageList==false){
+                $countList = 0;
+            }else{
+                $countList = count($messageList);
+            }
+            for($i=0;$i<$countList;$i++){
+                echo"
+             <tr>
+                <td><input type='checkbox'></td>
+                <td><a href='".$this->getRequest()->hostUrl."/Assist/getWeekActivityContent/activity_class/1/activityId/".$messageList[$i]['activity_id']."'>来自".$messageList[$i]["fu_realname"]."的“".$messageList[$i]['comment_content']."”</a></td>
+                <td>".$messageList[$i]["feedback_time"]."</td>
+                <td><button class='btn btn-default' onclick='javascript:if(confirm('确实要删除吗?'))deleteFeedback(".$messageList[$i]["comment_id"].")'>清空</button></td>
+            </tr>
+            ";
+            }
+        }else{
+            echo 1;
+        }
+
+    }
+
+    public function syllabus(){
+        $info = $this->getData ( 'userinfo' );
+        $id = $info['fu_id'];
+        $syllabus = new syllabus();
+        $syllabusList = $syllabus->getSyllabusById($id);
+
+        if($syllabusList==false){
+            $syllabus->createSyllabus($id);
+        }
+
+
+        $model = new frontuser();
+        $student = $model->getUserByUserID($id);//在这方法做了修改
+        $this->view->student = $student;
+
+
+
+        $syllabusList = $syllabus->getSyllabusById($id);
+        $this->view->syllabusList=$syllabusList;
+        //var_dump($syllabusList);
+        $this->getView()->display("syllabus.html");
+    }
+    //头像上传
+    public function pictureUpload(){
+        $info = $this->getData ( 'userinfo' );
+        $id = $info['fu_id'];
+
+        $arrType=array('image/jpg','image/gif','image/png','image/bmp','image/jpeg');
+        $max_size='500000';      // 最大文件限制（单位：byte）
+        $upFile='common/upload/images/upload'; //图片目录路径
+        $file=$_FILES['upFile'];
+
+        if(!is_uploaded_file($file['tmp_name'])){ //判断上传文件是否存在
+            $this->view->smg = "文件不存在";
+            $c = new CenterController();
+            $c->mycenter();
+        }
+
+        if(!in_array($file['type'],$arrType)){  //判断图片文件的格式
+            $this->view->smg = "文件格式不正确";
+            $c = new CenterController();
+            $c->mycenter();
+            exit();
+        }
+        if(!file_exists($upFile)){  // 判断存放文件目录是否存在
+            mkdir($upFile,0777,true);
+        }
+        $picName = $upFile.'/'.$file["name"];
+
+
+        if(!move_uploaded_file($file['tmp_name'],$picName)){
+            $this->view->smg = "上传失败";
+            $c = new CenterController();
+            $c->mycenter();
+            exit();
+        }else{
+            $picture = new picture();
+            $picId =$picture->addPic(substr($file["type"],6),$picName);
+            $user = new frontuser();
+            $result = $user->updatePicId($picId,$id);
+
+            if($result){
+                $this->view->smg = "上传成功";
+                $c = new CenterController();
+                $c->mycenter();
+                exit();
+            }else{
+                $this->view->smg = "上传失败";
+                $c = new CenterController();
+                $c->mycenter();
+                exit();
+            }
+
+        }
+    }
+
+    public function editName(){
+        $name = $_POST["name"];
+        $id = $_POST["id"];
+
+        $front_user = new frontuser();
+        $result = $front_user->updateNickName($id,$name);
+        ;
+        if($result>0){
+            echo 1;
+        }else{
+            echo 0;
+        }
+    }
+
+    public function addSyllabus(){
+        $fu_id = $_POST['fu_id'];
+        $week = $_POST['week'];
+        $point = $_POST["point"];
+        $name = $_POST["name"];
+        $address = $_POST['address'];
+        $class = $name."(".$address.")";
+
+        $syllabus = new syllabus();
+        $result = $syllabus->ifExistSyllabus($fu_id,$point);
+
+        if($result==false){
+            switch($week){
+                case 1: $syllabus->addClassToMon($fu_id,$point,$class);break;
+                case 2: $syllabus->addClassToTue($fu_id,$point,$class);break;
+                case 3: $syllabus->addClassToWed($fu_id,$point,$class);break;
+                case 4: $syllabus->addClassToThu($fu_id,$point,$class);break;
+                case 5: $syllabus->addClassToFri($fu_id,$point,$class);break;
+                case 6: $syllabus->addClassToSat($fu_id,$point,$class);break;
+                case 7: $syllabus->addClassToSun($fu_id,$point,$class);break;
+            }
+        }else{
+            switch($week){
+                case 1: $syllabus->updateClassToMon($fu_id,$point,$class);break;
+                case 2: $syllabus->updateClassToTue($fu_id,$point,$class);break;
+                case 3: $syllabus->updateClassToWed($fu_id,$point,$class);break;
+                case 4: $syllabus->updateClassToThu($fu_id,$point,$class);break;
+                case 5: $syllabus->updateClassToFri($fu_id,$point,$class);break;
+                case 6: $syllabus->updateClassToSat($fu_id,$point,$class);break;
+                case 7: $syllabus->updateClassToSun($fu_id,$point,$class);break;
+            }
+        }
+
+        $C = new CenterController();
+        $C->syllabus();
+    }
+
+    public function editSyllabus(){
+        $sy_id = $_POST["sy_id"];
+        $sy_class = $_POST["sy_class"];
+        $sy_address = $_POST["sy_address"];
+        $week = $_POST["week"];
+        $class = $sy_class."(".$sy_address.")";
+        $syllabus = new syllabus();
+        switch($week){
+            case 1: $syllabus->editMonSyllabusById($sy_id,$class);break;
+            case 2: $syllabus->editTueSyllabusById($sy_id,$class);break;
+            case 3: $syllabus->editWedSyllabusById($sy_id,$class);break;
+            case 4: $syllabus->editThuSyllabusById($sy_id,$class);break;
+            case 5: $syllabus->editFriSyllabusById($sy_id,$class);break;
+            case 6: $syllabus->editSatSyllabusById($sy_id,$class);break;
+            case 7: $syllabus->editSunSyllabusById($sy_id,$class);break;
+        }
+        $C = new CenterController();
+        $C->syllabus();
+    }
+
+    public function deleteSyllabus(){
+        $sy_id = $_POST["sy_id"];
+        $week = $_POST["week"];
+        $syllabus = new syllabus();
+        switch($week){
+            case 1: $syllabus->delMonSyllabusById($sy_id);break;
+            case 2: $syllabus->delTueSyllabusById($sy_id);break;
+            case 3: $syllabus->delWedSyllabusById($sy_id);break;
+            case 4: $syllabus->delThuSyllabusById($sy_id);break;
+            case 5: $syllabus->delFriSyllabusById($sy_id);break;
+            case 6: $syllabus->delSatSyllabusById($sy_id);break;
+            case 7: $syllabus->delSunSyllabusById($sy_id);break;
+        }
+        $C = new CenterController();
+        $C->syllabus();
+    }
+}

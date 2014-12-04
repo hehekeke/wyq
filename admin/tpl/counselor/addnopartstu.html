@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor-1.2.1.min.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor_lang/zh-cn.js"></script>
+<title>学年末未参评学生评估-添加未参评学生</title>
+<style>
+.tianjia-container{ padding:5px 0px; margin:5px 10px;}
+.tianjia-title{ font-size:12px; line-height:22px; color:#000; text-align:right; width:100px; float:left;}
+.tianjia-input{ font-size:12px; color:#000; text-align:left; margin:0px 10px 0px 10px; min-width:300px; min-height:20px;  float:left;}
+.meau-container{ padding:5px 0px; margin:5px 10px;border-bottom: 1px dotted #DDD;width:400px;height:40px;}
+.tianjia-meau{ font-size:12px; color:#000; text-align:left; width:600px; height:40px;min-height:20px;  float:left;}
+.tianjia-meau-btn{cursor:pointer;font-size:11px; line-height:30px; background:#DBEAF9; margin:0px 10px 0px 10px; border:1px solid #CCC; text-align:center; width:88px;height:30px;float:left;}
+.tianjia-meau-btn:hover{background:#FCF1CA;}
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+} 
+</style>
+<script type="text/javascript">
+	function saveScore(){
+		var stu_no = $("#number-text").val();
+		var stu_name = $("#name-text").val();
+		var stu_major = $("#major-text").val();
+		var stu_college = $("#college-text").val();
+		var stu_grade = $("#grade-text").val();
+		var reason = $("#reason").val();
+		if (stu_no == ""){
+			alert("请填写学号！")
+		}else if(stu_name == "" || stu_major == "" || stu_college == "" || stu_grade == ""){
+			alert("参数缺失，请点击查询按钮查询！");
+		}else if(reason == ""){
+			alert("未参评原因不能为空！");
+		}else {
+			var j = $(".score-inputclass").length - 1;
+			var str = "";
+			var go = true;
+			$(".score-inputclass").each(function(i, item){
+				if($(item).val() == ""){
+					alert("有没有填写评分项，请填写！");
+					go = false;
+					return false;
+				}else{
+					if (i < j){
+						if($(item).val() <= 6.0){
+							str += $(item).val();
+							str += ",";
+						}else{
+							alert("分数不能高于6.0");
+							$(item).focus();
+							go = false;
+							return false;
+						}
+					}else{
+						if($(item).val() <= 6.0){
+							str += $(item).val();
+						}else{
+							alert("分数不能高于6.0");
+							$(item).focus();
+							go = false;
+							return false;
+						}
+					}
+				}
+			});
+			if (go == true){
+				$.ajax({
+					url:"<{$web_url}>/mannkgn.php/counselor/savescore",
+					type:"POST",
+					data:{no:stu_no, name:stu_name, major:stu_major, college:stu_college, grade:stu_grade, reason:reason, score:str, aid:<{$aid}>},
+					async:false,
+					dataType:"json",
+					success:function(data){
+						if (data.json.state == 1){
+							alert("添加成功");
+							location.href="<{$web_url}>/mannkgn.php/counselor/index/type/3";
+						}else{
+							alert("添加失败");
+						}
+					},
+					error:function(msg){
+						alert("网络出现问题！");
+					}
+				});
+			}
+		}
+	}
+	function searchUser(){
+		var userNum = $("#number-text").val();
+		//var url = "<{$web_url}>/mannkgn.php/user/search/number/"+userNum;
+		//alert(url);
+		if(userNum == ""){
+			alert("学号不能为空！");
+		}else{
+			$.ajax({
+				url:"<{$web_url}>/mannkgn.php/counselor/search/number/"+userNum,
+				type:'POST',
+				async:false,
+				dataType:"json",
+				success:function(data){
+					if(data.json.state == 1){
+						$("#name-text").val(data.json.data.fu_realname);
+						$("#college-text").val(data.json.data.fu_college);
+						$("#major-text").val(data.json.data.fu_major);
+						$("#grade-text").val(data.json.data.fu_grade);
+						alert("查询成功！");
+					}else{
+						$("#number-text").val("");
+						$("#name-text").val("");
+						$("#college-text").val("");
+						$("#major-text").val("");
+						$("#grade-text").val("");
+						alert("没有此学号的学生信息！");
+					}
+				},
+				error:function(msg){
+					alert("网络出现问题！");
+				}
+			});
+		}
+	}
+	
+	function cancel(){
+		location.href="<{$web_url}>/mannkgn.php/counselor/addnopartstu";
+	}
+</script>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background="<{$web_url}>/common/admin/images/title_bg1.jpg">当前位置:学年末未参评学生评估-添加未参评学生护</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+		</TR>
+	</TABLE>
+	<div style="width:1200px; height:auto;">
+		<div class="tianjia-container" >  
+			<div class="tianjia-title">学号:</div>
+			<div class="tianjia-input">
+				<input type="text" id="number-text" value="" style="width:200px; height:20px" />
+				<input type="button" id="search-number" name="search-number" value="查询" onclick="searchUser()" />
+				</div>
+			<div style="clear:both;"></div>
+ 		</div>
+ 		<div class="tianjia-container" >  
+			<div class="tianjia-title">姓名:</div>
+			<div class="tianjia-input">
+				<input type="text" id="name-text" value="" style="width:100px; height:20px" onfocus=this.blur() />
+				<input type="hidden" id="major-text" value="" style="width:100px; height:20px" onfocus=this.blur() />
+				<input type="hidden" id="grade-text" value="" style="width:100px; height:20px" onfocus=this.blur() />
+				<input type="hidden" id="college-text" value="" style="width:100px; height:20px" onfocus=this.blur() />
+			</div>
+			<div style="clear:both;"></div>
+ 		</div>
+ 		<div class="tianjia-container" >  
+			<div class="tianjia-title">未参评原因:</div>
+			<div class="tianjia-input">
+				<textarea id="reason" name="content" rows="10" cols="12" style="width:600px" ></textarea>
+			</div>
+			<div style="clear:both;"></div>
+ 		</div>
+ 		<div class="tianjia-container" id="info">  
+ 			<div class="tianjia-title">录入最终分值:</div>
+ 			<div class="tianjia-input">
+				<table id="mytable" cellspacing="0" >  
+  					<tr>  
+    					<th scope="col" width="130px" style="border-left:1px solid #adceff;" >一级指标</th>  
+    					<th scope="col" width="150px" >二级指标</th> 
+    					<th scope="col" width="200px" >三级指标</th>   
+    					<th scope="col" width="150px" >评分</th>
+  			 	 	</tr>  
+ 		 			<{section name=gl loop=$info.gong}>
+ 		 				<{if $smarty.section.gl.index == 0}>
+ 		 					<tr class = "gong"> 
+ 		 						<td style="border-left:1px solid #adceff;" rowspan="<{$gongnum}>">公</td> 
+    							<td class="gong-second"><{$info.gong[gl].second}></td>
+    							<td class="gong-third"><{$info.gong[gl].third}></td>
+    							<td rowspan="<{$gongnum}>">
+    								<input type="text" style="width:100px;height:30px;" class="score-inputclass" />
+    							</td>
+    					<{else}>
+    						<tr class = "gong"> 
+    							<td class="gong-second"><{$info.gong[gl].second}></td>
+    							<td class="gong-third"><{$info.gong[gl].third}></td>
+    						</tr>
+    					<{/if}>
+  					<{/section}>
+  					<{section name=nl loop=$info.neng}>
+  						<{if $smarty.section.nl.index == 0}>
+ 		 					<tr class = "neng">  
+    							<td style="border-left:1px solid #adceff;" rowspan="<{$nengnum}>">能</td>
+    							<td class="neng-second"><{$info.neng[nl].second}></td>
+    							<td class="neng-third"><{$info.neng[nl].third}></td>
+    							<td>
+    								<input type="text" style="width:100px;height:30px;" class="score-inputclass" />
+    							</td>
+  							</tr>
+  						<{else}>
+  							<tr class = "neng">  
+    							<td class="neng-second"><{$info.neng[nl].second}></td>
+    							<td class="neng-third"><{$info.neng[nl].third}></td>
+    							<td>
+    								<input type="text" style="width:100px;height:30px;" class="score-inputclass" />
+    							</td>
+  							</tr>
+  						<{/if}>
+  				<{/section}>
+				</table> 
+			</div>
+ 		</div>
+ 		<div class ="meau-container">
+       		<div class="tianjia-meau">
+       			<div style="margin-left:100px;margin-top:10px;height:20px; float:left;">
+       				<div class="tianjia-meau-btn" id="btn-ok" onclick="saveScore()">保存</div>
+       				<div class="tianjia-meau-btn" onclick="cancel()">取消</div>
+       			</div>
+       		</div>
+       	</div>
+	</div>
+</body>
+</html>

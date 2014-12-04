@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="iwind" content="Ste Brennan - Code Computerlove - http://www.codecomputerlove.com/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,target-densitydpi=device-dpi,user-scalable=0" >
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="<{$web_url}>/common/clientapi/css/style.css" type="text/css" rel="stylesheet">
+<title>招聘会信息</title>
+</head>
+<body>
+<div id="title" class="item centertitle"><{$jobfairmsg.jm_name}></div>
+<div align="center" style="font-size: 0.8em;height:1em;" >发布时间:<{$jobfairmsg.jm_date|date_format:"%Y-%m-%d"}>&nbsp;&nbsp;&nbsp;&nbsp;阅读次数：<{$jobfairmsg.jm_read}></div>
+<div id="content" class="item">
+<p><font color="#0000ff">召开时间：<{$jobfairmsg.jm_opentime}></font></p>
+<p><font color="#0000ff">召开地点：<{$jobfairmsg.jm_addr}></font></p>
+<div id="img" class="imgdiv">
+	<{if $jobfairmsg.pic_id != ""}>
+	<img src="<{$web_url}>/common/upload/images/<{$jobfairmsg.pic_link}>" alt="<{$jobfairmsg.pic_link}>" />
+	<{/if}>
+</div>
+<{$jobfairmsg.jm_content}></div>
+<div id = "fujian" style = "font-size: 0.8em;height:1em;">
+	<p><{if $jobfairmsg.file_id != ""}>
+        	相关附件：<a target="top" href="<{$web_url}>/common/upload/files/<{$jobfairmsg.file_link}>">
+        		<{if $jobfairmsg.file_name == ""}>
+        	      <{$jobfairmsg.file_link}>
+        		<{else}>
+        			<{$jobfairmsg.file_name}>
+        		<{/if}>
+        	</a>
+    <{/if}></p>
+</div>
+</body>
+</html>

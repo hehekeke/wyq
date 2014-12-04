@@ -1,0 +1,129 @@
+<script>
+
+    function openClock(){
+        $.post("<{$web_url}>/index.php/common/clock",function(data){
+            if(data!=0){
+                alert(data);
+            }
+            // $("#body").html(data);
+        });
+    }
+    if('<{$__userinfo__.fu_id}>'){
+        window.onload = function(){
+            setInterval(openClock, 3000);
+        }
+    }
+
+</script>
+<link type="text/css" href="<{$web_url}>/common/app/css/header.css" rel="stylesheet">
+<header class="navbar site-user-operation" id="top" role="banner">
+    <div class="container">
+        <div class="header-logo"></div>
+        <ul class="nav navbar-nav navbar-right">
+            <li  style="background:#9C2D7C;margin:10px;">
+                <{if isset($__userinfo__)}>
+                <a style="color:white;" href="<{$web_url}>/index.php/Account/Logout">退出</a>
+                <{else}>
+                <a style="color:white;" href="<{$web_url}>/index.php/Account/login">登录 </a>
+                <{/if}>
+            </li>
+            <li class="active"  style="background:#9C2D7C;margin:10px;">
+                <{if isset($__userinfo__)}>
+                <a style="color:white;" href="<{$web_url}>/index.php/Center/mycenter">个人中心</a>
+                <{else}>
+                <a style="color:white;" href="#">个人中心</a>
+                <{/if}>
+            </li>
+            <li  style="background:#9C2D7C;margin:10px;">
+                <{if isset($__userinfo__)}>
+                <a style="color:white;" href="<{$web_url}>/index.php/Center/message">查看消息<span style="color: red"><{if $__userinfo__.fu_id!=null}>(<{$countNotReadMessage}>/<{$countMessage}>)<{/if}></span></a>
+                <{else}>
+                <a style="color:white;" href="#">查看消息<span style="color: red"></span></a>
+                <{/if}>
+            </li>
+        </ul>
+        <{if isset($__userinfo__)}>
+        <p class="navbar-text navbar-right" style="margin-top:25px;color:white;">您好，<{$__userinfo__.fu_realname}></p>
+        <{/if}>
+    </div>
+</header>
+<div class="container-bg">
+    <div class="header-guide-container">
+        <div class="header-guide-leftbg header-guide-bg"></div>
+        <div class="header-guide-rightbg header-guide-bg"></div>
+        <div style="clear:both;"></div>
+        <div class="header-guide">
+            <div id="header-guide">
+                <!-- <div class="col-md-12">
+                  <div class="full-banner"></div>
+                </div>
+                -->
+            </div>
+            <script>
+                function remove_class(){
+                    $("#first_ele").removeClass();
+                }
+                function add_class(){
+                    $("#first_ele").addClass("nav-selected");
+                }
+            </script>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="guide-text" class="navbar navbar-default">
+                        <ul class="nav navbar-nav">
+                            <li onclick="add_class()" id="first_ele"  class="<{if isset($type) and $type eq 1}>nav-selected<{/if}>">
+                                <a href="<{$web_url}>/index.php/Index/index">首页</a>
+                            </li>
+                            <li onclick="remove_class()" class="dropdown <{if isset($type) and $type eq 2}>nav-selected<{/if}> <{if isset($selectMenu) and $selectMenu eq 0}>nav-selected<{/if}>" >
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="width:192px;">素质发展辅学平台</a>
+                                <{if isset($__userinfo__)}>
+                                <ul class="dropdown-menu">
+                                    <{if $__userinfo__.role_id == 7 || $__userinfo__.role_id == 8}>
+                                    <li onclick="shao(this)"><a href="<{$web_url}>/index.php/Assist/AssistActivity/activity_class/1">辅学活动(周活动)</a></li>
+                                    <li><a href="<{$web_url}>/index.php/Assist/AssistActivity/activity_class/0">辅学活动(年活动)</a></li>
+                                    <li><a onclick="alert('正在建设中..');" href="#">辅学课程</a></li>
+                                    <li><a href="http://career.nankai.edu.cn/">生涯发展咨询</a></li>
+                                    <li><a href="#">心理发展咨询</a></li>
+                                    <{/if}>
+                                </ul>
+                                <{/if}>
+                            </li>
+                            <li onclick="remove_class()" class="dropdown <{if isset($type) and $type eq 3}>nav-selected<{/if}> <{if isset($selectMenu) and $selectMenu eq 1}>nav-selected<{/if}>">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="width:180px;">综合素质评估</a>
+                                <{if isset($__userinfo__)}>
+                                <ul class="dropdown-menu">
+                                    <{if $__userinfo__.role_id == 7}>
+                                    <li><a href="<{$web_url}>/index.php/assessment/xsrxPropaganda">新生入学评估</a></li>
+                                    <li><a href="<{$web_url}>/index.php/assessment/xnmPropaganda">学年末评估</a></li>
+                                    <{else if $__userinfo__.role_id == 8}>
+                                    <li><a href="<{$web_url}>/index.php/assessment/collegeAssessmentList">各学院评估细则</a></li>
+                                    <li><a href="<{$web_url}>/index.php/assessment/collegePropagandaList">各学院宣讲方案</a></li>
+                                    <{else if $__userinfo__.role_id == 11}>
+                                    <li><a href="<{$web_url}>/index.php/assessment/Committee">评委会定性评价</a></li>
+                                    <{/if}>
+                                </ul>
+                                <{/if}>
+                            </li>
+                            <li onclick="remove_class()"  class="dropdown <{if isset($type) and $type eq 4}>nav-selected<{/if}> <{if isset($selectMenu) and $selectMenu eq 3}>nav-selected<{/if}>">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="width:140px;">成长档案</a>
+                                <{if isset($__userinfo__)}>
+                                <ul class="dropdown-menu">
+                                    <{if $__userinfo__.role_id == 7}>
+                                    <li><a href="<{$web_url}>/index.php/record/myrecord/id/<{$__userinfo__.fu_id}>">我的成长档案（学生）</a></li>
+                                    <li><a href="<{$web_url}>/index.php/record/myclass/id/<{$__userinfo__.fu_id}>">查看本专业成长档案（学生）</a></li>
+                                    <{else if $__userinfo__.role_id == 8}>
+                                    <!--<li><a href="<{$web_url}>/index.php/record/assistant/id/<{$__userinfo__.fu_id}>">查看班级成长档案（辅导员）</a></li>-->
+                                    <li><a href="<{$web_url}>/index.php/record/dean/id/<{$__userinfo__.fu_id}>">查看本院成长档案（教职工）</a></li>
+                                    <li><a href="<{$web_url}>/index.php/record/president/id/<{$__userinfo__.fu_id}>">查看所有成长档案（校领导）</a></li>
+                                    <{/if}>
+                                </ul>
+                                <{/if}>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container main">

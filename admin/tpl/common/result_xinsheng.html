@@ -1,0 +1,456 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+<script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+<script src="<{$web_url}>/common/app/js/holder.js"></script>
+<script src="<{$web_url}>/common/libs/highcharts/highcharts.js"></script>
+<script src="<{$web_url}>/common/libs/highcharts/highcharts-more.js"></script>
+<title>评估结果</title>
+<style>
+.baokuo{margin:20px 0px 20px 200px; width:1500px;height:auto}
+.neirong{color:black; font-size:20px; width:1400px; height:30px;line-height:30px;float:left;}
+.xiaoneirong{color:black; font-size:10px; width:800px;min-height:30px;line-height:30px;float:left;}
+.fenye{width:800px;height:60px;margin:5px 0px 5px 0px;float:left;}
+.info{width:800px;min-height:30px;margin:10px 0 0 0;float:left;}
+.info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;
+ font-weight:normal; 
+ font-size:11px;   
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #fff;  
+}  
+.info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+.info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+} 
+.act-page{ width:auto; margin:10px; text-align:left; height:30px;}
+/*.small-btn{ padding:2px 10px; margin-left:5px; margin-right:5px; font-size:12px; border: #666 double 1px; background-color:#D2E0E5; cursor:pointer;}*/
+.small-btn{
+	background:url(<{$web_url}>/common/admin/images/arrowmiddle.png) no-repeat;
+	width:22px;
+	height:20px;
+	text-align:center;
+	cursor:pointer;
+	margin-left:6px;
+	padding:2px 0 0 0;
+	font-family: "Verdana","Arial","Helvetica","sans-serif";
+    font-size: 12px;
+    line-height: 150%;
+	color:#fff;
+	font-weight:600;
+	border:none;
+}
+/*.small-btn:hover{background:#A56B8A;}*/
+.small-btn:hover{
+	background:url(<{$web_url}>/common/admin/images/arrowback.png) no-repeat;
+	height:20px;
+	width:22px;
+	margin-top:-2px;
+	padding-top:2px;
+	text-decoration:underline;
+}
+.small-btn-noclick{
+	background:url(<{$web_url}>/common/admin/images/arrowback.png) no-repeat;
+	width:22px;
+	height:20px;
+	text-align:center;
+	cursor:pointer;
+	margin-left:6px;
+	padding-top:2px;
+	border:none;
+	color:#FFF;
+}
+.small-btn-prev{
+	width:22px;
+	height:20px;
+	text-align:center;
+	cursor:pointer;
+	margin-left:6px;
+	padding-top:2px;
+	border:none;
+	color:#FFF;
+	background:url(<{$web_url}>/common/admin/images/arrowleft.png) no-repeat;
+}
+.small-btn-next{
+	width:22px;
+	height:20px;
+	text-align:center;
+	cursor:pointer;
+	margin-left:6px;
+	padding-top:2px;
+	border:none;
+	color:#FFF;
+	background:url(<{$web_url}>/common/admin/images/arrowright.png) no-repeat;
+}
+</style>
+<script type="text/javascript">
+var type = 2;
+var flag = 0;
+var uid = "<{$stuinfo.fu_id}>";
+var cur_page = 1;
+$(function () {
+	getgoodorbad(1);
+	$(".btn-info").click(function(){
+		var datanum = $(this).attr("data");
+		//alert(datanum);
+		if(datanum == 1){
+			type = 2;
+			flag = 0;
+			$("#huping-goodorbad").html("");
+			$("#huping-page").html("");
+		}else if(datanum == 2){
+			type = 2;
+			flag = 1;
+			$("#huping-goodorbad").html("");
+			$("#huping-page").html("");
+		}else if(datanum == 3){
+			type = 1;
+			flag = 0;
+			$("#taping-goodorbad").html("");
+			$("#taping-page").html("");
+		}else{
+			type = 1;
+			flag = 1;
+			$("#taping-goodorbad").html("");
+			$("#taping-page").html("");
+		}
+		getgoodorbad(1);
+	});
+	//var mutual=document.getElementById('mutual');
+	// var other=document.getElementById('other');
+	// var radar=document.getElementById('radar');
+	 //mutual.style.display='none';
+	// other.style.display='none';
+	// radar.style.display='block';
+	function leida(info){
+	<{if $show.taping.myscore_exist == 1 && $show.taping.average_exist == 1 }>
+	$('#container1').highcharts({
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+
+	    title: {
+	        text: '他评结果',
+	        x: -40
+	    },
+
+	    pane: {
+	    	size: '80%'
+	    },
+
+	    xAxis: {
+	        categories: info.taping.zhibiao,
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:1,
+			max:6,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+
+		credits: {
+			enabled:false
+		},
+
+	    series: [{
+	        name: '我的分数',
+	        data: info.taping.myscore,
+	        pointPlacement: 'on',
+			color: '#ff0000'
+	    }, {
+	        name: '班级平均分',
+	        data: info.taping.average,
+	        pointPlacement: 'on'
+	    }]
+	});
+	<{/if}>
+
+	<{if $show.hupingziping.huping_exist == 1 ||  $show.hupingziping.ziping_exist == 1 }>
+	$('#container2').highcharts({
+
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+
+	    title: {
+	        text: '互评VS自评',
+	        x: -40
+	    },
+
+	    pane: {
+	    	size: '80%'
+	    },
+
+	    xAxis: {
+	        categories: info.hupingziping.zhibiao,
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:1,
+			max:6,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+
+		credits: {
+			enabled:false
+		},
+
+	    series: [{
+	    	<{if $show.hupingziping.ziping_exist == 1}>
+	        name: '自评',
+	        data: info.hupingziping.ziping_score,
+	        //data:[4,4,4,4,4],
+	        pointPlacement: 'on',
+			color: '#ff0000'
+			<{/if}>
+	       }, {
+	    	<{if $show.hupingziping.huping_exist == 1}>
+	        name: '互评',
+	        data: info.hupingziping.huping_score,
+	        pointPlacement: 'on'
+	        <{/if}>
+	    }]
+
+	});
+	<{/if}>
+	}
+	leida(<{$info}>);
+});
+	function getgoodorbad(page){
+		$.ajax({
+			url:"<{$web_url}>/mannkgn.php/common/getgoodorbad",
+			type:"POST",
+			data:{type:type, leixing:flag, page:page, userid:uid},
+			async:false,
+			dataType:"json",
+			success:function(data){
+				var str ="<table id=\"mytable\" cellspacing=\"0\">";
+				str +="<tr><th scope=\"col\" width=\"150px\" style=\"border-left:1px solid #adceff;\">序号</th>";
+			    str +="<th scope=\"col\" width=\"500px\" >内容</th>";  
+			    str +="</tr>";
+				if (data.json.state == 1){
+					$.each(data.json.data.list, function(i,item){
+						var j = i + 1;
+						str +="<tr>";
+						str +="<td style=\"border-left:1px solid #adceff;\">"+item.goodorbad_id+"</td>";
+						str +="<td>"+item.goodorbad_content+"</td>";
+						str +="</tr>";
+					});
+					str +="</table>";
+					var pagestr= getPage(data.json.data.page,data.json.data.totalPage,data.json.data.total);
+					if (type == 1){
+						$("#huping-goodorbad").html(str);
+						$("#huping-page").html(pagestr);
+					}else{
+						$("#taping-goodorbad").html(str);
+						$("#taping-page").html(pagestr);
+					}
+				}else{
+					str +="<th class=\"spec\" colspan=\"11\">暂无记录</th>"
+					str +="</table>";
+					if (type == 1){
+						$("#huping-goodorbad").html(str);
+						$("#huping-page").html("");
+					}else{
+						$("#taping-goodorbad").html(str);
+						$("#taping-page").html("");
+					}
+				}
+			},
+			error:function(msg){
+				alert("网络出现问题");
+			}
+		});
+	}
+	function getPage(nowpage,totalpage){
+		//alert(nowpage+"/"+totalpage);
+		if(totalpage < 1){
+			return "";
+		}
+		var page = "<div class=\"act-page\">";
+		if(nowpage==1){
+			page += "<input class=\"small-btn-noclick\"  type=\"button\" value=\"1\" />";
+		}else{
+			page += "<input class=\"small-btn-prev\"  type=\"button\"  onclick=\"prepage("+nowpage+","+totalpage+")\" />";
+			page += "<input class=\"small-btn\"  type=\"button\" value=\"1\" onclick=\"gopage(1,"+totalpage+")\" />";
+			
+			if(nowpage-1 > 5){
+				var i;
+				
+				for(i=2;i<=3;i++){
+					//alert("i1:"+i);
+					page += "<input class=\"small-btn\"  type=\"button\" value=\""+i+"\" onclick=\"gopage("+i+","+totalpage+")\" />";	
+					
+				}	
+				page += "...";
+				for(i= nowpage - 2 ; i < nowpage;i++){
+					//alert("i2:"+i);
+					page += "<input class=\"small-btn\"  type=\"button\" value=\""+i+"\" onclick=\"gopage("+i+","+totalpage+")\" />";	
+				}
+			}else{
+				var i;
+				for(i=2;i<nowpage;i++){
+					//alert("i3:"+i);
+					page += "<input class=\"small-btn\"  type=\"button\" value=\""+i+"\" onclick=\"gopage("+i+","+totalpage+")\" />";
+				}	
+			}
+			page += "<input class=\"small-btn-noclick\"  type=\"button\" value=\""+nowpage+"\" />";
+			
+		}
+		if(nowpage != totalpage){
+			//alert("total-now:"+(totalpage-nowpage));
+			if( (totalpage-nowpage) > 5){
+				var j;
+				for(j= parseInt(nowpage)+1;j<= parseInt(nowpage)+2;j++){
+					//alert("j1:"+j);
+					page += "<input class=\"small-btn\"  type=\"button\" value=\""+j+"\" onclick=\"gopage("+j+","+totalpage+")\" />";	
+					
+				}	
+				page += "...";
+				for(j=totalpage-2;j<totalpage;j++){
+					//alert("j2:"+j);
+					page += "<input class=\"small-btn\"  type=\"button\" value=\""+j+"\" onclick=\"gopage("+j+","+totalpage+")\" />";	
+				}
+				
+			}else{
+				//alert(nowpage);
+				var k = parseInt(nowpage)+1;
+				for(k ; k < totalpage; k++){
+					//alert("k:"+k);
+					page += "<input class=\"small-btn\"  type=\"button\" value=\""+k+"\" onclick=\"gopage("+k+","+totalpage+")\" />";	
+				}
+			}
+			page += "<input class=\"small-btn\"  type=\"button\" value=\""+totalpage+"\" onclick=\"gopage("+totalpage+","+totalpage+")\" />";
+			page += "<input class=\"small-btn-next\"  type=\"button\" onclick=\"nextpage("+nowpage+","+totalpage+")\" />";
+		}
+		
+		
+		page += "</div>";
+		return page;
+	}
+	//上一页
+	function prepage(nowpage,totalpage){
+		if( nowpage <=1 ){return false;}
+		page = nowpage - 1;
+		gopage(page,totalpage);
+
+	}
+
+	//下一页
+	function nextpage(nowpage,totalpage){
+		if( nowpage == totalpage ){return false;}
+		page = nowpage + 1;
+		gopage(page,totalpage);
+
+	}
+	function gopage(destpage,totalpage){
+		if( destpage > totalpage ){return false;}
+		if( destpage <1 ){return false;}
+		cur_page = destpage;
+		getgoodorbad(destpage);
+	}
+</script>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background="<{$web_url}>/common/admin/images/title_bg1.jpg">当前位置:评估结果</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+		</TR>
+	</TABLE> 
+	<div style="width:100%; height:40px; position:relative;">
+		<div style="margin:0 auto; color:black; font-size:30px; width:800px; height:30px;line-height:30px; position:relative;">
+			<{$stuinfo.fu_realname}>新生入学评估结果
+		</div>
+	</div>
+	<div class = "baokuo">
+		<div class="neirong">自评情况</div>
+		<div class="info">
+			<table class ="mytable" cellspacing="0" >
+				<{section name = zl loop = $ziping}>  
+					<{if $smarty.section.zl.index == 0}>
+						<tr>  
+    						<th scope="col" width="500px" style="border-left:1px solid #adceff;" ><{$ziping[zl].zhibiao}></th>  
+    						<th scope="col" width="150px" ><{$ziping[zl].score}></th> 
+    						<th scope="col" width="300px" ><{$ziping[zl].yuju}></th>   
+  						</tr>  
+					<{else}>
+						<tr>  
+    						<td style="border-left:1px solid #adceff;" ><{$ziping[zl].zhibiao}></td>
+    						<td><{$ziping[zl].score}></td>
+    						<td><{$ziping[zl].yuju}></td>
+  						</tr>
+					<{/if}>
+				<{sectionelse}>
+					<div class="xiaoneirong">暂时没有自评情况</div>
+				<{/section}>
+			</table> 
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	<div class = "baokuo">
+		<div class="neirong">书面总结</div>
+		<div class="xiaoneirong" style="font-size: 14px"><{$shumian}></div>
+		<div style="clear:both;"></div>
+	</div>
+	<div class = "baokuo">
+		<div class="neirong">成长计划</div>
+		<div class="xiaoneirong" style="font-size: 14px"><{$chengzhang}></div>
+		<div style="clear:both;"></div>
+	</div>
+</body>
+</html>

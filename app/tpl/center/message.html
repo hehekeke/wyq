@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+  </head>
+  <script>
+      function deleteFeedback(mes_id){
+          $.post("<{$web_url}>/index.php/center/delMessage",{"mes_id":mes_id},function(data){
+                if(data != false){
+                      location.reload();
+                }else{
+                    alert("删除失败！");
+                }
+          });
+      }
+      function checkAll(){
+          var messages = document.getElementsByName("messageInfo");
+          if($("#checkAll").is(':checked')){
+              for(var i=0;i<messages.length;i++){
+                messages[i].checked="checked";
+              }
+          }else{
+              for(var i=0;i<messages.length;i++){
+                  messages[i].checked="";
+              }
+          }
+      }
+
+      function delAll(){
+          var message = $("#messageList input");
+          var messageValues = new Array();
+          var j = 0;
+          for(var i= 0;i<message.length;i++){
+              if(message[i].checked){
+                  messageValues[j++] = message[i].value;
+
+              }
+          }
+          $.post("<{$web_url}>/index.php/center/delAll",{"messageValues":messageValues},function(data){
+
+                if(data==1){
+                    alert("批量删除成功！!");
+                    location.reload();
+                }else{
+                    alert("删除失败！！");
+                }
+
+          });
+      }
+      function readAll(){
+          var message = $("#messageList input");
+          var messageValues = new Array();
+          var j = 0;
+          for(var i= 0;i<message.length;i++){
+              if(message[i].checked){
+                  messageValues[j++] = message[i].value;
+              }
+          }
+          $.post("<{$web_url}>/index.php/center/readAll",{"messageValues":messageValues},function(data){
+              if(data==1){
+                  alert("标志为已读成功");
+                  location.reload();
+              }else{
+                  alert("标志失败");
+              }
+
+          });
+      }
+
+      function skip(){
+          var totalPage = parseInt('<{$messageListPage.totalPage}>');
+          var num = $("#num").val();
+          var pattern = /^([0-9]+)$/;
+          if(num==""){
+              alert("请输入页数！");
+          }else if(!pattern.test(num)){
+              alert("请输入数字！");
+          }else if(num > totalPage){
+              alert("超过最大页码");
+          }else{
+              location.href="<{$web_url}>/index.php/center/message/page/"+num;
+          }
+      }
+  </script>
+<body>
+<{include file='header.html'}>
+<div class="row">
+        
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：首页>我的消息</h3></div>
+  </div>
+  <div class="col-md-1">
+  </div>
+  <div class="col-md-11">
+	<table class="table table-bordered">
+        <{if $messageListPage.totalPage==0}>
+        <{else}>
+  	  <thead style="">
+  	  	<td><input id="checkAll" type="checkbox" name="checkAll" onclick="checkAll()"></td>
+  	  	<td>內容</td>
+  	  	<td>时间</td>
+  	  	<td style="width: 190px">
+            <button class="btn btn-default" onclick="javascript:if(confirm('确实要删除吗?'))delAll()">批量删除</button>
+            <button class="btn btn-default" onclick="javascript:if(confirm('确实要标志为已读吗?'))readAll()">标志已读</button>
+        </td>
+  	  </thead>
+        <{/if}>
+  	  <tbody id="messageList">
+
+      <{section name=me loop=$messageListPage.list}>
+  	  <tr>
+  	    <td><input type="checkbox" name="messageInfo" value="<{$messageListPage.list[me].mes_id}>"></td>
+  	  	<td>
+            <{if $messageListPage.list[me].mes_type==0}>
+            <a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/<{$messageListPage.list[me].activity_class}>/activityId/<{$messageListPage.list[me].activity_id}>/if_read/1/mes_id/<{$messageListPage.list[me].mes_id}>">
+                <{$messageListPage.list[me].mes_content}>
+                <{if (strtotime($messageListPage.list[me].activity_start_time)-time())<0}>
+                <{$num = 0}>
+                <{else}>
+                <{$num = ceil((strtotime($messageListPage.list[me].activity_start_time)-time())/(60*60*24))}>
+               <{/if}>
+                <{$num}>天
+            </a>
+            <{else}>
+            <a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/<{$messageListPage.list[me].activity_class}>/activityId/<{$messageListPage.list[me].activity_id}>/if_read/1/mes_id/<{$messageListPage.list[me].mes_id}>">
+                <{$messageListPage.list[me].mes_content}>
+            </a>
+            <{/if}>
+        </td>
+  	  	<td style="width: 170px"><{$messageListPage.list[me].mes_create_time}></td>
+  	  	<td><button class="btn btn-default" onclick="javascript:if(confirm('确实要删除吗?'))deleteFeedback('<{$messageListPage.list[me].mes_id}>')">删除　　</button><{if $messageListPage.list[me].if_read ==1}>已读<{/if}></td>
+  	  </tr>
+      <{sectionelse}>
+      <!--<tr><td><span>暂无消息</span></td></tr>-->
+      <{/section}>
+  	  </tbody>
+	</table>
+      <div id="page" style="text-align: center">
+          <{if $messageListPage.totalPage>0}>
+          <{if $messageListPage.totalPage>1}>
+          <a href="<{$web_url}>/index.php/center/message/page/1">首页</a>
+          <{/if}>
+          <{if $messageListPage.page>1}>
+          <{$prePage = $messageListPage.page-1}>
+          <a href="<{$web_url}>/index.php/center/message/page/<{$prePage}>">上一页</a>
+          <{/if}>
+          <{if $messageListPage.page < $messageListPage.totalPage}>
+          <{$nextPage =$messageListPage.page+1 }>
+          <a href="<{$web_url}>/index.php/center/message/page/<{$nextPage}>">下一页</a>
+          <{/if}>
+          <{if $messageListPage.totalPage>1}>
+          <a href="<{$web_url}>/index.php/center/message/page/<{$messageListPage['totalPage']}>">尾页</a>
+          跳转到<input id="num" type="text" style="line-height:10px;color:#000000;width: 50px;height: 20px;margin-left: 5px"><input style="height:20px;line-height:10px;color: #000000" type="button" value="GO" onclick="skip()">
+          <{/if}>
+
+          <span style="margin-left: 20px">当前第<{$messageListPage.page}>页/共<{$messageListPage.totalPage}>页</span>
+          <{else}>
+          <h2 style="border: 1px solid">暂无消息</h2>
+          <{/if}>
+      </div>
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<title>新生入学年级管理</title>
+<script type="text/javascript">
+
+</script>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background=images/title_bg1.jpg>当前位置:新生入学年级设置</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background=images/shadow_bg.jpg></TD>
+		</TR>
+	</TABLE>
+	<form action="<{$web_url}>/mannkgn.php/grade/updateGrade1" method="post">
+	<table border="1" cellspacing="1" style="margin-left:10%;background-color:#fff;width:80%;border-collapse:collapse;">
+	  <tr>
+	    <td>学院</td>
+	    <td>专业</td>
+	    <td>入学年份</td>
+	  </tr>
+	  <{section name=n loop=$major}>
+	  <tr>
+	    <td><{$major[n].college_name}></td>
+	    <td><{$major[n].major_name}></td>
+	    <td><select  name="year<{$major[n].major_id}>">
+	    <{section name=m loop=$year}>
+	      <{if ($year[m]==$major[n].grade)}>
+	      <option value ="<{$year[m]}>" selected><{$year[m]}></option>
+	      <{else}>
+	      <option value ="<{$year[m]}>"><{$year[m]}></option>
+	      <{/if}>
+	    <{/section}>
+	    </select></td>
+	  </tr> 
+	  <{/section}>
+	  <tr><td colspan="3"><center><input type="submit" value="保存"/></center></td></tr>
+	</table>
+	</form>
+</body>
+</html>

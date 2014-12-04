@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script src="<{$web_url}>/common/libs/highcharts/highcharts.js"></script>
+	<script src="<{$web_url}>/common/libs/highcharts/highcharts-more.js"></script>
+<script type="text/javascript">
+alert(3131);
+function tab1(m){
+	// alert(m);
+	if(m == 1){
+		window.location.href = "<{$web_url}>/index.php/assessment/AssessmentResult/mod/huping";//"<{$web_url}>/index.php/assessment/AssessmentResult/mod/huping";
+	}else if(m == 2){
+		window.location.href = "<{$web_url}>/index.php/assessment/AssessmentResult/mod/taping";
+	}else{
+		window.location.href = "<{$web_url}>/index.php/assessment/AssessmentResult/mod/leida";
+	}   
+
+}
+</script>
+<script type="text/javascript">
+
+$(function () {
+	var mutual=document.getElementById('mutual');
+	  var other=document.getElementById('other');
+	  var radar=document.getElementById('radar');
+	  mutual.style.display='none';
+	  other.style.display='none';
+	  radar.style.display='block';
+	  
+	function leida(json1,json2){
+	$('#container1').highcharts({
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+	    
+	    title: {
+	        text: '他评结果',
+	        x: -40
+	    },
+	    
+	    pane: {
+	    	size: '80%'
+	    },
+	    
+	    xAxis: {
+	        categories: json1.zhibiao,
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+	        
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:1,
+			max:6,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+	    
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+	    
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+	    
+		credits: {
+			enabled:false
+		},
+		
+	    series: [{
+	        name: '我的分数',
+	        data: json1.wode,
+	        pointPlacement: 'on',
+			color: '#ff0000'
+	    }, {
+	        name: '班级平均分',
+	        data: json1.pingjun,
+	        pointPlacement: 'on'
+	    }]
+	
+	});
+	
+	$('#container2').highcharts({
+        
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+	    
+	    title: {
+	        text: '互评VS自评',
+	        x: -40
+	    },
+	    
+	    pane: {
+	    	size: '80%'
+	    },
+	    
+	    xAxis: {
+	        categories: json2.zhibiao,
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+	        
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:1,
+			max:6,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+	    
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+	    
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+	    
+		credits: {
+			enabled:false
+		},
+		
+	    series: [{
+	        name: '自评',
+	        data: json2.ziping,
+	        pointPlacement: 'on',
+			color: '#ff0000'
+	    }, {
+	        name: '互评',
+	        data: json2.huping,
+	        pointPlacement: 'on'
+	    }]
+	});
+	}
+	
+	json2 = <{$huping}>;
+	json1 = <{$taping}>;
+	alert(json2);
+	alert(json1);
+	//alert(json2);
+	//leida(json1,json2);
+	//leida(json1,json2);
+	//alert(JSON.stringify(json1));
+	//alert(JSON.stringify(json2));
+	//alert(json1)
+});
+</script>
+</head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估>学年末评估</h3></div>
+  </div>
+<{assign var=lefttype value=5}>
+<{include file='assessment/xnm-left-function.html'}>
+  <div class="col-md-10">
+    <center><h3>评估结果</h3></center>
+	<div class="btn-group">
+	  <button type="button" class="btn btn-info" onclick="tab1(1)">互评结果</button>
+	  <button type="button" class="btn btn-info" onclick="tab1(2)">他评结果</button>
+	  <button type="button" class="btn btn-info" onclick="tab1(3)">雷达图</button>
+	</div>
+	<div id="mutual" style="margin-top:20px;">
+
+	</div>
+	<div id="other" style="margin-top:20px;display:none;">
+		
+	</div>
+	<div id="radar" style="margin-top:20px;display:none;">
+		<div id="container1" style="min-width: 400px; max-width: 600px; height: 400px;float:left;"></div>
+		<div id="container2" style="min-width: 400px; max-width: 600px; height: 400px;float:right;"></div>
+	</div>
+	
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+    <script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("#start").focus(function(){
+                WdatePicker({dateFmt:'yyyy-MM-dd'});
+            });
+
+            $("#end").focus(function(){
+                WdatePicker({dateFmt:'yyyy-MM-dd'});
+            });
+        });
+        function xnhd_onclick(){
+            $("#zn").hide();
+            $("#nian").show();
+        }
+        function zhd_onclick(){
+            $("#nian").hide();
+            $("#zn").show();
+        }
+    </script>
+</head>
+<body>
+<div style="width: 100%; "></div></br></br>
+<div style="width: 80%;margin:0 auto;border-style:solid;border-width: 1px">
+    <form action="<{$web_url}>/mannkgn.php/activityManage/activity_num_count" name="form1" method="post">
+    <div>统计条件</div></br>
+    <div>统计对象<input type="radio" id="zhd" value="0" onclick="zhd_onclick()" checked name="activity"/>周活动<input type="radio" id="xnhd" value="1" name="activity" onclick="xnhd_onclick()"/>学年活动</div>
+	</br>
+	<div id="" style="float: left">时间段<input type="text" value="日期控件" name="start_time" id="start" class="Wdate"/>至<input type="text" value="日期控件" name="end_time" id="end" class="Wdate"/></div>
+    <div id="zn" style="">
+        统计单位
+        <select name="time_zn" id="" >
+            <option value="7" selected>周</option>
+            <option value="365">年</option>
+
+        </select>
+    </div>
+	</br>
+    <div id="nian" style="display: none">
+        统计单位
+            <select name="" id="" >
+                <option selected>请选择</option>
+                <option value="365">年</option>
+            </select>
+    </div></br>
+    <div>分类标准
+        <select name="st1"  >
+            <OPTION  selected value="1">全部</OPTION>
+            <OPTION  value="2">按类型</OPTION>
+            <OPTION  value="3">按学院</OPTION>
+            <OPTION  value="4">按主办方</OPTION>
+            <OPTION  value="5">按辅学目标</OPTION>
+        </select>
+    </div></br>
+    <input type="submit" name="submit" value="统计"/>
+    </form>
+</div>
+
+<div style="width: 620px;margin: 0 auto;margin-top: 30px">
+    <div style="width: 160px;float: left;border-width: 1px;border-style: solid">时间</div>
+
+    <{foreach $activity_type as $value3}>
+    <div style="width: 80px;float: left;border-width: 1px;border-style: solid"> <{$value3['at_name']}></div>
+
+    <{/foreach}>
+
+    <div style="width: 80px;float: left;border-width: 1px;border-style: solid">发布量</div>
+</div>
+<div style="width:620px;margin: 0 auto;margin-top: 2px">
+    <{foreach $select_class as $value1}>
+    <{$count=0}>
+    <div style="width: 160px;float: left;border-width: 1px;border-style: solid"><{$value1[0]}>/<{$value1[1]}></div>
+    <{foreach $value1[2] as $value2}>
+      <{$count=$value2['num']+$count}>
+    <div style="width: 80px;float: left;border-width: 1px;border-style: solid"><{$value2['num']}></div>
+
+    <{/foreach}>
+    <div style="width: 80px;float: left;border-width: 1px;border-style: solid"><{$count}></div>
+    <{/foreach}>
+
+</div>
+
+
+
+</body>
+</html>

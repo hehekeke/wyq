@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+  </head>
+  <script type="text/javascript">
+     $(function() {
+	    $("#keyword_search").click(function(){
+		    var search = $("#search").val();
+			//alert(search);
+			var key=encodeURI(search);
+			//alert(key);exit;
+		    window.location.href= "<{$web_url}>/index.php/Assist/AssistActivity/activity_class/0/keywords/"+key;
+		});
+	});
+
+    function select(){
+        var types = $("#types input");
+        var organizers = $("#organizers input");
+        var typesValue = new Array();
+        var organizersValue  = new Array();
+        var recommend = $("#recommend input");
+        var time = $("#time").val();
+        if(recommend[0].checked){
+            var recommendValue = recommend[0].value;
+        }
+        var j=0;
+        for(var i=0; i<types.length; i++){
+            if(types[i].checked){
+                typesValue[j++] = types[i].value;
+            }
+        }
+        var j=0;
+        for(var i=0; i<organizers.length; i++){
+            if(organizers[i].checked){
+                organizersValue[j++] = organizers[i].value;
+            }
+        }
+        $.post("<{$web_url}>/index.php/Assist/AssistActivityQurey",{"time":time,"recommendValue":recommendValue,"typesValue":typesValue,"organizersValue":organizersValue,"activity_class":0},function(data){
+            $("#listshows").html(data);
+        });
+    }
+     //导出Excel
+      function exportExcel(){
+          location.href = "<{$web_url}>/index.php/exportAssistExcel/getAct/activity_class/0";
+      }
+     //判断时间格式是否正确
+     $(function(){
+         $("#time").focus(function(){
+             WdatePicker({dateFmt:'yyyy-MM-dd'});
+         });
+     });
+    //闹钟
+     function setClock2(obj){
+         var activity_title = $(obj).data('activity_title');
+         var activity_id = $(obj).data("activity_id");
+         var start_time = $(obj).data("activity_start_time");
+         $("#clock_title").val(activity_title);
+         $("#activity_id").val(activity_id);
+         $("#start_time").val(start_time);
+         $("#clockBox").css("display","block");
+     }
+     function setClock(start_time,activity_title,activity_id){
+         $("#clock_title").val(activity_title);
+         $("#activity_id").val(activity_id);
+         $("#start_time").val(start_time);
+         $("#clockBox").css("display","block");
+     }
+     function cancelBox(){
+         $("#clockBox").css("display","none");
+     }
+     function saveClock(){
+         var activity_id = $("#activity_id").val();
+         var clock_time = $("#clock_time").val();
+
+         if(clock_time!=false){
+             $.post("<{$web_url}>/index.php/Center/setClock",{"activity_id":activity_id,"clock_time":clock_time},function(data){
+                 if(data==1){
+                     alert("设置成功！");
+                     location.reload();
+
+                 }
+             });
+         }else{
+             alert("提醒时间不能为空！！");
+         }
+     }
+     function removeClock(activity_id){
+
+         $.post("<{$web_url}>/index.php/common/removeClock2",{"activity_id":activity_id,"fu_id":'<{$__userinfo__.fu_id}>'},function(data){
+             if(data==1){
+                 location.reload();
+             }else{
+                 alert("取消失败");
+             }
+
+         });
+     }
+
+     function skip(){
+         var totalPage = parseInt('<{$all_activity.totalPage}>');
+         var num = $("#num").val();
+         var pattern = /^([0-9]+)$/;
+         if(num==""){
+             alert("请输入页数！");
+         }else if(!pattern.test(num)){
+             alert("请输入数字！");
+         }else if(num > totalPage){
+             alert("超过最大页码");
+         }else{
+             location.href="<{$web_url}>/index.php/assist/AssistActivity/activity_class/0/page/"+num;
+         }
+     }
+     function selectOg(){
+         var inputs = $("#myModal input");
+         var selectStr = new Array();
+         var selectId = new Array();
+         var j = 0;
+         for (var i = 0; i < inputs.length; i++) {
+             if (inputs[i].checked) {
+                 selectStr[j] = $(inputs[i]).next("span").html();
+                 selectId[j++] = $(inputs[i]).val();
+             }
+
+         }
+
+         $("#selectOgDiv").html(selectStr.join(","));
+     }
+  </script>
+<body style="color: #ffffff">
+<{include file='header.html'}>
+<div class="row">
+
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：辅学活动>年活动</h3></div>
+  </div>
+  <div class="col-md-8">
+    <form class="form-horizontal">
+      <fieldset>
+        <div ><p class="p_border"><{$weekActivity.sa_content}></p></div>
+
+        <div><table class="table" style="border:1px solid #ddd;background:#D15606;"><tr>
+          	<td>按关键字搜索：</td><td><input class="form-control" id="search" placeholder="请输入关键字"></td>
+          	<td><button type="button" id="keyword_search" class="btn btn-default" style="background:#FE6500;color:#fff;">搜索</button></td>
+        </tr></table></div>
+
+        <div class="panel panel-default" style="background:#2E3641;">
+          <div class="panel-heading">活动筛选</div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">活动类型：</label>
+             <div class="col-sm-10" id="types">
+			 <{foreach $weekActivityType as $value}>
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="inlineCheckbox1" value="<{$value['at_id']}>"><{$value['at_name']}>
+                </label>
+			<{/foreach}>
+              </div>
+            </div>
+            <div class="form-group" id="organizers">
+              <label class="col-sm-2 control-label">主办方：</label>
+                <!-- Modal -->
+                <div style="color: #000000" class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span
+                                        aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title" id="myModalLabel">主办方</h4>
+                            </div>
+                            <div class="modal-body" id="selectOrganizer">
+                                <table>
+                                    <{section name=i loop=$weekActivityOrg}>
+
+                                    <{if $smarty.section.i.index  is div by 4}>
+                                    <tr>
+                                        <{/if}>
+
+                                        <td>
+                                            <input id="inlineCheckbox1" type='checkBox' name='activity_organizer[]' value='<{$weekActivityOrg[i].organizers_id}>'/><span><{$weekActivityOrg[i].organizers_name}></span>&nbsp;&nbsp;&nbsp;
+                                        </td>
+
+                                        <{if ($smarty.section.i.index+1)  is div by 4}>
+                                    </tr>
+                                    <{/if}>
+
+                                    <{/section}>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="selectOg()">
+                                    确定
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              <div class="col-sm-10">
+                  <input style="float: left" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" value="选择主办方">
+                  <div style="line-height:25px;white-space:nowrap;text-overflow:ellipsis;font-weight:bold;float: left;margin-left: 10px;width: 500px;height:20px;overflow: hidden" id="selectOgDiv"></div>
+			  <!--<{foreach $weekActivityOrg as $value}>-->
+                  <!--<label class="checkbox-inline">-->
+                      <!--<input type="checkbox" id="inlineCheckbox1" value="<{$value['organizers_id']}>"><{$value['organizers_name']}>-->
+                  <!--</label>-->
+                  <!--<{/foreach}>-->
+
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">重点推荐：</label>
+              <div class="col-sm-10" id="recommend">
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="inlineCheckbox1" value="1"> 推荐
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">日期：</label>
+              <div class="col-sm-3">
+                <div class="input-group">
+                    <input type="text" id="time" class="Wdate" style="height:30px;color:black;" />
+                  <span onclick="select()" class="input-group-addon" style="cursor:pointer"><i class="fa fa-calendar">筛选</i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+      <div id="clockBox" style="width: 350px;height: 170px;background: #ffffff;z-index: 998;position:fixed;*position:absolute;left:30%;top: 40%;display: none">
+          <div style="cursor:pointer;color:#000000;position: absolute;left: 340px;z-index: 999" onclick="cancelBox()">X</div>
+          <h3 style="text-align: center;background: #428bca;color: #ffffff">设置闹钟</h3>
+          <div>
+              <input id="activity_id" type="hidden"/>
+              <span style="font-weight:bold;color: #000000">　活　动　标　题：</span><input style="color: #000000" id="clock_title" type="text" disabled/><br>
+              <span style="font-weight:bold;color: #000000">　开　始　时　间：</span><input style="color: #000000" id="start_time" type="text" disabled/><br>
+              <span style="font-weight:bold;color: #000000">　提　醒　时　间：</span><input onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" type="text" id="clock_time" class="Wdate" style="height:30px;color:black;" />
+              <button onclick="saveClock()">提交</button>
+          </div>
+      </div>
+    <div class="row" id="listshows">
+
+	<{section name=list loop=$activity_info}>
+      <div class="col-md-3">
+        <div class="site-activity-table <{if $activity_info[list].if_import == 1}>recommend<{else}>active<{/if}>" style="height:230px;width: 180px;<{if time()<=strtotime($activity_info[list].time)}>background-color:#99cc99
+        <{else if strtotime($activity_info[list].end_time )>=time() && time()>=strtotime($activity_info[list].time )}>background-color:#FFCCFF<{else time()>strtotime($activity_info[list].end_time )}>background-color:#CCCCCC<{/if}>">
+          <a style="color: #ffffff" href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/0/activityId/<{$activity_info[list].activity_id}>">
+          <div class="title" style="margin: 0 0;height:3em"><{$activity_info[list].activity_title}> </div>
+          <div class="description">
+            <p>时间：<{$activity_info[list].time}></p>
+            <p>地点：<{$activity_info[list].didian}></p>
+            <p>类型：<{$activity_info[list].leixing}></p>
+            <p>主办方：<{if <{$activity_info[list].zhubanfang}> }><{$activity_info[list].zhubanfang}><{else}>无主办方<{/if}></p>
+      </div>
+            </a>
+            <{if $activity_info[list].naozhong ==0}>
+            <div class="notification">
+                <button style="background-image: url('<{$web_url}>/common/app/images/2.jpg')" onclick="setClock('<{$activity_info[list].time}>','<{$activity_info[list].activity_title}>','<{$activity_info[list].activity_id}>')" class="btn btn-xs btn-info"><i class="fa fa-bell"></i></button>
+            </div>
+            <{else}>
+            <div class="notification">
+                <button style="background-image: url('<{$web_url}>/common/app/images/1.jpg')" class="btn btn-xs" onclick="javascript:if(confirm('确实要取消提醒?'))removeClock('<{$activity_info[list].activity_id}>')"><i class="fa fa-bell"></i></button>
+            </div>
+            <{/if}>
+        </div>
+      </div>
+   <{sectionelse}>
+	        <div class="col-md-3">
+			  <div class="site-activity-table active">
+			无此类活动！
+			  </div>
+			</div>
+	<{/section}>
+      </div>
+        <{if $activity_info}>
+        <div style="text-align:center;margin-bottom: 20px" id="page">
+          <{if $all_activity.page>1}>
+            <a href="<{$web_url}>/index.php/assist/AssistActivity/activity_class/0/page/1">首页</a>
+            <{$prePage = $all_activity.page-1}>
+            <a href="<{$web_url}>/index.php/assist/AssistActivity/activity_class/0/page/<{$prePage}>">上一页</a>
+            <{/if}>
+            <{if $all_activity.page < $all_activity.totalPage}>
+            <{$nextPage =$all_activity.page+1 }>
+            <a href="<{$web_url}>/index.php/assist/AssistActivity/activity_class/0/page/<{$nextPage}>">下一页</a>
+            <a href="<{$web_url}>/index.php/assist/AssistActivity/activity_class/0/page/<{$all_activity['totalPage']}>">尾页</a>
+            <{/if}>
+            <{if $all_activity.page>1}>
+            跳转到<input id="num" type="text" style="color:#000000;width: 40px;height:20px;margin-left: 5px">
+            <button onclick="skip()">GO</button>
+            <{/if}>
+         <span style="margin-left: 20px">当前第<{$all_activity.page}>页/共<{$all_activity.totalPage}>页</span>
+        </div>
+        <{/if}>
+  </div>
+
+  <div class="col-md-3">
+  	<button type="button" class="btn btn-default big_button" style="width:262px;" onclick="exportExcel()">下载本学年活动安排</button>
+  	<table class="table table-striped"  style="border:1px solid #ddd;">
+  	  <thead>
+  	    <tr style="background:#2E3641"><td><center>本年度热门活动</center></td></tr>
+  	  </thead>
+  	  <tbody style="background:#FFFFFF;color:#ADBECA;">
+  	    <{section name=list loop=$HotActivityList}>
+  	    <tr><td><a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/0/activityId/<{$HotActivityList[list].activity_id}>">
+		  <{if $HotActivityList[list].activity_recommend eq 1}>【推荐】 <{$HotActivityList[list].activity_title}>
+		  <{else}>⊙ <{$HotActivityList[list].activity_title}>
+		  <{/if}>
+          </a>
+		</td></tr>
+		<tr style="background-color:gray;"><td>发布日期：<{$HotActivityList[list].activity_create_time}></td></tr>
+	   <{/section}>
+  	  </tbody>
+  	</table>
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

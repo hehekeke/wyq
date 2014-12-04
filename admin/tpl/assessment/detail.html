@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<title>评估项目说明历史版本详情</title>
+<style type="text/css"> 
+.title-container{margin-left:10px;  height:27px; width:700px;}
+.title-input{margin:0px 20px 0px 0px; width:650px; height:25px;}
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+}  
+</style>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background=images/title_bg1.jpg>当前位置:评估项目说明历史版本详情</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+		</TR>
+	</TABLE>
+	<div id="title-container" class = "title-container" >
+		<div class="title-input">
+		当前版本：<{$info.version}>&nbsp;修改时间：<{$info.create_time}>&nbsp;
+		修改人:<{$info.admin_realname}>
+		</div>
+		<div style="clear:both;" ></div>
+	</div>
+	<div id="info" style=" margin:10px 0px 10px 10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="80px" style="border-left:1px solid #adceff;" ><{$zbdj.0.zbdj_name}></th>  
+    			<th scope="col" width="150px" ><{$zbdj.1.zbdj_name}></th> 
+    			<th scope="col" width="200px" ><{$zbdj.2.zbdj_name}></th>   
+  			</tr>  
+  			<{section name=gl loop=$info.gong}>
+ 		 	<tr class = "gong">  
+    			<td style="border-left:1px solid #adceff;" >公</td>
+    			<td class="gong-second"><{$info.gong[gl].second}></td>
+    			<td class="gong-third"><{$info.gong[gl].third}></td>
+  			</tr>
+  			<{/section}>
+  			<{section name=nl loop=$info.neng}>
+ 		 	<tr class = "neng">  
+    			<td style="border-left:1px solid #adceff;" >能</td>
+    			<td class="neng-second"><{$info.neng[nl].second}></td>
+    			<td class="neng-third"><{$info.neng[nl].third}></td>
+  			</tr>
+  			<{/section}>
+		</table> 
+	</div>
+</body>
+</html>

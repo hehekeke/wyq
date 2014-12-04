@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+ 	<title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+  	<script src="<{$web_url}>/common/app/js/holder.js"></script>
+  </head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-8">
+    <div class="page-header"><h3>当前位置：综合素质评估><a href="#" onClick="javascript :history.back(-1);" style="color:#FFFFFF;">各学院宣讲方案</a>>宣讲方案详情</h3></div>
+    <center>
+      <h3><{$content.article_title}></h3>
+      <h6><{$content.article_create_time}></h6>
+    </center>
+	   <{$content.article_content}>
+      <{if isset($file_info)}>
+	   <p >附件：<a style="color:#FFFFFF;" href="<{$web_url}>/common/upload/files/<{$file_info.file_link}>"><{$file_info.file_name}></a></p>
+      <{/if}>
+  </div>
+  <div class="col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">各学院宣讲方案</div>
+      <div class="list-group">
+          <{if isset($assList['list'])}>
+          <{section name=n loop=$assList['list']}>
+          <a href="<{$web_url}>/index.php/assessment/collegePropagandaDetail/a_id/<{$assList['list'][n].article_id}>" class="list-group-item">
+              <p class="list-group-item-heading"><{$assList['list'][n].article_title}></p>
+              <p class="list-group-item-text"><{$assList['list'][n].article_create_time}></p>
+          </a>
+          <{/section}>
+          <{else if}>
+          暂无数据
+          <{/if}>
+   <a href="<{$web_url}>/index.php/assessment/collegePropagandaList" class="list-group-item" style="text-align: right">更多<i class="fa fa-angle-double-right"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+  <{include file='footer.html'}>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<title>学年末评估年级设置</title>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background=images/title_bg1.jpg>当前位置:学年末评估年级设置</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background=images/shadow_bg.jpg></TD>
+		</TR>
+	</TABLE>
+	
+	<table border="1" cellspacing="1" style="margin-left:10%;background-color:#fff;width:80%;border-collapse:collapse;">
+	  <tr>
+	    <td>学院</td>
+	    <td>专业</td>
+	    <td>起始年份</td>
+	    <td>终止年份</td>
+	  </tr>
+	  <{section name=n loop=$major}>
+	  <tr>
+	    <td><{$major[n].college_name}></td>
+	    <td><{$major[n].major_name}></td>
+	    <td><{$major[n].start}></td>
+	    <td><{$major[n].end}></td>
+	  </tr> 
+	  <{/section}>
+	  <tr><td colspan="4"><center>
+	  <input type="reset" value="重置" onclick="location='<{$web_url}>/mannkgn.php/grade/resetAll'"/></center></td>
+	  </tr>
+	</table>
+
+</body>
+</html>

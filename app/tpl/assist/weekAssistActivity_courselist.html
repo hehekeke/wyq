@@ -1,0 +1,205 @@
+    <!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+	<script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+
+  </head>
+  <script type="text/javascript">
+    //查看年活动
+	$(document).ready(function() {
+		$(".big_button:last").click(function(){
+			location.href="<{$web_url}>/index.php/Assist/AssistActivity/activity_class/0"
+		});
+	});
+	//关键字搜索
+	$(function() {
+	    $("#keyword_search").click(function(){
+		    var search = $("#search").val();
+			//alert(search);
+			var key=encodeURI(search);
+			//alert(key);exit;
+		    window.location.href= "<{$web_url}>/index.php/Assist/AssistActivity/activity_class/1/keywords/"+key;
+		});
+	});
+
+	$(function(){
+	   $("#time").focus(function(){
+	      WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+	   });
+	});
+	
+	//闹钟
+	$(function(){
+	   $("#alarm2_clock").click(function(){
+	      WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+	   });
+	});
+	//活动筛选
+	$(function(){
+		$(".shaixuan").click(function(){
+			var j=0;
+			var types=$("#qurey_type input");
+			var typesValue = new Array();
+			var organizers=$("#qurey_organizers input");
+			var organizersValue  = new Array();
+			var status= $("#qurey_status input");
+			var statusValue  = new Array();
+			
+			var j=0;
+			for($i=0; $i<types.length; $i++){
+				if(types[$i].checked){
+					typesValue[j++] = types[$i].value;
+				}
+			}	
+			var j=0;
+			for($i=0; $i<organizers.length; $i++){
+				if(organizers[$i].checked){
+					organizersValue[j++] = organizers[$i].value;
+				}
+			}
+			var j=0;
+			for($i=0; $i<status.length; $i++){
+				if(status[$i].checked){
+					statusValue[j++] = status[$i].value;
+				}
+			}
+			var recommendValue = $("#qurey_recommend input")[0].checked?"1":'-1';
+			var qureyJson = {types:typesValue.join(','),organizers:organizersValue.join(','),
+						status:statusValue.join(','),recommend:recommendValue};
+			var jsonArr=JSON.stringify(qureyJson);
+			//alert(jsonArr);
+			var show_class=$("#show_class").val();
+			$.post("<{$web_url}>/index.php/Assist/AssistActivityQurey",{"qurey":jsonArr,"show_class":show_class},function(data){
+				//console.info(data)
+				alert(data);
+				var ListArrInfo=eval("("+data+")");
+				alert(ListArrInfo.length);
+				$("#listshows").empty();
+			
+				for(var i=0;i<ListArrInfo.length;i++){
+					hrefstr="<{$web_url}>/index.php/Assist/getWeekActivityContent/activityId/";
+					var tmp="listshowPer"+i;
+					var tmp2="listshowA"+i;
+					$("#listshows").append('<div class="col-md-3" id='+tmp+' style="width:180px;margin-left:10px;" >');
+					$("#listshows").append('</div>');
+					$("#"+tmp).append('<div class="site-activity-table active">');
+					$("#"+tmp).append('<a href="'+hrefstr+ListArrInfo[i].activity_id+'" id="'+tmp2+'"></a>');
+					$("#"+tmp2).append('<div class="title">'+ListArrInfo[i].activity_title+'</div><div class="description"><p>时间：'+ListArrInfo[i].activity_start_time+'</p><p>地点：'+ListArrInfo[i].activity_address+'</p><p>类型：'+ListArrInfo[i].at_name+'</p><p>主办方: '+ListArrInfo[i].organizers_name+'</p></div>');
+					$("#"+tmp).append('<div class="notification">');
+					$("#"+tmp+"").append('</div></div>');
+					$("#listshows").append('</div>');
+				}
+			});	
+	    });
+	});
+</script>
+<body style="color: #ffffff">
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：辅学活动>周活动</h3></div>
+  </div>
+  <div class="col-md-8">
+    <form class="form-horizontal" id="mform">
+      <fieldset>
+        <div><p class="p_border"><{$weekActivity.sa_content}></p></div>
+        <div><table class="table" style="border:1px solid #ddd;background:#D15606;"><tr>
+          	<td>按关键字搜索：</td>
+			<td><input class="form-control" id="search" placeholder="请输入关键字"></td>
+          	<td><button type="button" id="keyword_search" class="btn btn-default" style="background:#FE6500;color:#fff;">搜索</button></td>
+        </tr></table></div>
+        <div class="panel panel-default" style="background:#2E3641;">
+          <div class="panel-heading">活动筛选</div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">活动类型：</label>
+             <div class="col-sm-10" id="qurey_type">
+			 <{foreach $weekActivityType as $value}>
+                <label class="checkbox-inline">
+                  <input type="checkbox" value="<{$value['at_id']}>" ><{$value['at_name']}>
+                </label>
+			<{/foreach}>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">主办方：</label>
+              <div class="col-sm-10" id="qurey_organizers">
+			  <{foreach $weekActivityOrg as $value}>
+                <label class="checkbox-inline">
+                  <input type="checkbox" value="<{$value['organizers_id']}>"><{$value['organizers_name']}>
+                </label>
+			  <{/foreach}>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">状态：</label>
+              <div class="col-sm-10" id="qurey_status">
+                <label class="checkbox-inline">
+                  <input type="checkbox"  value="-1"> 未开始
+                </label>
+                <label class="checkbox-inline">
+                  <input type="checkbox" value="0"> 进行中
+                </label>
+                <label class="checkbox-inline">
+                  <input type="checkbox" value="1"> 已结束
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">重点推荐：</label>
+              <div class="col-sm-10" id="qurey_recommend">
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="inlineCheckbox7" value="1" > 推荐
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">日期：</label>
+              <div class="col-sm-3">
+                <div class="input-group">
+                  <input type="text" id="time" class="Wdate" style="height:30px;color:black;" />
+                  <span class="input-group-addon" style="cursor: pointer;"><i class="shaixuan">筛选</i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+
+  </div> 
+  <div class="col-md-3">
+  	<button type="button" class="btn btn-default big_button">下载本周活动安排</button>
+  	<button type="button" id="year" class="btn btn-default big_button">查看学年活动</button>
+  	<table class="table table-striped"  style="border:1px solid #ddd;">
+  	  <thead>
+  	    <tr style="background:#2E3641"><td><center>周热门活动</center></td></tr>
+  	  </thead>
+  	  <tbody style="background:#FFFFFF;color:#ADBECA;">
+	   <{section name=list loop=$HotActivityList}>
+	   <a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/1/activityId/<{$weekActivityDesc[list].activity_id}>">
+  	    <tr><td>
+		  <{if $HotActivityList[list].activity_recommend eq 1}>【推荐】<{$HotActivityList[list].activity_title}>
+		  <{else}><{$HotActivityList[list].activity_title}>
+		  <{/if}>
+		</td></tr>
+	   </a>
+		<tr style="background-color:gray;"><td>发布日期：<{$HotActivityList[list].activity_create_time}></td></tr>
+	   <{/section}>
+  	  </tbody>
+  	</table>
+  </div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

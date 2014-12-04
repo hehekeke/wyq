@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:wb="http://open.weibo.com/wb">
+
+<html>
+  <head>
+ 	<title></title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/index.css" rel="stylesheet">
+      <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+      <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+
+      <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+      <script src="<{$web_url}>/common/libs/bootstrap/bootstrap-hover-dropdown.min.js"></script>
+  	<script src="<{$web_url}>/common/app/js/holder.js"></script>
+  	<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<!--[if lte IE 6]>
+	<script src="<{$web_url}>/common/app/js/index/DD_belatedPNG_0.0.8a.js" type="text/javascript"></script>
+	    <script type="text/javascript">
+	        DD_belatedPNG.fix('div, ul, img, li, input , a');
+	    </script>
+	<![endif]-->
+  	<script type="text/javascript">
+		var web_url = "<{$web_url}>";
+	  	$(function(){
+	  		flag = $("#flag").html();
+	  		if(flag == 0){
+	  			$("#no_notice").show();
+	  			$("#is_notice").hide();
+	  		}else{
+	  			$("#is_notice").show();
+	  			$("#no_notice").hide();
+	  		}
+	  	})
+
+        function homePage(){
+            var page = 1;
+
+            $.post("<{$web_url}>/index.php/index/page",{"page":page},function(data){
+                    //document.getElementById("noticeDiv").innerHTML = data;
+
+                    var div = $('#is_notice');
+                    div.text("");
+                    div.append(data);
+            });
+        }
+        function nextPage(){
+
+            var nowPage = document.getElementById("nowPage").innerHTML;
+            var page =  1+parseInt(nowPage);
+            if(nowPage)
+
+            alert(page);
+            $.post("<{$web_url}>/index.php/index/page",{"page":page},function(data){
+                //document.getElementById("noticeDiv").innerHTML = data;
+                var div = $('#is_notice');
+                div.text("");
+                div.append(data);
+            });
+        }
+    </script>
+      <style>
+          #page a{
+              color: wheat;
+          }
+          #page input{
+              color: #000000;
+          }
+      </style>
+  </head>
+  <{assign var=type value=1}>
+<body>
+<{include file='header.html'}>
+<p id="flag" style="display:none;"><{$flag}></p>
+<div class="row">
+<div class="main-top col-md-12">
+  <div class="col-md-8">
+    <div class="row">
+      <div class="col-md-12">
+        <div id="site-index-carousel" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#site-index-carousel" data-slide-to="0" class="active"></li>
+            <li data-target="#site-index-carousel" data-slide-to="1"></li>
+            <li data-target="#site-index-carousel" data-slide-to="2"></li>
+            <li data-target="#site-index-carousel" data-slide-to="3"></li>
+
+          </ol>
+          <div class="carousel-inner">
+		  <!--
+            <div class="item active">
+              <img src="<{$web_url}>/common/app/images/index/nk1.jpg" alt="..." style="width:750px;height:360px;">
+              <div class="carousel-caption">
+                轮播1
+              </div>
+            </div>
+			-->
+			<{section name=nat loop=$getPicture}>
+				<{if $smarty.section.nat.index == 0}>
+				<div class="item active">
+				<img src="<{$web_url}>/common/upload/images/<{$getPicture[nat].pic_link}>" alt="..." style="width:750px;height:360px;">
+              <div class="carousel-caption">
+				轮播1
+			  </div>
+				</div>
+			  <{else}>
+				<div class="item">
+              <img src="<{$web_url}>/common/upload/images/<{$getPicture[nat].pic_link}>" alt="..." style="width:750px;height:360px;">
+				<div class="carousel-caption">
+				轮播<{$smarty.section.nat.index+1}>
+			  </div>
+			  </div>
+				<{/if}>
+             
+            
+			<{/section}>
+            
+
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+ <div class="col-md-4">
+    <div id="newsinfo" class="panel panel-default">
+      <div id="newsinfo-header" class="panel-heading">
+      	<div id="newsinfo-header-words">通知公告</div>
+      	 <a href="<{$web_url}>/index.php/Notice/moreNotice"><div id="newsinfo-header-more"></div></a>
+      </div>
+      <div id="is_notice" class="list-group" style="color:#2E3641;">
+      <{section name = nat loop=$notice}>
+        <div href="#" class="news-item list-group-item" id="noticeDiv">
+          <a href="<{$web_url}>/index.php/Notice/noticeDetail/id/<{$notice[nat].notice_id}>" class="list-group-item-heading">【<{$notice[nat].nt_name}>】<{$notice[nat].notice_title}></a>
+          <p class="list-group-item-text">发布时间：<{$notice[nat].notice_create_time}>    浏览(<{if $notice[nat].notice_read_num==null}>0<{else}><{$notice[nat].notice_read_num}><{/if}>)</p>
+       </div>
+       <{/section}>
+      </div>
+    </div>
+</div>
+</div>
+<div class="main-bottom col-md-12">
+    <div class="row home-extern-link col-md-12">
+      <div class="col-md-3">
+        <a href="http://xsfww.nku.cn/">
+          <img src="<{$web_url}>/common/app/images/index/enterschool.png" class="img-circle"/>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="javascript:alert('正在建设中..')">
+        <img src="<{$web_url}>/common/app/images/index/mentaldir.png" class="img-circle"/>
+
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="http://career.nankai.edu.cn/">
+          <img src="<{$web_url}>/common/app/images/index/job.png" class="img-circle"/>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="http://urp.nku.cn/">
+          <img src="<{$web_url}>/common/app/images/index/info-door.png" class="img-circle"/>
+        </a>
+      </div>
+    </div>
+    <div id="weibo" class="row col-md-12">
+       <div class="site-weibo-header col-md-2">
+          <div class="weibo-avatar"><img src="<{$web_url}>/common/app/images/index/blog.jpg" /></div>
+           <wb:follow-button uid="1851774145" type="red_1" width="67" height="24" ></wb:follow-button>
+        </div>
+      <div class="col-md-10 site-weibo">
+        <div class="site-weibo-up">
+          <ul>
+            <li><span style="height:67px;width:194px;overflow:hidden;"><a href="http://weibo.com/nankaiuni" style="color:#ffffff"><{$weibo[0]['content']}></a></span><span class="date" style="text-align:right"><{$weibo[0]['time']}></span><div class="weibo-item-bottom"></div></li>
+            <li><span style="height:67px;width:194px;overflow:hidden;"><a href="http://weibo.com/nankaiuni" style="color:#ffffff"><{$weibo[1]['content']}></a></span><span class="date" style="text-align:right"><{$weibo[1]['time']}></span><div class="weibo-item-bottom"></div></li>
+            <li><span style="height:67px;width:194px;overflow:hidden;"><a href="http://weibo.com/nankaiuni" style="color:#ffffff"><{$weibo[2]['content']}></a></span><span class="date" style="text-align:right"><{$weibo[2]['time']}></span><div class="weibo-item-bottom"></div></li>
+          </ul>
+        </div>
+        <div class="site-weibo-line"></div>
+        <div class="site-weibo-down">
+          <ul>
+            <li><span style="height:67px;width:194px;overflow:hidden;"><a href="http://weibo.com/nankaiuni" style="color:#ffffff"><{$weibo[3]['content']}></a></span><span class="date" style="text-align:right"><{$weibo[3]['time']}>0</span></li>
+            <li><span style="height:67px;width:194px;overflow:hidden;"><a href="http://weibo.com/nankaiuni" style="color:#ffffff"><{$weibo[4]['content']}></a></span><span class="date" style="text-align:right"><{$weibo[4]['time']}></span></li>
+            <li><span style="height:67px;width:194px;overflow:hidden;"><a href="http://weibo.com/nankaiuni" style="color:#ffffff"><{$weibo[5]['content']}></a></span><span class="date" style="text-align:right"><{$weibo[5]['time']}></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+</div>
+
+</div>
+</div>
+  <{include file='footer.html'}>
+</body>
+</html>

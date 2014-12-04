@@ -1,0 +1,205 @@
+
+
+
+
+
+.home-extern-link {
+  margin: 20px 0px;
+}
+.home-extern-link a {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.home-extern-link img {
+  max-width: 100%;
+  margin-bottom: 5px;
+}
+#weibo{background:#2E3641; padding:15px;margin-left: 0;}
+.site-weibo-header {
+  font-size: 12px;
+  text-align: center;
+  margin-top: 53.5px;
+}
+.site-weibo-line{width:736px; height:40px; float:left; margin-left:100px; background:url(../../images/index/site-weibo-line.png);}
+.site-weibo ul {
+  list-style: none;
+  margin: 0px;
+}
+.site-weibo li {
+  border: 1px solid #ccc;
+  background: #809FE6;
+  padding: 2px;
+  font-size: 16px;
+  float: left;
+  max-width: 200px;
+  margin-left: 2%;
+  max-height:100px;
+}
+.site-weibo li span {
+  display: block;
+}
+.site-weibo-up{float:left; width:100%;}
+.site-weibo-down{float:left; width:100%;}
+.site-weibo-up li {
+  margin-bottom: 0px;
+}
+.site-weibo-down li {
+  margin-top: 3px;
+}
+
+.site-weibo-up li:first-child {
+  margin-left: 12%;
+}
+.site-weibo-down li:first-child {
+  margin-left: 8%;
+}
+
+body.login {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #eee;
+}
+
+.login .form-signin {
+  max-width: 530px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.login .form-signin .form-signin-heading,
+.login .form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.login .form-signin .checkbox {
+  font-weight: normal;
+}
+.login .form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.login .form-signin .form-control:focus {
+  z-index: 2;
+}
+.login .form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.login .form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.page-header {
+  margin-top: 10px;
+}
+
+.page-header h3 {
+  margin: 0px;
+}
+
+.min-height-400 {
+  min-height: 400px;
+}
+
+.site-activity-table {
+  border: 1px solid #ccc;
+  background: #F97E76;
+  padding: 12px 6px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.site-activity-table.active {
+  background: #28a4c9;
+  color: #fff;
+}
+.site-activity-table.recommend:before {
+  content: "推荐";
+  background: #ac2925;
+  color: #fff;
+  padding:4px;
+  position: absolute;
+  z-index: 10;
+  left:-15px;
+  top:-9px;
+}
+.site-activity-table .title {
+  height: 2em;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 1em 2em;
+}
+
+.site-activity-table .description p:last-child {
+  margin-bottom: 0px;
+}
+
+.site-activity-table .notification {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  z-index: 10;
+}
+
+.big_button {
+	width:49%;
+	height:auto;
+	margin-top:3px;
+	margin-bottom:3px;
+	background:#F97E76;
+}
+.p_border{
+	border:1px solid #ddd;
+	padding:10px;
+}
+#left-nav li a{color:white;}
+.panel {background:none;}
+
+/*******************************************************************************************/
+/**
+*DATA:2014-08-01
+*author:tcl@tiptimes.com
+*周活动详情页
+**/
+.avtivity_title{
+    text-align:center;
+	line-height:150px;
+	font-size:20px;
+	font-weight:bolder;
+    height:100px;
+	margin-left:-65px;
+    background:url('../../images/activitytitle-bg.png');
+}
+.activity_main_content{
+	
+	margin-left:-65px;
+    background:url('../../images/activity_content_bg.png');
+}
+#activity_table{
+    margin:0 auto;
+	padding-top:40px;
+    width:500px;
+}
+.activity_main_content tr{
+    line-height:30px;
+}
+.activity_comment{
+    width:500px;
+	margin:0 auto;
+	margin-bottom:50px;
+	margin-top:20px;
+}
+
+#activity_score td{
+	width: 150px;
+	text-align: center;
+}
+
+/**************************************common/app/css/index/sit.css****************************************************/

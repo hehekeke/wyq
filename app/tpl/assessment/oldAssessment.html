@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script src="<{$web_url}>/common/libs/highcharts/highcharts.js"></script>
+	<script src="<{$web_url}>/common/libs/highcharts/highcharts-more.js"></script>
+<script type="text/javascript">
+  function tab(val){
+	  var best=document.getElementById('best');
+	  var change=document.getElementById('change');
+	  if (val==1){
+		  best.style.display='block';
+		  change.style.display='none';
+	  }else if (val==2){
+		  best.style.display='none';
+		  change.style.display='block';
+	  }
+  }
+
+  function unfold(str){
+	  if (str=='zwpj') $('#zwpj').toggle();
+	  else if (str=='pjjg') $('#pjjg').toggle();
+	  else if (str=='radar') $('#radar').toggle();
+	  else if (str=='feedback') $('#feedback').toggle();
+	  else if (str=='hpjg') $('#hpjg').toggle();
+	  else if (str=='czxljh') $('#czxljh').toggle();
+  }
+
+  function session(n){
+    $.post("<{$web_url}>/index.php/assessment/getData",{year:n},function(result){
+
+    });
+  }
+</script>
+<script type="text/javascript">
+$(function () {
+	$('#container1').highcharts({
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+
+	    title: {
+	        text: '他评结果',
+	        x: -40
+	    },
+
+	    pane: {
+	    	size: '80%'
+	    },
+
+	    xAxis: {
+	        categories: ['能1', '能2', '能3', '能4', '能5'],
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:20,
+			max:100,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+
+		credits: {
+			enabled:false
+		},
+
+	    series: [{
+	        name: '我的分数',
+	        data: [86, 91, 86, 35, 71],
+	        pointPlacement: 'on',
+			color: '#ff0000'
+	    }, {
+	        name: '班级平均分',
+	        data: [75, 83, 84, 62, 68],
+	        pointPlacement: 'on'
+	    }]
+
+	});
+
+	$('#container2').highcharts({
+
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+
+	    title: {
+	        text: '互评VS自评',
+	        x: -40
+	    },
+
+	    pane: {
+	    	size: '80%'
+	    },
+
+	    xAxis: {
+	        categories: ['能1', '能2', '能3', '能4', '能5'],
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:20,
+			max:100,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+
+		credits: {
+			enabled:false
+		},
+
+	    series: [{
+	        name: '我的分数',
+	        data: [66, 91, 96, 35, 81],
+	        pointPlacement: 'on',
+			color: '#ff0000'
+	    }, {
+	        name: '班级平均分',
+	        data: [75, 73, 84, 62, 68],
+	        pointPlacement: 'on'
+	    }]
+
+	});
+});
+</script>
+</head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估>学年末评估</h3></div>
+  </div>
+   <{assign var=lefttype value=7}>
+   <{include file='assessment/xnm-left-function.html'}>
+  <div class="col-md-10" style="background: white; padding-bottom: 20px; margin-bottom: 20px; color:#2E3641;">
+    <center><h3>往年评估</h3></center>
+	<button type="button" class="btn btn-info" onclick="session(1)">大一学年末</button>
+	<button type="button" class="btn btn-info" onclick="session(2)">大二学年末</button>
+	<button type="button" class="btn btn-info" onclick="session(3)">大三学年末</button>
+	<div style="background:#46b8da; margin-top:20px; height:30px;">
+	  <div style="float:left;"><font color="white">自我评价</font></div>
+	  <div style="float:right;"><font color="white"><a onclick="unfold('zwpj')">展开/收起</a></font></div>
+	</div>
+	<div id="zwpj" style="display:none;">
+	  <p style="margin:20px;">定性评价：<div class="glyphicon glyphicon-star"></div>
+	        <div class="glyphicon glyphicon-star"></div>
+	        <div class="glyphicon glyphicon-star"></div>
+	        <div class="glyphicon glyphicon-star-empty"></div>
+	        <div class="glyphicon glyphicon-star-empty"></div>
+	 </p>
+	 <p style="margin:20px;">书面总结： 书面总结书面总结书面总结书面总结书面总结书面总结书面总结书面总结书面总结书面总结书面总结书面总结书面总结书面总结</p>
+	</div>
+	<div style="background:#46b8da; margin-top:20px; height:30px;">
+	  <div style="float:left;"><font color="white">评价结果</font></div>
+	  <div style="float:right;"><font color="white"><a onclick="unfold('pjjg')">展开/收起</a></font></div>
+	</div>
+	<div id="pjjg" style="display:none">
+	<table class="table table-bordered" style="margin-top:20px;">
+	  <thead style="background-color:#e7e7e7">
+	    <tr><th>一级指标</th><th>二级指标</th><th>内容</th><th>平均分值</th><th>班级排名</th></tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+	      <td rowdiv="3" style="vertical-align:middle">公</td>
+	      <td>公2</td>
+	      <td>公3</td>
+	      <td>9.2</td>
+	      <td>13</td>
+	    </tr>
+	    <tr>
+	      <td>公2</td>
+	      <td>公3</td>
+	      <td>9.2</td>
+	      <td>13</td>
+	    </tr>
+	    <tr>
+	      <td>公2</td>
+	      <td>公3</td>
+	      <td>9.2</td>
+	      <td>13</td>
+	    </tr>
+	    <tr>
+	      <td rowdiv="5" style="vertical-align:middle">能</td>
+	      <td>生活</td>
+	      <td>能3</td>
+	      <td>9.2</td>
+	      <td>13</td>
+	    </tr>
+	    <tr>
+	      <td>学习</td>
+	      <td>能3</td>
+	      <td>9.2</td>
+	      <td>13</td>
+	    </tr>
+	    <tr>
+	      <td>创新</td>
+	      <td>能3</td>
+	      <td>9.2</td>
+	      <td>13</td>
+	    </tr>
+	    <tr>
+	      <td>文化素养</td>
+	      <td>能3</td>
+	      <td>9.2</td>
+	      <td>13</td>
+	    </tr>
+	    <tr>
+	      <td>协作</td>
+	      <td>能3</td>
+	      <td>9.2</td>
+	      <td>13</td>
+	    </tr>
+
+	  </tbody>
+	</table>
+	</div>
+	<div style="background:#46b8da; margin-top:20px; height:30px;">
+	  <div style="float:left;"><font color="white">各项指标雷达图</font></div>
+	  <div style="float:right;"><font color="white"><a onclick="unfold('radar')">展开/收起</a></font></div>
+	</div>
+	<div id="radar" style="margin-top:20px;display:none;">
+		<div id="container1" style="min-width: 400px; max-width: 600px; height: 400px;float:left;"></div>
+		<div id="container2" style="min-width: 400px; max-width: 600px; height: 400px;float:right;"></div>
+	</div>
+	<div style="background:#46b8da; margin-top:20px; height:30px;clear:both;">
+	  <div style="float:left;"><font color="white">辅导员反馈</font></div>
+	  <div style="float:right;"><font color="white"><a onclick="unfold('feedback')">展开/收起</a></font></div>
+	</div>
+	<div id="feedback" style="display:none;">
+	<p>导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容
+
+辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容
+
+辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅导员反馈内容辅
+	</p>
+	</div>
+	<div style="background:#46b8da; margin-top:20px; height:30px;">
+	  <div style="float:left;"><font color="white">互评结果</font></div>
+	  <div style="float:right;"><font color="white"><a onclick="unfold('hpjg')">展开/收起</a></font></div>
+	</div>
+	<div id="hpjg" style="display:none;">
+	<table class="table table-bordered" style="margin-top:20px;">
+	<thead>
+	  <tr><th>指标</th><th>我的定性评价</th><th>互评定性评价</th></tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td>公</td>
+	    <td>8.0</td>
+	    <td>7.0</td>
+	  </tr>
+	  <tr>
+	    <td>能1</td>
+	    <td>8.0</td>
+	    <td>7.0</td>
+	  </tr>
+	  <tr>
+	    <td>能2</td>
+	    <td>8.0</td>
+	    <td>7.0</td>
+	  </tr>
+	  <tr>
+	    <td>能3</td>
+	    <td>8.0</td>
+	    <td>7.0</td>
+	  </tr>
+	  <tr>
+	    <td>能4</td>
+	    <td>8.0</td>
+	    <td>7.0</td>
+	  </tr>
+	  <tr>
+	    <td>能5</td>
+	    <td>8.0</td>
+	    <td>7.0</td>
+	  </tr>
+	  </tbody>
+	</table>
+	</div>
+	<div style="background:#46b8da; margin-top:20px; height:30px;">
+	  <div style="float:left;"><font color="white">成长训练计划</font></div>
+	  <div style="float:right;"><font color="white"><a onclick="unfold('czxljh')">展开/收起</a></font></div>
+	</div>
+	<div id="czxljh" style="display:none;">
+		<p>成长训练计划成长训练计划成长训练计划成长训练计划成长训练计划成长训练计划成长训练计划成长训练计划成长训练计划成长训练计划成长训练计划
+		</p>
+	<div class="btn-group">
+	  <button type="button" class="btn btn-info" onclick="tab(1)">做的最好</button>
+	  <button type="button" class="btn btn-info" onclick="tab(2)">最需改进</button>
+	</div>
+	<div id="best" style="margin-top:20px;">
+	  <table class="table table-bordered">
+	    <tr><td>1</td><td>aaaaaaaaa</td></tr>
+	    <tr><td>2</td><td>aaaaaaaaa</td></tr>
+	    <tr><td>3</td><td>aaaaaaaaa</td></tr>
+	    <tr><td>4</td><td>aaaaaaaaa</td></tr>
+	    <tr><td>5</td><td>aaaaaaaaa</td></tr>
+	  </table>
+	</div>
+	<div id="change" style="margin-top:20px;display:none;">
+	  <table class="table table-bordered">
+	    <tr><td>1</td><td>bbbbbbbbbb</td></tr>
+	    <tr><td>2</td><td>aaaaaaaaa</td></tr>
+	    <tr><td>3</td><td>aaaaaaaaa</td></tr>
+	    <tr><td>4</td><td>aaaaaaaaa</td></tr>
+	    <tr><td>5</td><td>aaaaaaaaa</td></tr>
+	  </table>
+	</div>
+	</div>
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

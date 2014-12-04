@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<title><{$detail.stu_name}>的成长训练计划</title>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background="<{$web_url}>/common/admin/images/title_bg1.jpg">当前位置:中心简介管理</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+		</TR>
+	</TABLE>
+
+	<div style="padding-left:30px;border-bottom:2px #fff solid;height:30px; ">
+		<div style="color:black;font-size:25px;height:30px;border-bottom:2px #fff solid; line-height:30px; float:left;">
+			<{$detail.fu_realname}>的成长训练计划
+		</div>	
+	</div>
+	<div  style="padding-left:30px;">
+   		<textarea cols="120" rows="30" type="text" id="content" name="content" style="width: 700px;"><{$detail.content}></textarea>
+	</div>
+ 	<div style="padding-left:30px;padding-top:10px;">
+ 		<a href="<{$web_url}>/mannkgn.php/Counselor/index/type/4/do/pass/id/<{$id}>"><input id="pass" type="button" value="通过" style="height: 30px;;width:120px;" ></input></a>
+ 		<a href="<{$web_url}>/mannkgn.php/Counselor/index/type/4/do/nopass/id/<{$id}>"><input id="nopass" type="button" value="不通过" style="height: 30px;;width:120px;" ></input></a>
+ 		<a href="<{$web_url}>/mannkgn.php/Counselor/index/type/4"><input id="back" type="button" value="返回" style="height: 30px;;width:120px;" ></input></a>
+ 		<font id="result" color="#0000FF"><{$result|default:""}></font>
+	</div>
+</body>
+</html>

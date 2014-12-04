@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+</head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header"><h3>当前位置：综合素质评估>新生入学评估</h3></div>
+    <{assign var=lefttype value=1}>
+    <{include file='assessment/xsrx-leftfunction.html'}>
+    <div class="col-md-10 panel panel-default">
+        <{if isset($content.article_content)}>
+        <div class="panel-body" style="">
+            <center>
+                <h3><{$content.article_title}></h3>
+                <h6><{$content.article_create_time}></h6>
+            </center>
+            <{$content.article_content}>
+            </br><p style="margin-top:15px">附件：<a style="color:#FFFFFF;" href="<{$web_url}>/common/upload/files/<{$content['file_link']}>"><{$content['file_name']}></a></p>
+           </div></div>
+            </div>
+        <{else}>
+        目前无数据
+        <{/if}>
+    </div>
+</div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

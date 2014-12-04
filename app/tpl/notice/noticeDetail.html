@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+</head>
+<script>
+    function upload(file_name,file_link){
+        var file_link = ('<{$web_url}>'+file_link).replace(/\//g,"=");
+        var file_name = file_name;
+        //alert(file_link);
+        location.href="<{$web_url}>/index.php/UploadFile/uploadFile/file_name/"+file_name+"/file_link/"+file_link;
+
+    }
+</script>
+<body>
+<{include file='header.html'}>
+<div>
+    <div>
+        <h3 style="border-bottom: 1px solid #eee;padding-bottom:9px ">当前位置：首页>通知公告>详情</h3>
+    </div>
+    <div class="center" style="float: left;width: 800px;">
+        <h3 style="text-align: center;"><{$notice_detail[0].notice_title}></h3>
+        <span><center><{$notice_detail[0].notice_create_time}>  浏览次数：<{$notice_detail[0].notice_read_num}>次</center></span>
+        <div class="content" style="width: 800px;border-bottom:  1px solid #eee;overflow:hidden;">
+         <{$notice_detail[0].notice_content}><br>
+          <{if $notice_detail[0].file_id==0 || $notice_detail[0].file_id==null}>
+          <{else}>
+          附件：<a style="cursor: pointer" onclick="upload('<{$notice_detail[0].file_name}>','<{$notice_detail[0].file_link}>')"><{$notice_detail[0].file_name}></a>
+          <{/if}>
+        </div>
+        <div style="margin-top: 10px">
+            <{if $preNotice==false}>
+            <span>上一条：没有了</span><br>
+            <{else}>
+            <span>上一条：<a href="<{$web_url}>/index.php/Notice/noticeDetail/id/<{$preNotice[0].notice_id}>">【<{$preNotice[0].nt_name}>】<{$preNotice[0].notice_title}></a></span><br>
+            <{/if}>
+            <{if $nextNotice==false}>
+            <span>下一条：没有了</span><br>
+            <{else}>
+            <span>下一条：<a href="<{$web_url}>/index.php/Notice/noticeDetail/id/<{$nextNotice[0].notice_id}>">【<{$nextNotice[0].nt_name}>】<{$nextNotice[0].notice_title}></a></span>
+            <{/if}>
+
+        </div>
+    </div>
+
+    <div style="width: 300px;height: 500px;float: right">
+        <table class="table table-bordered" id="newTable">
+            <thead>
+            <tr style="background:#EEAEEE">
+                <th><center>热门公告</center></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <{section name=no loop=$hotNotice}>
+            <tr>
+                <td><a href="<{$web_url}>/index.php/Notice/noticeDetail/id/<{$hotNotice[no].notice_id}>">【<{$hotNotice[no].nt_name}>】  <{$hotNotice[no].notice_title}></a></td>
+            </tr>
+            <tr>
+                <td><{$hotNotice[no].notice_create_time}>  浏览：<{$hotNotice[no].notice_read_num}>次</td>
+            </tr>
+            <{/section}>
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

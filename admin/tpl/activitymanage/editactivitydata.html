@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<title>活动数据维护</title>
+</head>
+<body>
+<style type="text/css">
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+}  
+</style> 
+
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  	<TR height=28><TD background=images/title_bg1.jpg>当前位置:活动数据维护维护-修改数据</TD></TR>
+  	<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  	<TR height=20>
+    	<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+	</TR>
+</TABLE>
+<div style="padding-top:0px;background-color:white;width:80%;margin-left:50px;:30px;font-size: 14px;font-weight: bold; ">
+	&nbsp;&nbsp;&nbsp;&nbsp;活动信息
+	<hr>
+</div>
+<div align="left"><font id="result" color="#0000FF"><{$result|default:""}></font></div>
+
+<div class="activity_info" style="margin-left: 50px;width: 80%">
+    <table>
+			</tr>   
+              <tr>
+                    <td>活动名称:</td>
+                    <td name="activity_title"><{$detail.activity_title}></td>
+              </tr>
+              <tr>
+                    <td>活动内容:</td>
+                    <td name="activity_content"><{$detail.activity_content}></td>
+              </tr>
+              <tr>
+                    <td>活动时间:</td>
+                    <td name="activity_start_time"><{$detail.activity_start_time}></td>
+              </tr>
+              <tr>
+                    <td>活动类型:</td>
+                    <td name="at_name"><{$activity_desc.at_name}></td>
+              </tr>
+              <tr>
+                    <td>主办方:</td>
+                    <td name="organizers_name"><{$activity_desc.organizers_name}></td>
+              </tr>
+              <tr>
+                    <td>承办方:</td>
+                    <td name=""><{$activity_desc.undertake_name}></td>
+              </tr>
+              <tr>
+                    <td>活动级别:</td>
+                    <td name="activity_level">
+                         <{if $detail.activity_level eq '1'}>校级
+                         <{else}>院级
+                         <{/if}>
+                    </td>
+              </tr>
+              <tr>
+                    <td>活动负责人:</td>
+                    <td name="activity_duty_preson"><{$detail.activity_duty_preson}></td>
+              </tr>
+              <tr>
+                    <td>活动创建人:</td>
+                    <td name="admin_realname"><{$activity_desc.admin_realname}></td>
+              </tr>
+              <tr>
+                    <td>创建时间:</td>
+                    <td name="activity_create_time"><{$detail.activity_create_time}></td>
+              </tr>
+    </table>
+    <br>
+    <br>
+ <div class="activity_data_weihu" style="font-size: 14px;font-weight: bold;">活动数据维护</div>
+        <hr>
+        <div class="activity_data">
+                <table>
+                <form id="form1" enctype="multipart/form-data"  target="_self" name="form1" method="post" action="<{$web_url}>/mannkgn.php/ActivityManage/editactivitydata/id/<{$id}>" >
+                         <tr>
+                               <td>献鲜花</td>
+                               <td><input type="text"/></td>
+                               <td>扔鸡蛋</td>
+                               <td><input type="text" /></td>
+                               <td>想参加</td>
+                               <td><input type="text" /></td>
+                         </tr>
+                         <tr>
+                               <td>辅学目标:</td>
+                               <td><{$secondary_goal.sg_name}></td>
+                               <td><input type="text" name="sg_score" id="sg_score" value="<{$secondary_goal.sg_score}>"/>分</td>
+                         </tr>
+                         <tr>
+                                <td></td>
+                                <td></td>
+                         </tr>
+                         <tr>
+          		                <td width="107" height="30"><div align="center"></div></td>
+                                <td height="40" colspan="2">&nbsp;
+                	            <input name="submit" type="submit" value="保存修改" style="width:60px;" />
+                                </td>
+                         </tr>
+                </form>
+                </table>
+</div>
+</body>
+</html>

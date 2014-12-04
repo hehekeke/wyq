@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+    <script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+    <LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+    <title>我的消息</title>
+    <script type="text/javascript">
+        $(function() {
+            $("#search_button").live("click",function() {
+                //alert("111");
+                var xuenian = $("#xuenian").val();
+                var riqi = $("#riqi").val();
+                var zhuangtai = $("#zhuangtai").val();
+                window.location.href="<{$web_url}>/mannkgn.php/adminmessage/getmymessage/xuenian/"+xuenian+"/zhuangtai/"+zhuangtai+"/riqi/"+riqi;
+            });
+        });
+
+        //点击选中
+        $(function(){
+            $(":checkBox#quanxuan").click(function(){
+                //点击一次
+                var checked=$(this).attr('checked');
+                if(checked=='checked'){
+                    $(":checkBox").attr("checked",true);
+                }
+                if(checked!='checked'){
+                    $(":checkBox").attr("checked",false);
+                }
+            });
+
+            $("#riqi").focus(function(){
+                WdatePicker({dateFmt:'yyyy-MM-dd'});
+            });
+        });
+
+
+    </script>
+</head>
+<body>
+<style type="text/css">
+    #info th {
+        border-right: 1px solid #adceff;
+        border-bottom: 1px solid #adceff;
+        border-top: 1px solid #adceff;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-align: left;
+        padding: 6px 6px 6px 12px;
+        background: #f4f7fc;
+    }
+    #info td {
+        border-right: 1px solid #adceff;
+        border-bottom: 1px solid #adceff;
+        background: #fff;
+        font-size:11px;
+        padding: 6px 6px 6px 12px;
+
+    }
+    #info th.spec {
+        border-left: 1px solid #adceff;
+        border-top: 0;
+        background: #fff;
+    }
+</style>
+
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+    <TR height=28><TD background=images/title_bg1.jpg>当前位置:我的消息</TD></TR>
+    <TR><TD bgColor=#b1ceef height=1></TD></TR>
+    <TR height=20>
+        <TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+    </TR>
+</TABLE>
+<div style="padding-left:30px;padding-top:0px;background-color:white;width:100px;height:30px; ">
+
+</div>
+</br>
+<div id="search_activity" style="margin-left:20px;">
+    学年:
+    <select name="xuenian" id="xuenian">
+        <option value="0" >全部</option>
+        <option value="2013" <{if $xuenian == 2013}>selected="selected"<{/if}> >2013</option>
+        <option value="2014" <{if $xuenian == 2014}>selected="selected"<{/if}> >2014</option>
+        <option value="2015" <{if $xuenian == 2015}>selected="selected"<{/if}> >2015</option>
+        <option value="2016" <{if $xuenian == 2016}>selected="selected"<{/if}> >2016</option>
+        <option value="2017" <{if $xuenian == 2017}>selected="selected"<{/if}> >2017</option>
+        <option value="2018" <{if $xuenian == 2018}>selected="selected"<{/if}> >2018</option>
+    </select>
+    状态:
+    <select name="zhuangtai" id="zhuangtai">
+        <option value="10" <{if $zhuangtai==0 || $zhuangtai==10}>selected="selected"<{/if}> >全部</option>
+        <option value="12" <{if $zhuangtai==12}>selected="selected"<{/if}> >已读</option>
+        <option value="11" <{if $zhuangtai==11}>selected="selected"<{/if}> >未读</option>
+
+    </select>
+    &nbsp;
+    日期:
+    <input type="text" name="riqi" id="riqi" style="width:200px" class="Wdate"/>
+    &nbsp;
+    <input id ="search_button" type="button" value="查询" />
+</div>
+</br>
+<div id="info" style=" margin-left:10px;">
+    <font color="#CC0000"><{$result|default:""}></font>
+    <table id="mytable" cellspacing="0" >
+        <tr>
+            <th scope="col" width="50px" style="border-left:1px solid #adceff;" ><input type="checkBox" id="quanxuan" />全选</th>
+            <th scope="col" width="150px" >学年</th>
+            <th scope="col" width="400px" >消息内容</th>
+            <th scope="col" width="80px" >消息状态</th>
+            <th scope="col" width="80px" >时间</th>
+            <th scope="col" width="140px" >操作</th>
+        </tr>
+        <{section name=al loop=$list.list}>
+        <tr >
+            <td style="border-left:1px solid #adceff;" ><input type="checkBox" id="selectchecked[]" value="<{$list.list[al].id}>"/></td>
+            <td><{$list.list[al].xuenian}></td>
+            <td><{$list.list[al].mess_content}></td>
+            <td><{if $list.list[al].if_flag==0}>未读<{elseif $list.list[al].if_flag==1}>已读<{/if}></td>
+            <td><{$list.list[al].create_time}></td>
+            <td>
+                <a href="<{$web_url}>/mannkgn.php/adminmessage/dispose/id/<{$list.list[al].id}>/flag/1">[查看]</a>
+                <{if $list.list[al].if_flag==0}>
+                <a href="<{$web_url}>/mannkgn.php/adminmessage/dispose/id/<{$list.list[al].id}>/flag/2">[标为已读]</a>
+                <a href="<{$web_url}>/mannkgn.php/adminmessage/dispose/id/<{$list.list[al].id}>/flag/3">[删除]</a>
+                <{elseif $list.list[al].if_flag==1}>
+                <a href="<{$web_url}>/mannkgn.php/adminmessage/dispose/id/<{$list.list[al].id}>/flag/3">[删除]</a>
+                <{/if}>
+            </td>
+        </tr>
+        <{sectionelse}>
+        <tr >
+            <th class="spec" colspan="5">暂无活动！</td>
+        </tr>
+        <{/section}>
+    </table>
+</select>
+    <span id="msg2"></span>
+    <{page info=$list web_url=$web_url url="/mannkgn.php/adminmessage/getmymessage/page/<{$page}>/xuenian/<{$xuenian}>/riqi/<{$riqi}>/zhuangtai/<{$zhuangtai}>"}>
+</div>
+</body>
+</html>

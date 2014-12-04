@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+    <script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor-1.2.1.min.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor_lang/zh-cn.js"></script>
+    <title>通知公告类型维护</title>
+</head>
+
+<script type="text/javascript">
+    $(function() {
+        var editor = $('#content').xheditor({
+            upLinkUrl:"<{$web_url}>/common/upload.php",
+            upLinkExt:"zip,rar,txt",
+            upImgUrl:"<{$web_url}>/common/upload.php",
+            upImgExt:"jpg,jpeg,gif,png",
+            upFlashUrl:"<{$web_url}>/common/upload.php",
+            upFlashExt:"swf",
+            upMediaUrl:"<{$web_url}>/common/upload.php",
+            upMediaExt:"avi",
+            remoteImgSaveUrl:"<{$web_url}>/common/upload.php",
+            cleanPaste:2,
+            internalScript:false,
+            inlineScript:false,
+            internalStyle:false,
+            inlineStyle:false
+        });
+
+        $("#start").focus(function(){
+            WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+        });
+    });
+
+    function sub(){
+        var title=document.addForm.title.value;
+        var content= $('#content').val();
+        var time=document.addForm.time.value;
+        if(title==''||content==''||time==''){
+            alert('不能为空');
+        }else
+        if(title.length>30){
+            alert('标题不能超过30个字');
+
+        }else
+        if(content.length>4000){
+            alert('内容过长');
+        }else{
+            document.addForm.submit();
+        }
+    }
+
+</script>
+<body>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+    <TR height=28><TD background=images/title_bg1.jpg>当前位置:通知公告类型维护>修改</TD></TR>
+    <TR><TD bgColor=#b1ceef height=1></TD></TR>
+    <TR height=20>
+        <TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+    </TR>
+</TABLE>
+<form action="<{$web_url}>/mannkgn.php/notice/noticeEdit" method="post" name="addForm" enctype="multipart/form-data">
+<table>
+    <tr>
+        <td> 类型：</td>
+        <td>
+            <select name="type">
+                <{section name=no loop=$typeList}>
+                    <{if $typeList[no].nt_id == $noInfo[0].nt_id}>
+                    <option value="<{$typeList[no].nt_id}>" selected><{$typeList[no].nt_name}></option>
+                    <{else}>
+                    <option value="<{$typeList[no].nt_id}>"><{$typeList[no].nt_name}></option>
+                    <{/if}>
+                <{/section}>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td> 标题：</td>
+        <td><input type="text" name="title" value="<{$noInfo[0].notice_title}>"/></td>
+        <td style="color: #ff0000">文本输入，30字内，必填</td>
+    </tr>
+    <tr>
+        <td>活动内容：</td>
+        <td>
+            <textarea id="content" name="content" rows="15" cols="12" style="width: 60%"><{$noInfo[0].notice_content}></textarea>
+        </td>
+    </tr>
+	<{if $noInfo[0]['file_name']}>	
+	<tr>
+        <td>附件名：</td>
+        <td>原文件：<{$noInfo[0]['file_name']}><input type="file" name="file"/></td>
+        <input type="hidden" name="file1" value="<{$noInfo[0]['file_id']}>"/>
+    </tr>
+	<{else}>
+	<tr>
+        <td>附件：</td>
+        <td><input type="file" name="file"/></td>
+        <td style="color: #ff0000"></td>
+    </tr>
+	<{/if}>   
+    <tr>
+        <td>发布时间：</td>
+        <td><input id="start" name="time" class="Wdate" type="text"  value="<{$noInfo[0].notice_create_time}>" style="width: 155px"/></td>
+        <td style="color: #ff0000">选择当前时间点，可修改。必填。</td>
+    </tr>
+
+    </table>
+    <input type="hidden" name="notice_id" value="<{$noInfo[0].notice_id}>"/>
+    <input type="button" value="修改" onclick="sub()"/>
+</form>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/jquery-1.4.4.min.js"></script>
+    
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script src="<{$web_url}>/common/libs/highcharts/highcharts.js"></script>
+	<script src="<{$web_url}>/common/libs/highcharts/highcharts-more.js"></script>
+
+<script type="text/javascript">
+//location.href =  "http://www.baidu.com";
+$(function(){
+	alert("aaa");
+});
+
+function tab1(m){
+	// alert(m);
+	if(m == 1){
+		window.location.href = "<{$web_url}>/index.php/assessment/AssessmentResult/mod/huping";//"<{$web_url}>/index.php/assessment/AssessmentResult/mod/huping";
+	}else if(m == 2){
+		window.location.href = "<{$web_url}>/index.php/assessment/AssessmentResult/mod/taping";
+	}else{
+		window.location.href = "<{$web_url}>/index.php/assessment/AssessmentResult/mod/leida";
+	}   
+
+}
+
+function tab2(n){
+	alert(33);
+	if(n == 1){
+		$("#do_good").show();
+		$("#do_bad").hide();
+	}else( n == 2){
+		$("#do_good").hide();
+		$("#do_bad").show();
+	}
+}
+
+
+
+
+</script>
+</head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估>学年末评估</h3></div>
+  </div>
+<{assign var=lefttype value=5}>
+<{include file='assessment/xnm-left-function.html'}>
+  <div class="col-md-10">
+    <center><h3>评估结果</h3></center>
+	<div class="btn-group">
+	  <button type="button" class="btn btn-info" onclick="tab1(1)">互评结果</button>
+	  <button type="button" class="btn btn-info" onclick="tab1(2)">他评结果</button>
+	  <button type="button" class="btn btn-info" onclick="tab1(3)">雷达图</button>
+	</div>
+	<div id="mutual" style="margin-top:20px;">
+	  <table class="table table-bordered" style="margin-top:20px;">
+		<thead>
+		  <tr><th>指标</th><th>我的定性评价</th><th>互评定性评价</th></tr>
+		</thead>
+		<tbody>
+		  <{section name =n loop = $info}>
+		  <tr>
+		  <td><{$info[n].0}></td>
+		  <td><{$info[n].1}></td>
+		  <td><{$info[n].2}></td>
+		  </tr>
+		  <{/section}>
+		  </tbody>
+		</table>
+		<div class="btn-group">
+		  <button type="button" class="btn btn-info" onclick="tab2(1)">做的最好</button>
+		  <button type="button" class="btn btn-info" onclick="tab2(2)">最需改进</button>
+		</div>
+		<div id="do_good" style="margin-top:20px;">
+		  <table class="table table-bordered"> 
+		    <tr><td>1</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>2</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>3</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>4</td><td>aaaa3aaaaa</td></tr>
+		    <tr><td>5</td><td>aaaaaaaaa</td></tr>
+		  </table>
+		</div>
+		<div id="do_bad" style="margin-top:20px;display:none;">
+		  <table class="table table-bordered"> 
+		    <tr><td>1</td><td>bbbbbbbbbb</td></tr>
+		    <tr><td>2</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>3</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>4</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>5</td><td>aaaaaaaaa</td></tr>
+		  </table>
+		</div>
+	</div>
+	<div id="radar" style="margin-top:20px;display:none;">
+		<div id="container1" style="min-width: 400px; max-width: 600px; height: 400px;float:left;"></div>
+		<div id="container2" style="min-width: 400px; max-width: 600px; height: 400px;float:right;"></div>
+	</div>
+	
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

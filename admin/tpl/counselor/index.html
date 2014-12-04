@@ -1,0 +1,731 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+<title>辅导员评估工作</title>
+<style type="text/css"> 
+.leibie-container{margin-left:10px;  height:27px; width:auto; border-left: #999 double 1px; }
+.leibie{cursor:pointer; width:100px; height:25px; line-height:25px;border-right: #999 double 1px; border-bottom: #999 double 1px; border-top: #999 double 1px; float:left; text-align:center; background:#E7E7E7;}
+.leibie:hover{background:#FCF1CA;}
+.leibie-selected{	width:100px; height:25px; line-height:25px;border-right: #999 double 1px;border-bottom: #999 double 1px; border-top: #999 double 1px; float:left; text-align:center; background: #FCF1CA;}
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+}  
+.jindu{position:relative; border:1px #CCC solid; height:28px; width:240px; margin:0 auto; padding:1px;float:left;}
+.jindu_text{margin:0px 0px 0px 5px; width:100px; height:28px; line-height: 20px; font-size:10px;float:left;}
+.jindu-weiqidong{ display:block;width:0px; height:28px;}
+.jindu-daishenhe{ display:block;width:48px; height:28px;background:#FFCC99;}
+.jindu-gognshi{ display:block;width:96px; height:28px;background:#FFFF99;}
+.jindu-xuanjiang{ display:block;width:144px; height:28px;background:#CCCCFF;}
+.jindu-pinggu{ display:block;width:192px; height:28px;background:#9900FF;}
+.jindu-jiesu{ display:block;width:240px; height:28px;background:#008000;}
+.mask{height:100%; width:100%; position:fixed; _position:absolute; top:0; z-index:1000;  opacity:0.5; filter: alpha(opacity=50); background-color:#000; display:none;}
+.pop{width:560px;position:absolute; left:100px; top:100px;margin-top:10px; margin-left:200px; border-top:#F50 solid 2px; border-left:1px solid #CCC; border-right:1px solid #CCC; border-bottom:1px solid #CCC; background:#F0F5FB;z-index:1001; display:none;}
+.pop-form-header{ width:560px; border-bottom:solid #999 1px;}
+.add-pop-form-title{float:left;text-align:left; padding:2px 5px; width:500px; }
+.pingshen-container{ padding:5px 0px; margin:5px 10px;}
+.pingshen-title{ font-size:12px; line-height:22px; color:#000; text-align:right; width:100px; float:left;}
+.pingshen-input{ font-size:12px; color:#000; text-align:left; margin:0px 10px 0px 10px; width:300px; min-height:20px;  float:left;}
+.meau-container{ padding:5px 0px; margin:5px 10px;border-bottom: 1px dotted #DDD;width:400px;height:40px;}
+.pingshen-meau{ font-size:12px; color:#000; text-align:left; width:600px; height:40px;min-height:20px;  float:left;}
+.pingshen-meau-btn{cursor:pointer;font-size:11px;background:#DBEAF9; margin:0px 10px 0px 10px; border:1px solid #CCC; text-align:center; width:88px;height:20px;float:left;}
+.pingshen-meau-btn:hover{background:#FCF1CA;}
+.closebtn{ float:right; text-align:right; padding:2px 5px;width:30px;cursor:pointer;  font-size:11px; line-height:20px; color:#000; background:#DBEAF9; border:1px solid #CCC;}
+.closebtn:hover{background:#FCF1CA;}
+#pop-info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#pop-info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#pop-info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+} 
+</style> 
+<script type="text/javascript">
+	$(function(){
+		$(".leibie").click(function(){
+			//alert("111");
+			var type_id = $(this).attr("data");
+			$(".leibie-selected").removeClass("leibie-selected");
+			$(this).addClass("leibie-selected");
+			location.href="<{$web_url}>/mannkgn.php/counselor/index/type/"+type_id;
+		});
+		$(".process").change(function(){
+			var id = $(this).attr('data');
+			var process_id = $(this).val();
+            var isnew=$("#isnew").val();
+			//alert(id + process_id);
+			$.ajax({
+				url:"<{$web_url}>/mannkgn.php/Counselor/setstate",
+				type:"POST",
+				data:{id:id, state:process_id,isnew:isnew},
+				async:false,
+				dataType:"json",
+				success:function(data){
+					if (data.json.state == 1){
+						alert("设置成功");
+					}else{
+						alert("设置失败");
+					}
+				},
+				error:function(msg){
+					alert("网络出现问题！");
+				}
+			});
+		});
+		
+		//$("#start").bind('focus',function(){
+			//alert("111");
+		//	WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+		//});
+		
+		//$("#end").bind('focus',function(){
+			//WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+		//});
+	});
+	function piliangPass(){
+		//alert($(".checkbox-mes:checked").length);
+		if ($(".checkbox-mes:checked").length > 0){
+			var str = "";
+			$(".checkbox-mes:checked").each(function(index,doEle){
+				//.alert($("doEle").val());
+				if (index == $(".checkbox-mes:checked").length - 1){
+					str += $(doEle).attr("data");
+				}else{
+					str += $(doEle).attr("data")+",";
+				}
+			});
+			$.ajax({
+				url:"<{$web_url}>/mannkgn.php/counselor/passselfplan",
+				type:"POST",
+				data:{id:str},
+				async:false,
+				dataType:"json",
+				success:function(data){
+					if (data.json.state == 1){
+						alert("批量通过成功！");
+						location.href="<{$web_url}>/mannkgn.php/counselor/index/type/<{$type}>";
+					}else {
+						alert("批量通过失败！");
+					}
+				},
+				error:function(msg){
+					alert("网络出现问题！");
+				}
+			});
+		}else{
+			alert("你没有选择任何学生！");
+		}
+	}
+	
+	function addpingshen(majorid, nianji, majorName){
+        //alert("请选择用户名");
+		$("#mask").show();
+		$("#pop").show();
+		var title = nianji + "级-" + majorName + "-评审委员账号申请";
+		$("#pop-title").html(title);
+		$("#hidden-major").val(majorid);
+		$("#hidden-grade").val(nianji);
+	}
+	
+	function cancel(){
+		$("#pop-title").val("");
+		$("#pop-realname").val("");
+		$("#hidden-major").val("");
+		$("#hidden-grade").val("");
+		$("#renyuanleixing").val("");
+		$("#pop-username").val("");
+		$("#pop-pw").val("");
+		$("#pop-repw").val("");
+		$("#mask").hide();
+		$("#pop").hide();
+	}
+	
+	function saveshenhe(){
+		var realname = $("#pop-realname").val();
+		var major_id = $("#hidden-major").val();
+		var nianji = $("#hidden-grade").val();
+		var leixing = $("#renyuanleixing").val();
+		var username = $("#pop-username").val();
+		var pw = $("#pop-pw").val();
+		var repw = $("#pop-repw").val();
+		if (realname == ""){
+			alert("请填写姓名");
+			$("#pop-realname").focus();
+		}else if (leixing == ""){
+			alert("请选择类型");
+			$("#renyuanleixing").focus();
+		}else if (username == ""){
+			alert("请选择用户名");
+			$("#pop-username").focus();;
+		}else if(pw == ""){
+			alert("请填写密码");
+			$("#pop-pw").focus();
+			flag = false;
+			return false;
+		}else if (repw == ""){
+			alert("请确认密码");
+			$("#pop-repw").focus();
+		}else if (pw != repw){
+			alert("密码不一致");
+			$("#pop-pw").focus()
+		}else {
+			$.ajax({
+				url:"<{$web_url}>/mannkgn.php/counselor/addpingshen",
+				type:"POST",
+				data:{name:realname, major:major_id, grade:nianji, type:leixing, code:username, password:pw},
+				async:false,
+				dataType:"json",
+				success:function(data){
+					if (data.json.state == 1){
+						alert("添加成功！");
+						$("#pop-title").val("");
+						$("#pop-realname").val("");
+						$("#hidden-major").val("");
+						$("#hidden-grade").val("");
+						$("#renyuanleixing").val("");
+						$("#pop-username").val("");
+						$("#pop-pw").val("");
+						$("#pop-repw").val("");
+						$("#mask").hide();
+						$("#pop").hide();
+						location.href="<{$web_url}>/mannkgn.php/counselor/index/type/2";
+					}else{
+						alert(data.json.msg);
+					}
+				},
+				error:function(msg){
+					alert("网络出现问题!");
+				}
+			});
+		}
+	}	
+	
+	function changeTime(gdid){
+		var str = "<input id=\"start\" name=\"start\"  onfocus=\"showData('start')\" class=\"Wdate\" type=\"text\" style=\"width:200px; height:20px;\" />至";
+		str += "<input id=\"end\" name=\"end\" onfocus=\"showData('end')\" class=\"Wdate\" type=\"text\" style=\"width:200px; height:20px;\" />";
+		str += "<input type=\"button\" value=\"确定\" onclick=\"quedingTime("+gdid+")\" />";
+		$("#shiduan-"+gdid).html(str);	
+	}
+	function showData(elemId){
+		WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+	}
+	
+	function quedingTime(gdid){
+		var begin = $("#start").val();
+		var end = $("#end").val();
+		//alert(end);
+		//var url = "<{$web_url}>/mannkgn.php/changemajortime?id="+gdid+"&start="+begin+"&end="+end;
+		//alert(url);
+		$.ajax({
+			url:"<{$web_url}>/mannkgn.php/Counselor/changemajortime",
+			type:"POST",
+			data:{id:gdid, start:begin, end:end},
+			async:false,
+			dataType:"json",
+			success:function(data){
+				if (data.json.state == 1){
+					alert("修改成功");
+					var str = begin + "至" + end;
+					str += "<input type=\"button\" value=\"修改\" onclick=\"changeTime("+gdid+")\" />";
+					$("#shiduan-"+gdid).html(str);
+				}else {
+					alert(data.json.msg);
+				}
+			},
+			error:function(msg){
+				alert("网络出现问题");
+			}
+		});
+	}
+	function feedback(id){
+		var select_id = $("#pinggutonggao").val();
+		location.href = "<{$web_url}>/mannkgn.php/counselor/feedback/id/"+id+"/aid/"+select_id; 
+	}
+	function seepswy(num,mid,$name,grade){
+		if (num == 0){
+			alert("目前没有评审委员账号");
+		}else{
+			$("#mask").show();
+			$("#pswy-pop").show();
+			var title = grade+"级-"+$name+"-评审委员会账号"; 
+			$("#pswy-title").html(title);
+			var str = "<tr>";
+			str += "<th scope=\"col\" width=\"80px\" style=\"border-left:1px solid #adceff;\" >序号</th>";
+			str += "<th scope=\"col\" width=\"100px\" >姓名</th>";
+			str += "<th scope=\"col\" width=\"200px\" >人员类型</th>";
+			str += "<th scope=\"col\" width=\"80px\" >用户名</th>";
+			str += "<th scope=\"col\" width=\"80px\" >操作</th>";
+		    str += "</tr>"; 
+		    //var url = "<{$web_url}>/mannkgn.php/counselor/seepswy/major/"+mid+"/grade/"+grade;
+		    //alert(url);
+			$.ajax({
+				url:"<{$web_url}>/mannkgn.php/counselor/seepswy",
+				data:{major:mid, grade:grade},
+				type:"POST",
+				async:false,
+				dataType:"json",
+				success:function(data){
+					if (data.json.state == 1){
+						$.each(data.json.data, function(i,item){
+							str += "<tr>";
+							var j = i + 1;
+							str += "<td style=\"border-left:1px solid #adceff;\" >"+j+"</td>";
+							str += "<td>"+item.fu_realname+"</td>";
+							str += "<td>"+item.fu_type+"</td>";
+							str += "<td>"+item.fu_username+"</td>";
+							str += "<td><a href=\"#\" onclick=\"shanchupswy(this,"+item.fu_id+")\">删除</a></td>";
+							str += "</tr>";
+						});
+						$("#pop-mytable").html(str);
+					}else{
+						str += "<tr>";
+						str += "<th class=\"spec\" colspan=\"5\">获取信息出错！</td>";
+						str += "</tr>";
+						$("#pop-mytable").html(str);
+					}
+				},
+				error:function(msg){
+					alert("网路出现问题！");
+					str += "<tr>";
+					str += "<th class=\"spec\" colspan=\"5\">网络出现错误！</td>";
+					str += "</tr>";
+					$("#pop-mytable").html(str);
+				}
+			});
+		}
+	}
+	function pswyclose(){
+		$("#pswy-title").html("");
+		$("#pop-mytable").html("");
+		$("#mask").hide();
+		$("#pswy-pop").hide();
+	}
+	
+	function shanchupswy(objBtn, id){
+		 if (!confirm("确定要删除！")){
+			 return false;
+		 }
+		 $.ajax({
+			url:"<{$web_url}>/mannkgn.php/counselor/delpswy/id/"+id,
+			type:"POST",
+			async:false,
+			dataType:"json",
+			success:function(data){
+				if (data.json.state == 1){
+					 var tb = document.getElementById('pop-mytable');
+					 var tr = objBtn.parentNode.parentNode;
+					 tb.deleteRow(tr.rowIndex);
+					alert("删除成功！");
+				}else{
+					alert("删除失败！");
+				}
+			},
+			error:function(msg){
+				alert("网络出现问题！");
+			}
+		 });
+	}
+	function chaxun(){
+		//alert(111);
+		var selectId = $("#pinggutonggao").val();
+		var majorId = $("#xuesheng_zhuanye").val();
+		var grade = $("#xuesheng_nianji").val();
+		//alert(grade);
+		var name = $("#xingming_text").val();
+		location.href="<{$web_url}>/mannkgn.php/Counselor/index?type=5&selected="+selectId+"&grade="+grade+"&major="+majorId+"&name="+name;
+	}
+
+function chaxun_banji(){
+    var selectid = $("#pingguxiangmu").val();
+    location.href="<{$web_url}>/mannkgn.php/Counselor/index?type=2&selected="+selectid;
+}
+</script>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background=images/title_bg1.jpg>当前位置:辅导员评估工作</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+		</TR>
+	</TABLE>
+	<div id="leibie-container" class = "leibie-container" >
+		<div <{if $type == 1}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="1">学院评估小组维护</div>
+		<div <{if $type == 2}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="2">评估工作安排</div>
+		<div <{if $type == 3}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="3">未参评学生维护</div>
+		<div <{if $type == 4}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="4">审批成长训练计划</div>
+		<div <{if $type == 5}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="5">评估结果及反馈</div>
+		<div style="clear:both;" ></div>
+	</div>
+	<{if $type == 1}>
+	</br>
+	<div style="padding-left:30px;padding-top:0px;background-color:white;width:100px;height:30px; ">
+		<a href ="<{$web_url}>/mannkgn.php/counselor/adduser" >新增评估人员</a>
+	</div>
+	</br>
+	<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="100px" >职工号/学号</th> 
+    			<th scope="col" width="100px" >姓名</th>   
+    			<th scope="col" width="100px" >人员类型</th>
+    			<th scope="col" width="80px" >维护人</th>
+    			<th scope="col" width="80px" >维护时间</th>
+    			<th scope="col" width="120" >操作</th>
+  			</tr>  
+  			<{section name=fl loop=$list.list}>
+ 		 	<tr >  
+    			<td style="border-left:1px solid #adceff;" ><{$list.list[fl].admin_id}></td>
+    			<td><{$list.list[fl].admin_name}></td>
+    			<td><{$list.list[fl].admin_realname}></td>
+    			<td><{$list.list[fl].admin_type}></td>
+    			<td><{$list.list[fl].create_real_name}></td>
+    			<td><{$list.list[fl].admin_create_time}></td>
+			<td>
+		    	<a onClick="if (confirm('确认要删除？')) return true; else return false;" href="<{$web_url}>/mannkgn.php/Counselor/index/type/1/do/del/id/<{$list.list[fl].admin_id}>">删除</a>
+			</td>
+  		</tr>  
+  		<{sectionelse}>
+ 		 <tr >
+    		<th class="spec" colspan="7">暂无评估小组人员！</td>
+  		</tr>
+  		<{/section}>
+	</table> 
+	<{page info=$list web_url=$web_url url="/mannkgn.php/counselor/index/type/<{$type}>"}> 
+	</div>
+	<{else if $type == 2}>
+		</br>
+    <div style="width:300px;height:30px">
+        <div id="notice_search" style="margin-left:20px;float: left">
+            <input id="isnew" type="text" style="display: none" value="<{$isnew}>"/>
+            评估:
+            <select name="pingguxiangmu" id="pingguxiangmu">
+                <option value="0" <{if $isnew==0}> selected="selected" <{/if}>>学年末评估</option>
+                <option value="1" <{if $isnew==1}> selected="selected" <{/if}>>新生入学</option>
+            </select>
+        </div>
+        <div id="anniu_search" style="margin-left:20px;float: right">
+            <input type="button" id= "chaxuan_bj" onclick="chaxun_banji();" style="width:80px; height:25px;" value="查询" />
+        </div>
+    </div></br>
+	<div style="padding-left:30px;padding-top:0px;background-color:white;width:800px;height:30px; ">
+		<{$info.title}>&nbsp;学院评估时段为：<{$info.begin}>--<{$info.end}>
+	</div>
+	</br>
+	<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>
+                <th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>
+                <th scope="col" width="100px" >专业</th>
+    			<th scope="col" width="50px" >年级</th>   
+    			<th scope="col" width="650px" >评估时间段设计</th>
+                <{if $isnew==0}><th scope="col" width="100px" >评审委员账号</th><{/if}>
+    			<th scope="col" width="100px" >进度</th>
+    			<th scope="col" width="80" >评估情况</th>
+  			</tr>  
+  			<{section name = gl loop=$list.list}>
+ 		 	<tr data="<{$list.list[gl].gd_id}>" >
+               <{if  $list.list[gl].gd_id}>
+    			<td style="border-left:1px solid #adceff;" ><{$list.list[gl].gd_id}></td>
+    			<td><{$list.list[gl].major_name}></td>
+    			<td id="nianji-<{$list.list[gl].gd_id}>"><{$list.list[gl].gd_grade}></td>
+    			<td id="shiduan-<{$list.list[gl].gd_id}>">
+    				<{if $list.list[gl].gd_begin == "" || $list.list[gl].gd_begin == "0000-00-00 00:00:00"}> 
+    				<{$info.begin}>至<{$info.end}>
+    				<{else}>
+    				<{$list.list[gl].gd_begin}>至<{$list.list[gl].gd_end}>
+    				<{/if}>                
+    				<input type="button" value="修改" onclick="changeTime(<{$list.list[gl].gd_id}>)" />
+    			</td>
+                <{if $isnew==0}><td><a href="#" onclick="seepswy(<{$list.list[gl].num}>,<{$list.list[gl].major_id}>,'<{$list.list[gl].major_name}>','<{$list.list[gl].gd_grade}>')">已有<{$list.list[gl].num}>人</a><input id="btn-<{$list.list[gl].gd_id}>" data="btn-<{$list.list[gl].gd_id}>" major="btn-<{$list.list[gl].major_id}>" type="button" value="+" onclick="addpingshen('<{$list.list[gl].major_id}>','<{$list.list[gl].gd_grade}>','<{$list.list[gl].major_name}>')"/></td><{/if}>
+    			<td>
+    			 <select class = "process" data="<{$list.list[gl].gd_id}>">
+    			 	<{if $isnew == 1}>
+    			 	 <option value="0" <{if $list.list[gl].gd_state == 0}>selected="selected"<{/if}>>未启动</option>
+    				 <option value="1" <{if $list.list[gl].gd_state == 1}>selected="selected"<{/if}>>自评</option>
+    				 <option value="3" <{if $list.list[gl].gd_state == 3}>selected="selected"<{/if}>>辅导员反馈</option>
+    				 <option value="4" <{if $list.list[gl].gd_state == 4}>selected="selected"<{/if}>>完成</option>
+    			 	<{else}>
+    				 <option value="0" <{if $list.list[gl].gd_state == 0}>selected="selected"<{/if}>>未启动</option>
+    				 <option value="1" <{if $list.list[gl].gd_state == 1}>selected="selected"<{/if}>>自评</option>
+    				 <option value="2" <{if $list.list[gl].gd_state == 2}>selected="selected"<{/if}>>班级公开展示</option>
+    				 <option value="3" <{if $list.list[gl].gd_state == 3}>selected="selected"<{/if}>>结果统计和反馈</option>
+    				 <option value="4" <{if $list.list[gl].gd_state == 4}>selected="selected"<{/if}>>完成</option>
+    				 <{/if}>
+    			</td>
+				<td>
+		    	<{if $isnew==0}><a href="<{$web_url}>/mannkgn.php/counselor/classdetail/id/<{$list.list[gl].gd_id}>/type_stu/0">查看</a><{else}><a href="<{$web_url}>/mannkgn.php/counselor/classdetail/id/<{$list.list[gl].gd_id}>/type_stu/3">查看<{/if}>
+				</td>
+                <{else}>
+                <th class="spec" colspan="7">没有开始评估！</td>
+                <{/if}>
+  			</tr> 
+  			<{sectionelse}>
+  			 	<th class="spec" colspan="7">没有开始评估！</td>
+  			<{/section}>
+		</table> 
+		<{page info=$list web_url=$web_url url="/mannkgn.php/counselor/index/type/<{$type}>"}> 
+	</div>
+	<{else if $type == 3}>
+	</br>
+	<div style="padding-left:30px;padding-top:0px;background-color:white;width:100px;height:30px; ">
+		<a href ="<{$web_url}>/mannkgn.php/counselor/addnopartstu">添加</a>
+	</div>
+	</br>
+	<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="150px" >学年</th> 
+    			<th scope="col" width="100px" >年级</th>  
+    			<th scope="col" width="150px" >专业</th>  
+    			<th scope="col" width="100px" >姓名</th>
+    			<th scope="col" width="130px" >学号</th>
+    			<th scope="col" width="80px" >操作</th>
+  			</tr>  
+  			<{section name=sl loop=$list.list}>
+ 		 	<tr >  
+    			<td style="border-left:1px solid #adceff;" ><{$list.list[sl].nps_id}></td>
+    			<td><{$list.list[sl].nps_xuenian}></td>
+    			<td><{$list.list[sl].nps_grade}></td>
+    			<td><{$list.list[sl].major_name}></td>
+    			<td><{$list.list[sl].nps_name}></td>
+    			<td><{$list.list[sl].nps_no}></td>
+			<td>
+		    	<a href="<{$web_url}>/mannkgn.php/counselor/editnopartstu/id/<{$list.list[sl].nps_id}>">修改</a>
+			</td>
+  		</tr>  
+  		<{sectionelse}>
+ 		 <tr >
+    		<th class="spec" colspan="7">暂无未参评学生！</td>
+  		</tr>
+  		<{/section}>
+	</table> 
+	<{page info=$list web_url=$web_url url="/mannkgn.php/counselor/index/type/<{$type}>"}> 
+	</div>
+	<{else if $type == 4}>
+	</br>
+	<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="100px" >年级</th> 
+    			<th scope="col" width="100px" >专业</th>   
+    			<th scope="col" width="100px" >姓名</th>
+    			<th scope="col" width="80px" >学号</th>
+    			<th scope="col" width="80px" >提交时间</th>
+    			<th scope="col" width="120" >操作<input type="button" id="shenhe_button" onclick="piliangPass();" value="批量通过" /></th>
+  			</tr>  
+  			<{section name=pl loop=$list.list}>
+ 		 	<tr >  
+    			<td style="border-left:1px solid #adceff;" >
+    			<input id="mes-checkbox<{$list.list[pl].id}>"  type="checkbox" onclick="isChecked(<{$list.list[pl].id}>)" name="mes-checkbox" class="checkbox-mes" value="1" data="<{$list.list[pl].id}>"/>
+    			<{$list.list[pl].id}>
+    			</td>
+    			<td><{$list.list[pl].fu_grade}></td>
+    			<td><{$list.list[pl].major_name}></td>
+    			<td><{$list.list[pl].fu_realname}></td>
+    			<td><{$list.list[pl].fu_username}></td>
+    			<td><{$list.list[pl].create_time}></td>
+				<td>
+					<{if $list.list[pl].state == 2}>
+		    		<a href="<{$web_url}>/mannkgn.php/counselor/shenhe/id/<{$list.list[pl].id}>">审批</a>
+					<{/if}>
+				</td>
+  			</tr>  
+  			<{sectionelse}>
+ 		 	<tr >
+    			<th class="spec" colspan="7">暂无需要审批学生！</td>
+  			</tr>
+  			<{/section}>
+		</table> 
+		<{page info=$list web_url=$web_url url="/mannkgn.php/counselor/index/type/<{$type}>"}> 
+	<{else if $type == 5}>
+		</br>
+	<div id="notice_search" style="margin-left:20px;">
+		评估:
+		<select name="pinggutonggao" id="pinggutonggao"> 
+		<{section name = pgtgl loop = $noticelist}>
+		<option value="<{$noticelist[pgtgl].asspro_id}>" <{if $select == $noticelist[pgtgl].asspro_id}>selected="selected"<{/if}> ><{$noticelist[pgtgl].asspro_title}></option>
+		<{/section}>
+		</select>
+	</div>
+	</br>
+	<div id="xuesheng_search" style="margin-left:20px;">
+		年级:
+		<select name="xuesheng_nianji" id="xuesheng_nianji"> 
+		<option value="0" <{if $grade == 0}>selected="selected"<{/if}>>所有</option>
+		<option value="2007" <{if $grade == 2007}>selected="selected"<{/if}>>2007</option>
+		<option value="2008" <{if $grade == 2008}>selected="selected"<{/if}>>2008</option>
+		<option value="2009" <{if $grade == 2009}>selected="selected"<{/if}>>2009</option>
+		<option value="2010" <{if $grade == 2010}>selected="selected"<{/if}>>2010</option>
+		<option value="2011" <{if $grade == 2011}>selected="selected"<{/if}>>2011</option>
+		<option value="2012" <{if $grade == 2012}>selected="selected"<{/if}>>2012</option>
+		<option value="2013" <{if $grade == 2013}>selected="selected"<{/if}>>2013</option>
+		<option value="2014" <{if $grade == 2014}>selected="selected"<{/if}>>2014</option>
+        <option value="2015" <{if $grade == 2015}>selected="selected"<{/if}>>2015</option>
+        <option value="2016" <{if $grade == 2016}>selected="selected"<{/if}>>2016</option>
+		</select>
+		&nbsp;
+		专业：
+		<select name="xuesheng_zhuanye" id="xuesheng_zhuanye"> 
+		<option value="0" selected="selected">所有</option>
+		<{section name = zyl loop = $majorlist}>
+		<option value="<{$majorlist[zyl].major_id}>" <{if $major == $majorlist[zyl].major_id}>selected="selected"<{/if}> ><{$majorlist[zyl].major_name}></option>
+		<{/section}>
+		</select>
+	</div>
+	</br>
+	<div id="anniu_search" style="margin-left:20px;">
+		姓名：<input type="text" id= "xingming_text" style="width:100px; height:20px;" value="" />
+		&nbsp;
+		<input type="button" id= "shousuo" onclick="chaxun()" style="width:80px; height:25px;" value="查询" />
+	</div>
+	</br>
+	<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="80px" >学号</th> 
+    			<th scope="col" width="120px" >姓名</th>   
+    			<th scope="col" width="150px" >公指标</th>
+    			<{section name = nl loop = $nenglist}>
+    				<th scope="col" width="150px" ><{$nenglist[nl]}></th>
+    			<{/section}>
+    			<th scope="col" width="150px" >操作</th>
+  			</tr>  
+  			<{section name = ul loop = $list.list}>
+  				<tr>
+  					<td style="border-left:1px solid #adceff;"><{$smarty.section.ul.index_next}></td>
+  					<td><{$list.list[ul].fu_username}></td>
+  					<td><a href="<{$web_url}>/mannkgn.php/common/index/fuid/<{$list.list[ul].fu_id}>/isnew/<{$isnew}>"><{$list.list[ul].fu_realname}></a></td>
+  					<{section name = snl loop = $list.list[ul].score}>
+  						<td><{$list.list[ul].score[snl]}></td>
+  					<{/section}>
+  					<{if $list.list[ul].isfb == 1}>
+  					<td><a href="<{$web_url}>/mannkgn.php/counselor/feedbackdetail/id/<{$list.list[ul].pid}>">查看反馈</a></td>
+  					<{else}>
+  					<td><a href="#" onclick="feedback(<{$list.list[ul].fu_id}>)">反馈</a></td>
+  					<{/if}>
+  				</tr>
+  			<{sectionelse}>
+  				<th class="spec" colspan="<{$num}>">暂无评估学生！</td>
+  			<{/section}>
+		</table> 
+		<{page info=$list web_url=$web_url url="/mannkgn.php/counselor/index/type/<{$type}>/selected/<{$select}>/grade/<{$grade}>/major/<{$major}>/name/<{$name}>"}> 
+	</div>
+	<{/if}>
+	<div id="mask" class="mask"></div>
+	<div id = "pop" class="pop">
+		<div class="add-pop-form-header">
+			<div class="add-pop-form-title" id="pop-title"></div>
+    		<div style="clear:both;"></div>
+    	</div>
+    	</br>
+		<div class="pingshen-container" >  
+			<div class="pingshen-title">姓名:</div>
+			<div class="pingshen-input">
+				<input type="text" id="pop-realname" value="" style="width:100px; height:20px" />
+				<input type="hidden" id="hidden-major" value="" />
+				<input type="hidden" id="hidden-grade" value="" />
+				</div>
+			<div style="clear:both;"></div>
+ 		</div>
+ 		<div class="pingshen-container" >  
+			<div class="pingshen-title">人员类型:</div>
+			<div class="pingshen-input">
+				<select id="renyuanleixing" name="renyuanleixing">
+					<option value="">请选择</option>
+					<option value="学生代表">学生代表</option>
+					<option value="辅导员">辅导员</option>
+					<option value="专业教师">专业教师</option>
+					<option value="班导师（班主任）">班导师（班主任）</option>
+					<option value="校友代表">校友代表</option>
+					<option value="用人单位代表">用人单位代表</option>
+					<option value="高年级学生">高年级学生</option>
+					<option value="其他">其他</option>
+				</select>
+			</div>
+			<div style="clear:both;"></div>
+ 		</div>
+ 		<div class="pingshen-container" >  
+			<div class="pingshen-title">用户名:</div>
+			<div class="pingshen-input"><input id="pop-username" value="" type="text" style="width:100px; height:20px" /></div>
+			<div style="clear:both;"></div>
+ 		</div>
+ 		<div class="pingshen-container" >  
+			<div class="pingshen-title">密码:</div>
+			<div class="pingshen-input"><input id="pop-pw" value="" type="password" style="width:150px; height:20px" /></div>
+			<div style="clear:both;"></div>
+ 		</div>
+ 		<div class="pingshen-container" >  
+			<div class="pingshen-title">确认密码:</div>
+			<div class="pingshen-input"><input id="pop-repw" type="password" value="" style="width:150px; height:20px" /></div>
+			<div style="clear:both;"></div>
+ 		</div>
+ 		  <div class ="meau-container">
+       		<div class="pingshen-meau">
+       			<div style="margin-left:100px;margin-top:10px;height:20px; float:left;">
+       				<div class="pingshen-meau-btn" id="btn-ok" onclick="saveshenhe()">保存</div>
+       				<div class="pingshen-meau-btn" onclick="cancel()">取消</div>
+       			</div>
+       		</div>
+       	</div>
+	</div>
+	
+	<div id= "pswy-pop" class="pop">
+		<div class="add-pop-form-header">
+			<div class="add-pop-form-title" id="pswy-title"></div>
+			<div class="closebtn" id="closebtn" onclick="pswyclose();">关闭</div>
+    		<div style="clear:both;"></div>
+    	</div>
+    	</br>
+		<div id="pop-info" style=" margin-left:10px;">
+			<table id="pop-mytable" cellspacing="0" >    
+			</table> 
+ 		</div>
+ 		</br>
+	</div>
+</body>
+</html>

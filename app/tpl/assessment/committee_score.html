@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+  </head>
+  <script type="text/javascript">
+  	$(function(){
+  		$("#but").click(function(){
+  			$a = $(".yesORno").text();
+  			$b = new RegExp("否","g");
+  			$r = $a.match($b);
+  			var str = "";
+  			$("td[id='userid']").each(function(){
+  				var num = $(this).html();
+  				str += num+","; 
+  			})
+  			if($r == null){
+  				$("#but").hide();
+  				$(".bttn").attr("disabled", "disabled");
+  	  			$(".bttn").css("color","#999999");
+				$.ajax({
+					url:"<{$web_url}>/index.php/Assessment/updateCommit",
+					type:"POST",
+					data:({'str':str}),
+					async:false,
+					success:function(){
+					}
+				})
+  			}else{
+  				$(".prompt").show();
+  			}
+  		});
+  		$("#btn02").click(function(){
+  			var num = $(".num").val();
+  			$.ajax({
+  				url:"<{$web_url}>/index.php/Assessment/getstudent",
+  				type:"POST",
+				data:({'num':num}),
+				async: false,
+				dataType:"json",
+				success:function(obj){
+					if(obj.json.state == 0){
+                        document.getElementById("content").innerHTML="没有此学生信息！";
+						$("#stu_info").hide();
+                        $("#page").hide();
+                        $("#content").show();
+					}else{
+                        var innerHtml='';
+                        for(var i=0;i<obj.json.data.length;i++){
+                            innerHtml+= '<tr>';
+                            innerHtml+="<td id='cxid'>"+(i+1)+"</td>";
+                            innerHtml+="<td id='cxrn'>"+obj.json.data[i].bks_name+"</td>";
+                            innerHtml+="<td id='cxun'>"+obj.json.data[i].bks_code+"</td>";
+                            innerHtml+="<td class='yesORno' id='cxyp'>"+obj.json.data[i].fu_salt+"</td>";
+                            var id = obj.json.data[i].fu_id;
+                            var  url="<{$web_url}>/index.php/assessment/CommitteeDetail/id/"+id;
+                            innerHtml+="<td><a id='cxlj' class='btn btn-default btn-xs active bttn' role='button' href='"+url+"'>评价</a></td>";
+                            innerHtml+="</tr>";
+                        }
+                        $("#stu_info").show();
+                        $("#content").hide();
+                        $("#page").hide();
+                        document.getElementById("chaxun").innerHTML=innerHtml;
+					}
+
+				}
+  			})
+  		});
+  	});
+
+    function skip(){
+        var totalPage = parseInt('<{$stuList.totalPage}>');
+        var num = $("#num").val();
+        var pattern = /^([0-9]+)$/;
+        if(num==""){
+            alert("请输入页数！");
+        }else if(!pattern.test(num)){
+            alert("请输入数字！");
+        }else if(num > totalPage){
+            alert("超过最大页码");
+        }else{
+            location.href="<{$web_url}>/index.php/assessment/Committee/page/"+num;
+        }
+    }
+  </script>
+<body>
+<{include file='header.html'}>
+<div class="row" style="padding-top:15px; padding-bottom:15px;">
+
+<p id="err" style="display:none"><{$err}></p>
+
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估>评委评价</h3></div>
+  </div>
+  <div class="col-md-1">
+  </div>
+  <div class="col-md-11">
+    <table class="table" style="border:1px solid #ddd;"><tr>
+      	<td>姓名：</td><td><input class="form-control num" id="search"></td>
+      	<td><button name = "username" type="button" class="btn btn-default" id="btn02">查询</button></td>
+    </tr></table>
+      <{if isset($no_stu)}>
+      没有需要您评价的学生!
+      <{else}>
+	<table  id="stu_info" class="table table-bordered table-hover">
+  	  <thead style="background-color:#e7e7e7;color:#2E3641;">
+  	  	<td>序号</td>
+  	  	<td>姓名</td>
+  	  	<td>学号</td>
+  	  	<td>是否评价</td>
+  	  	<td>定性评价</td>
+  	  </thead>
+  	  <tbody id="chaxun" style="color:#666666;">
+
+       <{section name=stu loop=$stuList['list']}>
+        <tr>
+            <td><{$smarty.section.stu.rownum}></td>
+            <td id="name"><{$stuList['list'][stu].bks_name}></td>
+            <td><{$stuList['list'][stu].bks_code}>‎</td>
+            <td class="yesORno"><{$stuList['list'][stu].fu_salt}>‎</td>
+            <td><a class="btn btn-default btn-xs active bttn" role="button" href="<{$web_url}>/index.php/assessment/CommitteeDetail/id/<{$stuList['list'][stu].fu_id}>">评价</a></td>
+        </tr>
+        <{/section}>
+  	  </tbody>
+	</table>
+      <{if $stuList['list']}>
+      <div style="text-align:center;margin-top:20px" id="page">
+          <{if $stuList.page>1}>
+          <a href="<{$web_url}>/index.php/assessment/Committee/page/1">首页</a>
+          <{$prePage = $stuList.page-1}>
+          <a href="<{$web_url}>/index.php/assessment/Committee/page/<{$prePage}>">上一页</a>
+          <{/if}>
+          <{if $stuList.page < $stuList.totalPage}>
+          <{$nextPage =$stuList.page+1 }>
+          <a href="<{$web_url}>/index.php/assessment/Committee/page/<{$nextPage}>">下一页</a>
+          <a href="<{$web_url}>/index.php/assessment/Committee/page/<{$assList['totalPage']}>">尾页</a>
+          <{/if}>
+          <{if $stuList.totalPage>1}>
+          跳转到<input id="num" type="text" style="color:#000000;width: 40px;height:20px;margin-left: 5px">
+          <button onclick="skip()">GO</button>
+          <{/if}>
+          <span style="margin-left: 20px">当前第<{$stuList.page}>页/共<{$stuList.totalPage}>页</span>
+      </div>
+      <{/if}>
+      <{/if}>
+      <div  id="content" style="margin-left:50px;display: none">
+      </div>
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

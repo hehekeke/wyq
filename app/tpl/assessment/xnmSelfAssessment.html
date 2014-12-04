@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<{$web_url}>/common/libs/upload/uploadify.css">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/upload/jquery.uploadify.min.js?ver=<{$mm}>"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script type="text/javascript">
+        function clickSave(){
+            var txt = document.getElementById('content').value;
+            var type = 1;
+            var isnew=0;
+            var stuId =<{$stuId}>;
+
+            var fileid = $("#hidFileID").val();
+             <{if isset($item)}>
+                var id = <{$item.id}>;
+             <{else}>
+                var id = 0;
+            <{/if}>
+            document.getElementById("content2").value=txt;
+            document.getElementById("id2").value=id;
+            document.getElementById("type2").value=type;
+            document.getElementById("isnew2").value=isnew;
+            document.getElementById("stuId2").value=stuId;
+            $("#form1").submit();
+          }
+
+                function clickCommit(){
+                <{if isset($item)}>
+                        var id = <{$item.id}>;
+                    <{else}>
+                        alert("请先点击保存按钮！");
+                    <{/if}>
+                           var txt = document.getElementById('content').value;
+                            $.post("<{$web_url}>/index.php/assessment/commitItem",{content:txt,id:id},function(result){
+                                var c=result;
+                                if (c>0){
+                                    alert("提交成功！");
+                                    $('#content').prop('disabled', 'disabled');
+                                }else{
+                                    alert("提交失败！");
+                                }
+                            });
+                        }
+
+                     $(function(){
+                            $("#zz_question").click(function(){
+                                window.location.href="<{$web_url}>/index.php/assessment/question/mod/show";
+                            });
+                           });
+                        $(function(){
+                            var mm= document.getElementById("error").innerHTML;
+                            if(mm){
+                                alert(mm);
+                            }
+                        });
+    </script>
+</head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header"><h3>当前位置：综合素质评估>学年末评估</h3></div>
+    </div>
+    <{assign var=lefttype value=3}>
+    <{include file='assessment/xnm-left-function.html'}>
+    <{if $state >= 1}>
+    <div class="col-md-7">
+        <center><h3>自我评价</h3></center>
+        <{if $state <1}>
+           评价尚未开始
+        <{else}>
+        <{if $commit == false}>
+        定性评价：<button type="button" id="zz_question" class="btn btn-default"><a href="<{$web_url}>/index.php/assessment/question">开始答卷</a></button>
+        <{else}>
+        <table class="table table-bordered" style="margin:20px;">
+            <{section name=x loop=$info}>
+            <tr>
+                <td><{$info[x].0}></td>
+                <td><{$info[x].1}></td>
+                <td><{$info[x].2}></td>
+            </tr>
+            <{/section}>
+        </table>
+
+        <{/if}>
+        <p style="margin:20px;">书面总结：</p>
+        <{if isset($item)}>
+        <{if ($item.commit==1)}>
+        <textarea class="form-control" rows="15" name="content" id="content" placeholder="在此填写书面总结" disabled="disabled" style="margin:20px;"><{$item.content}> </textarea>
+            <{else}>
+            <textarea class="form-control" rows="15" name="content" id="content" placeholder="在此填写书面总结" style="margin:20px;"><{$item.content}></textarea>
+                <{/if}>
+                <{else}>
+                <textarea class="form-control" rows="15" name="content" id="content" placeholder="在此填写书面总结" style="margin:20px;"></textarea>
+                <{/if}>
+
+                <div>（可选，文件大小不能超过100M）</div>
+              <form id="form1" method="post" action="<{$web_url}>/index.php/assessment/saveItem"  enctype="multipart/form-data">
+                <{if isset($name.file_name)}><div id="file_name">附件名称：<a href="<{$web_url}>/<{$name.file_link}>"><{$name.file_name}></a></div><{else}><div id="file_name">  <input type="file" name="file"/></div><{/if}>
+                     <input id="content2" name="content" type="text" style="display: none"/>
+                    <input id="id2" name="id" type="text" style="display: none"/>
+                    <input id="type2" name="type" type="text" style="display: none"/>
+                    <input id="isnew2" name="isnew" type="text" style="display: none"/>
+                    <input id="stuId2" name="stuId" type="text" style="display: none"/>
+
+                </form>
+                <font size="2px" color="#70A4DA">文件大小不能超过20M,视频文件以及大文件压缩后上传</font>
+                <center>
+                    <button type="button" class="btn btn-success" style="margin:10px;" onclick="clickSave()">保存</button>
+                    <button type="button" class="btn btn-danger" style="margin:10px;" onclick="clickCommit()">提交</button>
+                </center>
+                <{/if}>
+    </div>
+    <div class="col-md-3">
+        <table class="table table-bordered">
+            <thead>
+            <tr style="background:#2E3641">
+                <th><center style="color: #ffffff">如何做好评价</center></th>
+            </tr>
+            </thead>
+            <tbody>
+            <{section name=n loop=$articleList max=5}>
+            <tr>
+                <td><a style="color:white;" href="<{$web_url}>/index.php/assessment/helpDetail/id/<{$articleList[n].article_id}>"><{$articleList[n].article_title}></a></td>
+            </tr>
+            <{/section}>
+            <tr>
+                <td style="float:right;"><a style="color:white;" href="<{$web_url}>/index.php/assessment/helpList/type/1">更多》</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <{else}>
+    <div>自评尚未进行</div>
+    <{/if}>
+
+</div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

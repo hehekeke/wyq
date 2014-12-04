@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>评估项目说明历史版本</title>
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+</head>
+<style type="text/css">/* CSS Document */   
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+}  
+</style>  
+<body>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  	<TR height=28><TD background=images/title_bg1.jpg>当前位置:评估项目说明历史版本</TD></TR>
+  	<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  	<TR height=20>
+    	<TD background=images/shadow_bg.jpg></TD>
+	</TR>
+</TABLE>
+<div id="info" style=" margin-left:10px;">
+<table id="mytable" cellspacing="0" >  
+  <tr>  
+    
+    <th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    <th scope="col" width="200px" >版本号</th> 
+    <th scope="col" width="200px" >创建时间</th> 
+    <th scope="col" width="150px" >创建人</th> 
+  </tr>  
+  <{section name=al loop=$list.list}>
+  <tr >  
+    <td style="border-left:1px solid #adceff;"><{$list.list[al].asspro_id}></td>
+    <td><a href="<{$web_url}>/mannkgn.php/assessment/detail/id/<{$list.list[al].asspro_id}>"><{$list.list[al].version}></a></td>
+    <td><{$list.list[al].asspro_create_time}></td>
+    <td><{$list.list[al].admin_realname}></td>
+  </tr>  
+  <{sectionelse}>
+  <tr >
+    <th class="spec" colspan="5">暂无评估项目</td>
+  </tr>
+  <{/section}>
+</table>  
+<{page info=$list web_url=$web_url url="/mannkgn.php/assessment/getasslist"}>
+</div>
+</body>
+</html>

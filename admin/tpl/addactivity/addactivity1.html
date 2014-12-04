@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>添加辅学活动</title>
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor-1.2.1.min.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor_lang/zh-cn.js"></script>
+<script type="text/javascript">
+	$(function() {
+		var editor = $('#content').xheditor({
+			upLinkUrl:"<{$web_url}>/common/upload.php",
+			upLinkExt:"zip,rar,txt",
+			upImgUrl:"<{$web_url}>/common/upload.php",
+			upImgExt:"jpg,jpeg,gif,png",
+			upFlashUrl:"<{$web_url}>/common/upload.php",
+			upFlashExt:"swf",
+			upMediaUrl:"<{$web_url}>/common/upload.php",
+			upMediaExt:"avi",
+			remoteImgSaveUrl:"<{$web_url}>/common/upload.php",
+			cleanPaste:2,
+			internalScript:false,
+			inlineScript:false,
+			internalStyle:false,
+			inlineStyle:false
+		});	
+		
+		$("#start").focus(function(){
+			WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+		});
+		
+		$("#end").focus(function(){
+			WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+		});
+	});
+</script>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background="<{$web_url}>/common/admin/images/title_bg1.jpg">当前位置:添加辅学活动</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+		</TR>
+	</TABLE> 	
+	<table width="100%" border="0" align="left" cellpadding="0" cellspacing="0">
+		<form id="form1"   target="_self" name="form1" method="post" action="<{$web_url}>/mannkgn.php/other/addlink" >
+    		<tr>
+				<td width="107" height="30"><div align="right"></div></td>
+				<td height="40" colspan="2">
+					<div align="left"><font id="result" color="#0000FF"><{$result|default:""}></font></div>
+				</td>
+			</tr>
+       	 	<tr>
+        		<td width="107" height="30"><div align="center">活动标题:</div></td>
+            	<td height="40" colspan="2">&nbsp;
+             		<input id="title" type="text" name="title" size="45" />
+           	 	</td>
+       	   </tr>
+       	   <tr>
+        		<td width="107" height="30"><div align="center">周期类型:</div></td>
+            	<td height="40" colspan="2">&nbsp;
+             		<select name="class" class="inputcss" id="class">
+            	 		<option selected="selected" value="2">请选择</option>		
+            	 		<option value="0">学年活动</option>	
+            	 		<option value="1">周活动</option>	 			
+					</select>
+           	 	</td>
+       	   </tr>
+       	   <tr>
+        		<td width="107" height="30"><div align="center">活动内容:</div></td>
+            	<td height="40" colspan="2">&nbsp;
+             		 <textarea id="content" name="content" rows="15" cols="12" style="width: 60%"></textarea>
+           	 	</td>
+       	   </tr>
+       	   <tr>
+        		<td width="107" height="30"><div align="center">主题:</div></td>
+            	<td height="40" colspan="2">&nbsp;
+             		<input id="theme" type="text" name="theme" size="45" />
+           	 	</td>
+       	   </tr>
+       	   <tr>
+        		<td width="107" height="30"><div align="center">时间:</div></td>
+            	<td height="40" colspan="2">&nbsp;
+             		<input id="start" name="start" class="Wdate"  />至<input id="end" name="end" class="Wdate" />
+           	 	</td>
+       	   </tr>
+       	    <tr>
+        		<td width="107" height="30"><div align="center">地址:</div></td>
+            	<td height="40" colspan="2">&nbsp;
+             		<input id="address" type="text" name="address" size="45" />
+             		经度：<input id="lon" type="text" name="lon" style="width:80px;height:13px;" />
+             		纬度：<input id="lat" type="text" name="lat" style="width:80px;height:13px;" />
+           	 	</td>
+       	   </tr>
+       	   <tr>
+        		<td width="107" height="30"><div align="center">类型:</div></td>
+            	<td height="40" colspan="2">&nbsp;
+             		<select name="class" class="inputcss" id="class">
+            	 		<option selected="selected" value="2">请选择</option>	
+            	 		<{section name = tl loop = $typelist}>	
+            	 		<option value="<{$typelist[tl].at_id}>"><{$typelist[tl].at_name}></option>	 
+            	 		<{/section}>	 			
+					</select>
+           	 	</td>
+       	   </tr>
+       	   
+        	<tr>
+        		<td width="107" height="30"><div align="center"></div></td>
+            	<td height="40" colspan="2">&nbsp;
+            		<input name="submit" type="submit" value="提交" style="width:80px;height:30px;"/>
+            	</td>
+        	</tr> 
+		</form>
+	</table>
+</body>
+</html>

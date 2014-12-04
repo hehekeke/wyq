@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+<script type="text/javascript">
+  function search(){
+	  var name1 = document.getElementById('search').value;
+	  $.ajax({
+			url:"<{$web_url}>/index.php/assessment/searchStu",
+			type:'POST',
+			async:false,
+			dataType:"json",
+            data:{'name':name1},
+			success:function(obj){
+                if(obj.json.state == 1){
+                  var innerHtml='';
+                for(var i=0;i<obj.json.data.length;i++){
+                    innerHtml+= '<tr>';
+                    innerHtml+="<td id='cxid'>"+(i+1)+"</td>";
+                    innerHtml+="<td id='cxrn'>"+obj.json.data[i].bks_name+"</td>";
+                    innerHtml+="<td id='cxun'>"+obj.json.data[i].bks_code+"</td>";
+                    innerHtml+="<td><button type='button'  data-xuhao='"+obj.json.data[i].bks_code+"' onclick='goo(this)' id='cxlj' class='btn btn-default btn-xs active bttn' role='button'>评价</button></td>";
+                    innerHtml+="</tr>";
+                  }
+                    $("#xuesheng").parent().show();
+                    $("#content").hide();
+                    document.getElementById("xuesheng").innerHTML=innerHtml;
+                }else{
+                    document.getElementById("content").innerHTML="没有此学生信息！";
+                    $("#stu_info").hide();
+                    $("#content").show();
+
+				}
+			},
+		    	error:function(msg){
+				alert("查询失败！");
+			}
+		});
+  }
+function goo(o){
+    var num1 = o.getAttribute('data-xuhao');
+    $.ajax({
+			url:"<{$web_url}>/index.php/assessment/pingjia_check",
+			type:'POST',
+			async:false,
+			data:({'num':num1}),
+			success:function(data){
+				var obj = eval("("+data+")");
+				if(obj.json.state == 1){
+					location.href="<{$web_url}>/index.php/assessment/appraise/num/"+num1;
+				}else{
+					alert(obj.json.msg);
+				}
+			},
+			error:function(msg){
+				alert("查询失败！");
+			}
+		});
+}
+
+</script>
+</head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估>学年末评估</h3></div>
+  </div>
+   <{assign var=lefttype value=4}>
+   <{include file='assessment/xnm-left-function.html'}>
+    <{if $state >=2}>
+  <div class="col-md-10">
+    <center><h3>班内互评</h3></center>
+   
+    <{if isset($weikaishi)}>
+    评价尚未开始
+    <{else}>
+      <table class="table" style="border:1px solid #ddd;"><tr>
+          <td>姓名：</td><td><input class="form-control num" id="search"></td>
+          <td><button name = "username" type="button" class="btn btn-default" onclick="search()" id="btn">查询</button></td>
+      </tr></table>
+      <table style="display: none" id="stu_info" class="table table-bordered table-hover">
+          <thead style="background-color:#e7e7e7;color:#2E3641;">
+          <td>序号</td>
+          <td>姓名</td>
+          <td>学号</td>
+          <td>定性评价</td>
+          </thead>
+          <tbody id="xuesheng" style="color:#666666;">
+
+          </tbody>
+      </table>
+      <div id="content" style="margin-left:50px;">
+      </div>
+	<{/if}>
+  </div>
+  <{else}>
+  互评尚未进行
+  <{/if}>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

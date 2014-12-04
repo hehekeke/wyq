@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script type="text/javascript">
+	$(function(){
+		var isno = $("#isno").html();
+		if(isno == 0){
+			$("#noscore").hide();
+			$("#isscore").show();
+			$(".textgood1").val($("#good1").html()); 
+			$(".textgood2").val($("#good2").html());
+			$(".textgood3").val($("#good3").html());
+			$(".textImprovement1").val($("#bad1").html());
+			$(".textImprovement2").val($("#bad2").html());
+			$(".textImprovement3").val($("#bad3").html()); 
+		}else{
+			$("#isscore").hide();
+			$("#noscore").show();
+		}
+		$("#but").click(function(){
+			var good1 = $(".textgood1").val();
+			var good2= $(".textgood2").val();
+			var good3 = $(".textgood3").val();
+			var bad1 = $(".textImprovement1").val();
+			var bad2 = $(".textImprovement2").val();
+			var bad3 = $(".textImprovement3").val();
+
+            if(good1==''||good2==''||good3==''||bad1==''||bad2==''||bad3==''){
+                alert('您还有未完成的互评项！');
+                return;
+            }
+            if(good1=="输入文本…"||good2=='输入文本…'||good3=='输入文本…'||bad1=='输入文本…'||bad2=='输入文本…'||bad3=='输入文本…'){
+                alert('您还有未完成的互评项！');
+                return;
+            }
+			var url = window.location.href;
+			var u_id = url.substring(url.lastIndexOf("/"),url.length);
+			var us_id = u_id.substring(1,u_id.length);
+			var str = "";
+			var flag = 2;
+			var isno = $("#isno").html();
+			if(isno == 0){
+				var g = $("#is_score_g").val();
+				if(g == 1){
+					g = 6;
+				}else if(g == 2){
+					g = 4;
+				}else if(g == 3){
+					g = 2;
+				}
+				str = str+g;
+				$("select[id='is_score_n']").each(function(){
+				    var n = $(this).val();
+				    if(n == 1){
+						n = 6;
+					}else if(n == 2){
+						n = 4;
+					}else if(n == 3){
+						n = 2;
+					}
+				    str += ","+n;
+				});
+			}else{
+				var g = $("#no_score_g").val();
+				if(g == 1){
+					g = 6;
+				}else if(g == 2){
+					g = 4;
+				}else if(g == 3){
+					g = 2;
+				}
+				str = str+g;
+				$("select[id='no_score_n']").each(function(){
+				    var n = $(this).val();
+				    if(n == 1){
+						n = 6;
+					}else if(n == 2){
+						n = 4;
+					}else if(n == 3){
+						n = 2;
+					}
+				    str += ","+n;
+				});
+			} 
+			var arr = new Array();
+			arr = str.split(",");
+			for(i=0;i<arr.length;i++){
+				if(arr[i] == ""){
+					$(".prompt1").show();
+					falg = 0;
+					break;
+				}else{
+					$(".prompt1").hide();
+					flag = 1;
+					}
+				} 
+			if(flag == 1){
+			$.ajax({
+				url:"<{$web_url}>/index.php/Assessment/AddScore",
+				type:"POST",
+				data:({'str':str,'id':us_id,'good1':good1,'good2':good2,'good3':good3,'bad1':bad1,'bad2':bad2,'bad3':bad3}),
+				async: false,
+				success:function(){
+				} 
+			})
+			alert("保存成功！");
+			location.href = "<{$web_url}>/index.php/Assessment/Committee";
+			}
+			} );
+	});
+	</script>
+  </head>
+<body>
+<{include file='header.html'}>
+<p id="isno" style="display:none"><{$isno}></p>
+<p id="good1" style="display:none"><{$goodList[0]}></p>
+<p id="bad1" style="display:none"><{$badList[0]}></p>
+<p id="good2" style="display:none"><{$goodList[1]}></p>
+<p id="bad2" style="display:none"><{$badList[1]}></p>
+<p id="good3" style="display:none"><{$goodList[2]}></p>
+<p id="bad3" style="display:none"><{$badList[2]}></p>
+<div class="row" padding-top:15px;">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估><a href="#" style="color:#FFFFFF;">评委评价</a>>评价</h3></div>
+    <p>姓名：<{$stu['fu_realname']}></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+	<ul class="nav nav-tabs">
+	<li class="active"><a href="<{$web_url}>/index.php/assessment/committeeDetail">评价</a></li>
+	<li><a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$stu['fu_username']}>/id/<{$stu['fu_id']}>">查看成长档案</a></li>
+	</ul>
+  </div>
+</div>
+<center>
+<div class="row" style="padding-top:20px; padding-bottom:15px;">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+	  <div class="panel panel-default">
+		<table class="table table-bordered">
+		  <thead style="background-color:#e7e7e7">
+		  <tr style="color:#2E3641;">
+		  <{section name=t loop=$titleList}>
+		  <th><{$titleList[t].zbdj_name}></th>
+		  <{/section}>
+		  <th>评价</th>
+		  </tr>
+		  </thead>
+		  <tbody id="noscore" style="color:#FFFFFF;">
+		  	<{section name=gl loop=$mesList_gong}>
+		  		<tr>
+		  			<{if $smarty.section.gl.index == 0}>
+		  				<center ><td  rowspan="<{$gongnum}>" style="vertical-align:middle;">公</td></center>
+		  			<{/if}>
+		  			<td><{$mesList_gong[gl].1}></td>
+		  			<td><{$mesList_gong[gl].2}></td>
+		  			<{if $smarty.section.gl.index == 0}>
+		  				<td rowspan="<{$gongnum}>" style="vertical-align:middle">
+							<select class="pingjia" style="color:#000" id="no_score_g" >
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+							</select>
+						</td>
+					<{/if}>
+		  		</tr>	
+		  	<{/section}>
+		  	<{section name=nl loop=$mesList_neng}>
+		  		<tr>
+		  			<{if $smarty.section.nl.index == 0}>
+		  				<center><td rowspan="<{$nengnum}>" style="vertical-align:middle;">能</td></center>
+		  			<{/if}>
+		  			<td><{$mesList_neng[nl].1}></td>
+		  			<td><{$mesList_neng[nl].2}></td>
+		  			<td>
+		  				<select class="pingjia" style="color:#000" id="no_score_n" >
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+						</select>
+					</td>
+		  		</tr>	
+		  	<{/section}>
+		  </tbody>
+		  <tbody  id="isscore" style="display:none;">
+		  	<{section name=gl loop=$mesList_gong}>
+		  		<tr>
+		  			<{if $smarty.section.gl.index == 0}>
+		  				<center><td rowspan="<{$gongnum}>" style="vertical-align:middle;">公</td></center>
+		  			<{/if}>
+		  			<td><{$mesList_gong[gl].1}></td>
+		  			<td><{$mesList_gong[gl].2}></td>
+		  			<{if $smarty.section.gl.index == 0}>
+		  				<td rowspan="<{$gongnum}>" style="vertical-align:middle">
+							<select class="pingjia" style="color:#000" id="is_score_g" >
+								<option value="<{$mesList_gong[gl].3}>"><{$mesList_gong[gl].3}></option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+							</select>
+						</td>
+					<{/if}>
+		  		</tr>	
+		  	<{/section}>
+		  	<{section name=nl loop=$mesList_neng}>
+		  		<tr>
+		  			<{if $smarty.section.nl.index == 0}>
+		  				<center><td rowspan="<{$nengnum}>" style="vertical-align:middle;">能</td></center>
+		  			<{/if}>
+		  			<td><{$mesList_neng[nl].1}></td>
+		  			<td><{$mesList_neng[nl].2}></td>
+		  			<td>
+		  				<select class="pingjia" style="color:#000" id="is_score_n" >
+		  					<option value="<{$mesList_neng[nl].3}>"><{$mesList_neng[nl].3}></option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+						</select>
+		  			</td>
+		  		</tr>	
+		  	<{/section}>
+		  </tbody>
+		</table>
+	  </div>
+	  <center><div >评价选1非常好,继续保持;2.一般,还有提升空间;3.不太好,提升空间很大</div></center>
+	  <div>
+	<table style="color:#FFFFFF;">
+		<tr>
+			<td >做的最好：</td>
+			<td>
+				<table class="table table-bordered" style="color:#FFFFFF;">
+					<tr>
+						<td>1</td>
+						<td>
+							<input class="textgood1" type="text"  value="输入文本…" onfocus="if(this.value=='输入文本…'){this.value=''}" onblur="if(this.value==''){this.value='输入文本…'}" style="color:#2E3641;" size="60"/>						</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>
+							<input class="textgood2" type="text"  value="输入文本…" onfocus="if(this.value=='输入文本…'){this.value=''}" onblur="if(this.value==''){this.value='输入文本…'}" style="color:#2E3641;" size="60"/>
+						</td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>
+							<input class="textgood3" type="text"  value="输入文本…" onfocus="if(this.value=='输入文本…'){this.value=''}" onblur="if(this.value==''){this.value='输入文本…'}" style="color:#2E3641;" size="60"/>						</td>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td >还需改进：</td>
+			<td>
+				<table class="table table-bordered" style="border:1px;color:#FFFFFF;">
+					<tr>
+						<td>1</td>
+						<td>
+							<input class="textImprovement1" type="text"  value="输入文本…" onfocus="if(this.value=='输入文本…'){this.value=''}" onblur="if(this.value==''){this.value='输入文本…'}" style="color:#2E3641;" size="60"/>						</td>
+						</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>
+							<input class="textImprovement2" type="text"  value="输入文本…" onfocus="if(this.value=='输入文本…'){this.value=''}" onblur="if(this.value==''){this.value='输入文本…'}" style="color:#2E3641;" size="60"/>						</td>
+						</td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>
+							<input class="textImprovement3" type="text"  value="输入文本…" onfocus="if(this.value=='输入文本…'){this.value=''}" onblur="if(this.value==''){this.value='输入文本…'}" style="color:#2E3641;" size="60"/>						</td>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+	  <center><button type="button" class="btn btn-primary btn-lg" id="but">保存</button></center>
+	  <center><span class="prompt1" style="color:red; display:none;">请将各项都打分之后再保存！</span></center>
+	  <center><span class="prompt2" style="color:red; display:none;">保存成功！</span></center>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+</center>
+<{include file='footer.html'}>
+</body>
+</html>

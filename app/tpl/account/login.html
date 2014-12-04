@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>登录</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script>
+  
+    </script>
+  </head>
+  <body class="login">
+    <div class="container">
+      <form class="form-signin" role="form" method="post" action="<{$web_url}>/index.php/Account/doLogin">
+        <h2 class="form-signin-heading">南开大学公能素质发展辅学平台</h2>
+        <input id="username" name="username" type="text" class="form-control" placeholder="用户名" required autofocus>
+        <input id="password" name="password" type="password" class="form-control" placeholder="密码" required>
+         <label class="checkbox">
+          <{if isset($zz_cuowu)}><span style="color:#f00; margin-left:130px;"><{$zz_cuowu}></span><{/if}>
+        </label>
+        <button style="margin-bottom:100px;" class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+      </form>
+    </div>
+    <{include file='footer.html'}>
+  </body>
+</html>

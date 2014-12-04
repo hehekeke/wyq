@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+ <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+ <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+ <script src="<{$web_url}>/common/app/js/holder.js"></script>
+<script src="<{$web_url}>/common/libs/highcharts/highcharts.js"></script>
+<script src="<{$web_url}>/common/libs/highcharts/highcharts-more.js"></script>
+<script type="text/javascript">
+$(function () {
+	var mutual=document.getElementById('mutual');
+	  var other=document.getElementById('other');
+	  var radar=document.getElementById('radar');
+
+
+	function leida(json1,json2){
+	$('#container1').highcharts({
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+
+	    title: {
+	        text: '他评结果',
+	        x: -40
+	    },
+
+	    pane: {
+	    	size: '80%'
+	    },
+
+	    xAxis: {
+	        categories: json1.zhibiao,
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:1,
+			max:6,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+
+		credits: {
+			enabled:false
+		},
+
+	    series: [{
+	        name: '我的分数',
+	        data: json1.wode,
+	        pointPlacement: 'on',
+			color: '#ff0000'
+	    }, {
+	        name: '班级平均分',
+	        data: json1.pingjun,
+	        pointPlacement: 'on'
+	    }]
+
+	});
+
+	$('#container2').highcharts({
+
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+
+	    title: {
+	        text: '互评VS自评',
+	        x: -40
+	    },
+
+	    pane: {
+	    	size: '80%'
+	    },
+
+	    xAxis: {
+	        categories: json2.zhibiao,
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:1,
+			max:6,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+
+		credits: {
+			enabled:false
+		},
+
+	    series: [{
+	        name: '自评',
+	        data: json2.ziping,
+	        pointPlacement: 'on',
+			color: '#ff0000'
+	    }, {
+	        name: '互评',
+	        data: json2.huping,
+	        pointPlacement: 'on'
+	    }]
+
+	});
+	}
+
+	json2 = <{$huping}>;
+	json1 = <{$taping}>;
+	//alert(json2);
+	//leida(json1,json2);
+	leida(json1,json2);
+	//alert(JSON.stringify(json1));
+	//alert(JSON.stringify(json2));
+	//alert(json1)
+});
+var zz_do = '';
+
+function tab1(m){
+	// alert(m);
+	if(m == 1){
+		window.location.href = "<{$web_url}>/index.php/common/AssessmentResult/mod/huping";
+	}else if(m == 2){
+		window.location.href = "<{$web_url}>/index.php/common/AssessmentResult/mod/taping";
+	}else{
+		window.location.href = "<{$web_url}>/index.php/common/AssessmentResult/mod/leida";
+	}
+
+}
+	function ajax_goodbad(flag,type){
+		$.ajax({
+			url:"<{$web_url}>/index.php/assessment/ajax_goodbad",
+			async:false,
+			type:'POST',
+			data:({'flag':flag,'type':type}),
+			success:function(msg){
+				var obj = eval("("+msg+")");
+				var str = '';
+				var dd = obj.json.data;
+				for(x in dd){
+					//var num = x+1;
+					var content = dd[x].goodorbad_content;
+					str += "<tr><td>"+x+"</td><td>"+content+"</td></tr>";
+				}
+				$("#"+zz_do+" table").html('');
+				$("#"+zz_do+" table").append(str);
+				},
+				error:function(){
+					alert('网络发生错误');
+					}
+							})
+	}
+
+ function	tab2(n){
+		if(n == 1){
+			zz_do = 'do_good';
+			$("#do_good").show();
+			$("#do_bad").hide();
+			ajax_goodbad(0,1);
+		}else if(n == 2){
+			zz_do = 'do_bad';
+			$("#do_good").hide();
+			$("#do_bad").show();
+			ajax_goodbad(1,1);
+		}else{
+			alert("非法参数");
+		}
+	}
+
+</script>
+<title>Insert title here</title>
+<style>
+#pinggujieguo{width:70%;margin-left:5%;}
+.table-title{background:#A85D74;padding:10px;}
+.table{}
+</style>
+</head>
+<body>
+ <div id="pinggujieguo" class="col-md-7">
+	<center><h3>评估结果</h3></center>
+	<div class="table-title">自我评价</div>
+	<table class="table table-bordered" style="margin:20px;">
+	  <{section name=x loop=$info}>
+	  <tr>
+	  <td><{$info[x].0}></td>
+	  <td><{$info[x].1}></td>
+	  </tr>
+	  <{/section}>
+	</table>
+	<p style="margin:20px;">书面总结：</p>
+	<{if isset($item)}>
+	  <{if ($item.commit==1)}>
+	    <div class="form-control" rows="15" name="content" id="content" placeholder="提示信息" disabled="disabled" style="margin:20px;"><{$item.content}>
+	  <{else}>
+	    <div class="form-control" rows="15" name="content" id="content" placeholder="提示信息" style="margin:20px;"><{$item.content}>
+	  <{/if}>
+	<{else}>
+	    <div class="form-control" rows="15" name="content" id="content" placeholder="提示信息" style="margin:20px;">
+	<{/if}>
+	</div>
+	<div class="table-title">互评结果</div>
+	 <div id="mutual" style="margin-top:20px;">
+	  <table class="table table-bordered" style="margin-top:20px;">
+		<thead>
+		  <tr><th>指标</th><th>我的定性评价</th><th>互评定性评价</th></tr>
+		</thead>
+		<tbody>
+		  <tr>
+		    <td>公</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能1</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能2</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能3</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能4</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能5</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  </tbody>
+		</table>
+			<div class="btn-group">
+		  <button type="button" class="btn btn-info" onclick="tab2(1)">做的最好</button>
+		  <button type="button" class="btn btn-info" onclick="tab2(2)">最需改进</button>
+		</div>
+		<div id="do_good" style="margin-top:20px;">
+		  <table class="table table-bordered">
+
+		  </table>
+		</div>
+		<div id="do_bad" style="margin-top:20px;display:none;">
+		  <table class="table table-bordered">
+
+		  </table>
+		</div>
+	</div>
+	<div class="table-title">他评结果</div>
+	<div id="other" style="margin-top:20px;">
+		<table class="table table-bordered" style="margin-top:20px;">
+		  <thead style="background-color:#e7e7e7">
+		    <tr><th>一级指标</th><th>二级指标</th><th>内容</th><th>平均分值</th><th>班级排名</th></tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		      <td rowspan="3" style="vertical-align:middle">公</td>
+		      <td>公2</td>
+		      <td>公3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>公2</td>
+		      <td>公3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>公2</td>
+		      <td>公3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td rowspan="5" style="vertical-align:middle">能</td>
+		      <td>生活</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>学习</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>创新</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>文化素养</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>协作</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+
+		  </tbody>
+		</table>
+	</div>
+	<div class="table-title">各项指标雷达图</div>
+	<div id="radar" style="margin-top:20px;">
+		<div id="container1" style="min-width: 400px; max-width: 600px; height: 400px;float:left;"></div>
+		<div id="container2" style="min-width: 400px; max-width: 600px; height: 400px;float:right;"></div>
+	</div>
+  </div>
+
+
+
+</body>
+</html>

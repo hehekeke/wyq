@@ -1,0 +1,525 @@
+<?php
+/**
+* Create On 2014-4-16 ����2:22:16
+* Author: jiangyuchao
+* E-mail: jiangyuchao@iwind-tech.com
+*/
+
+class frontuser extends Model{
+	
+	/**
+	 * 用户登录
+	 * @param unknown $userName
+	 * @param unknown $pw
+	 * @return Ambigous <boolean, multitype:>|Ambigous <Ambigous, boolean, number>|boolean
+	 */
+	public function getUserAccount($userName, $pw){
+		$info = $this->getUserByUserName($userName);
+		if ($info){
+			$password = $this->generatePw($pw, $info['fu_salt']);
+			$sql = "SELECT * FROM `front_user` LEFT JOIN picture ON front_user.pic_id = picture.pic_id "
+				 . "WHERE `fu_username` = '".$userName."' AND `fu_pw` = '".$password."' ";
+			$result = $this->fetchRow($sql);
+			if ($result){
+				return $result;
+			}else{
+				return false;	
+			}
+		}else{
+			$urp_info = new urpinfo();
+			$result = $urp_info->getInfoByCode($userName);
+			//var_dump($result);
+			if ($result){
+				if ($result['role_id'] == 8){
+					if (strlen($result['fu_sfzh']) >= 6){
+						$password = substr($result['fu_sfzh'], -6);
+					}else{
+						$password = "111111";
+					}
+					$fu_id = $this->addFrontuser($result['fu_username'], $result['fu_realname'], $result['role_id'], 'NULL', $result['fu_sfzh'], $password, NULL, 'NULL', $result['fu_college']);
+					$result['fu_id'] = $fu_id;
+				}else{
+					if (strlen($result['fu_sfzh']) >= 6){
+						$password = substr($result['fu_sfzh'], -6);
+					}else{
+						$password = "111111";
+					}
+					$fu_id = $this->addFrontuser($result['fu_username'], $result['fu_realname'], $result['role_id'], $result['fu_gender'], $result['fu_sfzh'], $password, NULL, $result['fu_major'], $result['fu_college'], $result['fu_grade'], $result['fu_mz'], $result['fu_birth'], $result['fu_nianzhi']);
+					$result['fu_id'] = $fu_id;
+				}
+				if ($pw == $password){
+					return $result;
+				}else{
+					return false;
+				}
+			}else{
+				return false;
+			}
+		}		
+	}
+	/**
+	 * 验证用户
+	 * @param unknown $userName
+	 * @return boolean
+	 */
+	public function authUser($userName){
+		$result = $this->getUserByUserName($userName, 1);
+		if ($result){
+			return $result;
+		}else{
+			$urp_info = new urpinfo();
+			$result = $urp_info->getInfoByCode($userName);
+			if ($result){
+				if ($result['role_id'] == 8){
+					if (strlen($result['fu_sfzh']) >= 6){
+						$pw = substr($result['fu_sfzh'], -6);
+					}else{
+						$pw = "111111";
+					}
+					$fu_id = $this->addFrontuser($result['fu_username'], $result['fu_realname'], $result['role_id'], 'NULL', $result['fu_sfzh'], $pw, NULL, 'NULL', $result['fu_college']);
+					$result['fu_id'] = $fu_id;
+				}else{
+					if (strlen($result['fu_sfzh']) >= 6){
+						$pw = substr($result['fu_sfzh'], -6);
+					}else{
+						$pw = "111111";
+					}
+					$fu_id = $this->addFrontuser($result['fu_username'], $result['fu_realname'], $result['role_id'], $result['fu_gender'], $result['fu_sfzh'], $pw, NULL, $result['fu_major'], $result['fu_college'], $result['fu_grade'], $result['fu_mz'], $result['fu_birth'], $result['fu_nianzhi']);
+					$result['fu_id'] = $fu_id;
+				}
+				return $result;
+			}else{
+				return false;
+			}
+		}
+	}
+	
+	public function searchStudent($username, $major, $grade){
+		$sql = "SELECT `fu_id`, `fu_username`, `fu_realname`,`fu_gender`,`fu_major`,`fu_college`, `fu_grade`,`role_id` FROM `front_user` WHERE `fu_username` = '".$username."' AND `fu_major` = '".$major."' AND `fu_grade` = '".$grade."' ";
+		$result = $this->fetchRow($sql);
+		if ($result){
+			return $result;
+		}else{
+			$urp_info = new urpinfo();
+			$result = $urp_info->getStu($username, $major, $grade);
+			if ($result){
+				return $result;
+			}else {
+				return false;
+			}
+		}
+	}
+	
+	public function getBeidafengStu($username, $major, $grade){
+		$sql = "SELECT * FROM `front_user` WHERE `fu_username` = '".$username."' AND `fu_major` = '".$major."' AND `fu_grade` = '".$grade."'";
+		$result = $this->fetchRow($sql);
+		if ($result){
+			return $result;
+		}else{
+			$urp_info = new urpinfo();
+			$mj = new major();
+			$mj_row = $mj->getDetailById($major);
+			$result = $urp_info->getSameStu($username, $mj_row['major_id'], $grade);
+			if ($result){
+				return $result;
+			}else {
+				return false;
+			}
+		}
+	}
+	/**
+	 * 根据用户账号获取用户信息
+	 * @param unknown_type $userName
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	public function getUserByUserName($userName, $roleflag= 0){
+		if ($roleflag){
+			$sql = "SELECT * FROM `front_user` LEFT JOIN picture ON front_user.pic_id = picture.pic_id
+				WHERE `fu_username` = '".$userName."' AND `role_id` != '11' ";
+		}else{
+			$sql = "SELECT * FROM `front_user` LEFT JOIN picture ON front_user.pic_id = picture.pic_id
+				WHERE `fu_username` = '".$userName."'";
+		}
+		return $this->fetchRow($sql);
+	}
+	
+	/**
+	 * 根据用户id获取用户信息
+	 * @param unknown_type $userName
+	 * @return Ambigous <boolean, multitype:>
+	 */
+
+    //自己做了修改，添加了select role_id
+    public function getUserByUserID($userID){
+        $sql = "SELECT  front_user.pic_id,front_user.role_id, `front_user`.`fu_username`,`front_user`.`fu_realname`,`front_user`.`fu_username`,`front_user`.`fu_id`,`front_user`.`fu_major`,`front_user`.`fu_college`,`front_user`.`fu_grade`,`major`.`major_name`,`college`.`college_name` FROM `front_user` LEFT JOIN picture ON front_user.pic_id = picture.pic_id LEFT JOIN major ON front_user.fu_major = major.major_id LEFT JOIN college ON front_user.fu_college = college.college_id
+				WHERE `fu_id` = ".$userID."";
+        return $this->fetchRow($sql);
+    }
+
+    public function getStudentByMajor($fu_major,$fu_grade,$fu_realname){
+        $sql = "select * from front_user left join picture ON front_user.pic_id = picture.pic_id LEFT JOIN major ON front_user.fu_major = major.major_id LEFT JOIN college ON front_user.fu_college = college.college_id
+                where role_id = 7 and fu_major = ".$fu_major." and fu_grade = ".$fu_grade." and fu_realname like '%".$fu_realname."%'";
+        return $this->fetchAll($sql);
+    }
+
+    public function getStudentPageModelByMajor($major_name,$fu_grade,$fu_realname,$page = 1 , $num = 10, $flag = 0){
+        if($flag){
+            $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username  left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+               where bks_major = '".$major_name."' and bks_grade = ".$fu_grade." and bks_name like '%".$fu_realname."%'";
+            return $this->fetchAll($sql);
+        }else{
+            $sql = $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+               where bks_major = '".$major_name."' and bks_grade = ".$fu_grade." and bks_name like '%".$fu_realname."%' LIMIT ".($page-1)*$num.",".$num." ";
+            $list = $this->fetchAll($sql);
+            $filter="bks_major = '".$major_name."' and bks_grade = ".$fu_grade." and bks_name like '%".$fu_realname."%'";
+            $total = $this->getTotal('v_bks',$filter);
+            $totalPage = ceil($total / $num);
+            return array('page'=>$page,'list'=>$list,'total'=>$total,'totalPage'=>$totalPage);
+        }
+    }
+
+    public function getStudentPageModelByMajorA($major_name,$fu_realname,$page = 1 , $num = 10, $flag = 0){
+        if($flag){
+            $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+               where bks_major = '".$major_name."'  and bks_name like '%".$fu_realname."%'";
+            return $this->fetchAll($sql);
+        }else{
+            $sql = $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+               where bks_major = '".$major_name."' and bks_name like '%".$fu_realname."%' LIMIT ".($page-1)*$num.",".$num." ";
+            $list = $this->fetchAll($sql);
+            $filter="bks_major = '".$major_name."' and bks_name like '%".$fu_realname."%'";
+            $total = $this->getTotal('v_bks',$filter);
+            $totalPage = ceil($total / $num);
+            return array('page'=>$page,'list'=>$list,'total'=>$total,'totalPage'=>$totalPage);
+        }
+    }
+
+    public function getStudentByCollege($fu_college,$major_id,$fu_realname){
+        $sql = "select * from front_user left join picture ON front_user.pic_id = picture.pic_id LEFT JOIN major ON front_user.fu_major = major.major_id LEFT JOIN college ON front_user.fu_college = college.college_id
+                where role_id = 7 and fu_college = ".$fu_college." and fu_realname like '%".$fu_realname."%' and major_id like '%".$major_id."%'";
+        return $this->fetchAll($sql);
+    }
+
+    public function getStudentPageModelByCollege($college_name,$major_name,$fu_college,$major_id,$fu_realname,$page = 1 , $num = 10, $flag = 0){
+
+        if($flag){
+            $sql ="select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where  c.college_id = ".$fu_college." and bks_name like '%".$fu_realname."%' and m.major_id like '%".$major_id."%'";
+            return $this->fetchAll($sql);
+        }else{
+            $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where c.college_id = ".$fu_college." and bks_name like '%".$fu_realname."%' and m.major_id like '%".$major_id."%' LIMIT ".($page-1)*$num.",".$num." ";
+            $list = $this->fetchAll($sql);
+            $filter="  bks_college = '".$college_name."' and bks_name like '%".$fu_realname."%' and bks_major like '%".$major_name."%'";
+            $total = $this->getTotal('v_bks',$filter);
+            $totalPage = ceil($total / $num);
+            return array('page'=>$page,'list'=>$list,'total'=>$total,'totalPage'=>$totalPage);
+        }
+    }
+
+    public function getStudentByAll($college_id,$grade,$major_id,$fu_realname){
+        $sql = "select * from front_user left join picture ON front_user.pic_id = picture.pic_id LEFT JOIN major ON front_user.fu_major = major.major_id LEFT JOIN college ON front_user.fu_college = college.college_id
+                where role_id = 7 and fu_realname like '%".$fu_realname."%' and fu_major like '%".$major_id."%' and fu_college like '%".$college_id."%' and fu_grade like '%".$grade."%'";
+        return $this->fetchAll($sql);
+    }
+
+    public  function getStudentPageModel($page = 1 , $num = 10, $flag = 0){
+        if($flag){
+            $sql ="select * from v_bks v left join front_user f ON v.bks_code = f.fu_username";
+
+            return $this->fetchAll($sql);
+        }else{
+            $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username  LIMIT ".($page-1)*$num.",".$num." ";
+
+            $list = $this->fetchAll($sql);
+            $filter="";
+            $total = $this->getTotal('v_bks',$filter);
+            $totalPage = ceil($total / $num);
+            return array('page'=>$page,'list'=>$list,'total'=>$total,'totalPage'=>$totalPage);
+        }
+    }
+
+    public function getStudentBySelect($college_id,$grade,$major_id,$fu_realname){
+        if($college_id=='' && $major_id==''){
+            $sql = "select * from front_user left join picture ON front_user.pic_id = picture.pic_id LEFT JOIN major ON front_user.fu_major = major.major_id LEFT JOIN college ON front_user.fu_college = college.college_id
+                where role_id = 7 and fu_realname like '%".$fu_realname."%' and fu_grade like '%".$grade."%'";
+        }else if($college_id==''){
+            $sql = "select * from front_user left join picture ON front_user.pic_id = picture.pic_id LEFT JOIN major ON front_user.fu_major = major.major_id LEFT JOIN college ON front_user.fu_college = college.college_id
+                where role_id = 7 and fu_realname like '%".$fu_realname."%' and fu_grade like '%".$grade."%' and fu_major =".$major_id;
+        }else if($major_id==''){
+            $sql = "select * from front_user left join picture ON front_user.pic_id = picture.pic_id LEFT JOIN major ON front_user.fu_major = major.major_id LEFT JOIN college ON front_user.fu_college = college.college_id
+                where role_id = 7 and fu_realname like '%".$fu_realname."%' and fu_grade like '%".$grade."%' and fu_college =".$college_id;
+        }else{
+            $sql = "select * from front_user left join picture ON front_user.pic_id = picture.pic_id LEFT JOIN major ON front_user.fu_major = major.major_id LEFT JOIN college ON front_user.fu_college = college.college_id
+                where role_id = 7 and fu_realname like '%".$fu_realname."%' and fu_major = ".$major_id." and fu_college = ".$college_id." and fu_grade like '%".$grade."%'";
+        }
+        return $this->fetchAll($sql);
+    }
+
+    public function getStudentPageModelBySel($college_name,$major_name,$college_id,$grade,$major_id,$fu_realname,$page = 1 , $num = 10, $flag = 0){
+
+        if($college_id=='' && $major_id==''){
+            if($flag){
+                $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where  bks_name like '%".$fu_realname."%' and bks_grade like '%".$grade."%'";
+                return $this->fetchAll($sql);
+            }else{
+                $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where  bks_name like '%".$fu_realname."%' and bks_grade like '%".$grade."%' limit ".($page-1)*$num.",".$num." ";
+                $list = $this->fetchAll($sql);
+                $filter=" bks_name like '%".$fu_realname."%' and bks_grade like '%".$grade."%'";
+                $total = $this->getTotal('v_bks',$filter);
+                $totalPage = ceil($total / $num);
+                return array('page'=>$page,'list'=>$list,'total'=>$total,'totalPage'=>$totalPage);
+            }
+        }else if($college_id==''){
+            if($flag){
+                $sql =  "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where  bks_name like '%".$fu_realname."%' and bks_grade like '%".$grade."%' and m.major_id =".$major_id;
+                return $this->fetchAll($sql);
+            }else{
+                $sql =  "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where bks_name like '%".$fu_realname."%' and bks_grade like '%".$grade."%' and m.major_id =".$major_id." limit ".($page-1)*$num.",".$num." ";
+                $list = $this->fetchAll($sql);
+                $filter= "bks_name like '%".$fu_realname."%' and bks_grade like '%".$grade."%' and m.bks_major = '".$major_name."'";
+                $total = $this->getTotal('v_bks',$filter);
+                $totalPage = ceil($total / $num);
+                return array('page'=>$page,'list'=>$list,'total'=>$total,'totalPage'=>$totalPage);
+            }
+        }else if($major_id==''){
+            if($flag){
+                $sql =  "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where  bks_name like '%".$fu_realname."%' and bks_grade like '%".$grade."%' and c.college_id =".$college_id;
+                return $this->fetchAll($sql);
+            }else{
+                $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where bks_name like '%".$fu_realname."%' and bks_grade like '%".$grade."%' and c.college_id =".$college_id." limit ".($page-1)*$num.",".$num." ";
+                $list = $this->fetchAll($sql);
+                $filter=" bks_name like '%".$fu_realname."%' and bks_grade like '%".$grade."%' and bks_college = '".$college_name."'";
+                $total = $this->getTotal('v_bks',$filter);
+                $totalPage = ceil($total / $num);
+                return array('page'=>$page,'list'=>$list,'total'=>$total,'totalPage'=>$totalPage);
+            }
+        }else{
+            if($flag){
+                $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where  bks_name like '%".$fu_realname."%' and major_id = ".$major_id." and c.college_id = ".$college_id." and bks_grade like '%".$grade."%'";
+                return $this->fetchAll($sql);
+            }else{
+                $sql = "select * from v_bks v left join front_user f ON v.bks_code = f.fu_username left join major m on v.bks_major = m.major_name left join college c on v.bks_college = c.college_name
+                where bks_name like '%".$fu_realname."%' and major_id = ".$major_id." and c.college_id = ".$college_id." and bks_grade like '%".$grade."%' limit ".($page-1)*$num.",".$num." ";
+                $list = $this->fetchAll($sql);
+                $filter="  bks_name like '%".$fu_realname."%' and bks_major = '".$major_name."' and bks_college = '".$college_name."' and bks_grade like '%".$grade."%'";
+                $total = $this->getTotal('v_bks',$filter);
+                $totalPage = ceil($total / $num);
+                return array('page'=>$page,'list'=>$list,'total'=>$total,'totalPage'=>$totalPage);
+            }
+        }
+
+
+    }
+	
+
+	/**
+	 * 更新个人信息
+	 */
+	public function updateInfo($userID, $fileID, $username) {
+		if ($fileID && $username) {
+			$sql = "UPDATE `front_user` SET (`pic_id` = $fileID, `fu_realname` = '$username') WHERE `fu_id` = $userID";
+		} else if ($fileID) {
+			$sql = "UPDATE `front_user` SET `pic_id` = $fileID WHERE `fu_id` = $userID";
+		} else if ($username) {
+			$sql = "UPDATE `front_user` SET `fu_realname` = '$username' WHERE `fu_id` = $userID";
+		} else {
+			return false;
+		}
+		return $this->update ( $sql );
+	}
+	
+
+	
+	/**
+	 * 根据用户id获取用户信息
+	 *
+	 * @param unknown_type $userid
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	public function _getUserFromUserid($userid) {
+		$sql = "SELECT * FROM  `front_user` WHERE  `fu_id` =  '" . $userid . "' LIMIT 1";
+		//echo  $sql;
+		return $this->fetchRow ( $sql );
+	}
+	
+	public function getpw($id){
+		$sql = "SELECT `fu_pw`,`fu_salt`,`fu_realname` FROM `front_user` WHERE `fu_id` = ".$id."";
+		return $this->fetchRow ( $sql );
+	}
+	/**
+	 * 生成加密后的密码
+	 *
+	 * @param unknown_type $pw
+	 * @param unknown_type $salt
+	 * @return string
+	 */
+	public function generatePw($pw, $salt) {
+		return md5 ( md5 ( $pw . $salt ) );
+	}
+	
+	public function getuserid($num){
+		$sql = "SELECT `front_user`.`fu_id` FROM `front_user` WHERE `front_user`.`fu_realname` = '".$num."'";
+		return $this->fetchRow($sql);
+	}
+	/**
+	 * 获取一个随机生成的字符串
+	 *
+	 * @param unknown_type $username
+	 */
+	protected function _getSalt($str = "") {
+		return substr ( md5 ( $str . time () ), 2, 16 );
+	}
+	
+	public function getAllStu($major,$grade){
+		$sql = "SELECT `front_user`.`fu_salt`,`front_user`.`fu_id`,`front_user`.`fu_username`,`front_user`.`fu_realname` From `front_user` WHERE `front_user`.`fu_major`='".$major."' AND `front_user`.`fu_grade`='".$grade."' AND `front_user`.`role_id`=7";
+		return $this->fetchAll($sql);
+	}
+	
+
+	
+	public function getchaxun($username){
+		$sql = "SELECT `front_user`.`fu_id`,`front_user`.`fu_salt`,`front_user`.`fu_username`,`front_user`.`fu_realname` From `front_user` WHERE `front_user`.`fu_username`=".$username."";
+		return $this->fetchRow($sql);
+	}
+	
+	public function getasspro($id){
+		$sql = "SELECT `assessment_project`.`asspro_id`,`assessment_project`.`asspro_college` FROM `assessment_project` WHERE `assessment_project`.`asspro_create_user_id`='".$id."'";
+		return $this->fetchRow($sql);
+	}
+	
+	public function getPingshenMess($username){
+		$sql = "SELECT `front_user`.`fu_id`,`front_user`.`fu_major`,`front_user`.`fu_grade` FROM `front_user`
+				WHERE `front_user`.`fu_realname` = '".$username."'";
+		return $this->fetchRow($sql);
+	}
+	
+
+	
+	/**
+	 * 添加前台用户
+	 * @param unknown $code
+	 * @param unknown $name
+	 * @param unknown $roleId
+	 * @param unknown $gender
+	 * @param string $type
+	 * @param string $major
+	 * @param string $college
+	 * @param string $grade
+	 * @param string $mz
+	 * @param string $birth
+	 * @param string $nianzhi
+	 * @param string $picid
+	 * @param string $createId
+	 * @return Ambigous <boolean, number>
+	 */
+	public function addFrontuser($code, $name, $roleId, $gender, $sfzh, $pw = NULL, $type = NULL, $major = 'NULL', $college = 'NULL', $grade = NULL, $mz = NULL, $birth = NULL, $nianzhi = NULL, $picid = 'NULL', $createId = 'NULL'){
+		$salt = $this->_getSalt ( $code );
+		if ($pw){
+			$passWord = $this->generatePw ( $pw, $salt );
+		}else{
+			$passWord = $this->generatePw ( "111111", $salt );
+		}
+		$sql = "INSERT INTO `front_user` "
+			 . "(`fu_id`, `fu_username`, `fu_pw`, `fu_salt`, `fu_realname`, `fu_gender`, "
+			 . "`fu_type`, `fu_major`, `fu_college`, `fu_grade`, `role_id`, `fu_sfzh`, `fu_mz`, `fu_birth`, "
+			 . "`fu_nianzhi`, `pic_id`, `fu_islogin`, `fu_create_user_id`, `fu_create_time`) "
+			 . "VALUES "
+			 . "(NULL, '".$code."', '".$passWord."', '".$salt."', '".$name."', ".$gender.", "
+			 . "'".$type."', ".$major.", ".$college.", '".$grade."', '".$roleId."', '".$sfzh."', '".$mz."', '".$birth."', "
+			 . "'".$nianzhi."', ".$picid.", '0', ".$createId.", NOW());";
+		//echo $sql;
+		return $this->insert($sql);
+	}
+	
+	
+	/**
+	 * 删除用户
+	 * @param unknown_type $id
+	 * @return resource
+	 */
+	public function delUser($id){
+		$sql = "DELETE FROM `front_user` WHERE `front_user`.`fu_id` = '".$id."' ";
+		return $this->del($sql);
+	}
+	
+	/**
+	 * 根据专业和年级获取评审委员
+	 * @param unknown $college
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	public function getPingshenList($major, $grade){
+		$sql = "SELECT * FROM `front_user` WHERE `role_id` = 11 AND `fu_major` = '".$major."' AND `fu_grade` = '".$grade."'";
+		//echo $sql;
+		return $this->fetchAll($sql);
+	}
+	
+	/**
+	 * 批量删除评审委员
+	 */
+	public function delPswy(){
+		$sql = "DELETE FROM `front_user` WHERE `front_user`.`role_id` = 11 ";
+		return $this->del($sql);
+	}
+	/**
+	 * 通过学号，查找fuid
+	 * @param unknown_type $fu_username
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	public function zz_fu_id($fu_username){
+		$sql = "select fu_id from front_user where fu_username = ".$fu_username;
+		//echo $sql;
+		return $this->fetchRow($sql);
+	}
+	/**
+	 * 获得同年级，同专业的学生
+	 * @param unknown_type $major
+	 * @param unknown_type $grade
+	 * @return Ambigous <boolean, multitype:>
+	 */
+	public function  getmajor($major,$grade){
+		$sql = "select `front_user`.`fu_id` from front_user where fu_major = '".$major."' and fu_grade = '".$grade."' ";
+		return $this->fetchAll($sql);
+	}
+	
+	public function updatepw($fu_id,$pw){
+		$salt = $this->_getSalt('2222');
+		$md5pw = $this->generatePw($pw, $salt);
+		 $sql = "update front_user set fu_pw = '".$md5pw."' , fu_salt =  '".$salt."' where fu_id = ".$fu_id;
+		return $this->update($sql);
+	}
+	
+	public function reCheck($username){
+		$sql = "SELECT * FROM `front_user` WHERE `fu_username` = '".$username."' AND `role_id` = 11";
+		$all = $this->fetchAll($sql);
+		if ($all){
+			return true;
+		}else{
+			return false;
+		}
+	}
+    //自己添加
+    public function updatePicId($picId,$id){
+        $sql = "select * from front_user where fu_id = ".$id;
+        $head_picture_flag = $this->fetchAll($sql);
+        $sql ="update front_user set pic_id = ".$picId." ,head_picture_flag = ".($head_picture_flag[0]["head_picture_flag"]+1)." where fu_id =".$id;
+        return $this->update($sql);
+    }
+    //自己添加
+    public function updateNickName($id,$name){
+        $sql = "update front_user set fu_nickname = '".$name."' where fu_id = ".$id;
+        return $this->update($sql);
+    }
+    //2014-08-17添加
+    public function getBksByCode($bks_code){
+        $sql = "select * from v_bks where bks_code = '".$bks_code."'";
+        return $this->fetchAll($sql);
+    }
+}

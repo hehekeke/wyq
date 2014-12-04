@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<title>评估问卷库维护-添加</title>
+<style type="text/css"> 
+.title-container{margin-left:10px;  height:27px; width:500px;}
+.title-input{margin:0px 20px 0px 0px; width:450px; height:25px;}
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+}  
+.meau-container{ padding:5px 0px; margin:5px 10px;width:600px;height:40px;}
+.pinggu-meau{ font-size:12px; color:#000; text-align:left; width:600px; height:40px;min-height:20px;  float:left;}
+.pinggu-meau-btn{cursor:pointer;font-size:11px;line-height:30px; background:#DBEAF9; margin:0px 10px 0px 10px;  border:1px solid #CCC; text-align:center; width:108px;height:30px;float:left;}
+.pinggu-meau-btn:hover{background:#FCF1CA;}
+</style>
+<script type="text/javascript">
+	 function delTr(id){
+		 if (!confirm("确定要删除！")){
+			 return false;
+		 }
+		 $("#answer"+id).remove();
+	 }
+	 
+	 function tijiao(){
+		 var flag = true;
+		 var weidu = $("#weidu").val();
+		 if ($("#weidu").val() == ""){
+			 alert("请选择维度");
+			 $("#weidu").focus();
+			 flag = false;
+			 return false;
+		 }
+		 var title = $("#title").val();
+		 if (title == ""){
+			 alert("请填写标题")
+			 $("#title").focus();
+			 flag = false;
+			 return false;
+		 }
+		 var answer_str = "";
+		 var fenzhi_str = "";
+		 $(".answer-content").each(function(index,item){
+			 var content = $(item).val();
+			 if (content){
+				 var id = $(item).parent().parent().attr("data");
+				 if ($("#fenzhi-"+id).val() == ""){
+					 alert("请选择分值！");
+					 $("#fenzhi-"+id).focus();
+					 flag = false;
+					 return false;
+				 }else{
+					 answer_str += content;
+					 answer_str += ",";
+					 fenzhi_str += $("#fenzhi-"+id).val();
+					 fenzhi_str += ",";
+				 }
+			 }
+		 });
+		 if (flag){
+			 //var url = "<{$web_url}>/mannkgn.php/questionnaire/addexercise?title="+title+"&weidu="+weidu+"&content="+answer_str+"&fenzhi="+fenzhi_str;
+			 //alert(url);
+			$.ajax({
+				url:"<{$web_url}>/mannkgn.php/questionnaire/addexercise",
+				type:"POST",
+				data:{title:title, weidu:weidu, content:answer_str, fenzhi:fenzhi_str},
+				async:false,
+				dataType:"json",
+				success:function(data){
+					if (data.json.state == 1){
+						alert("添加成功！");
+						location.href="<{$web_url}>/mannkgn.php/questionnaire/index";
+					}else{
+						alert("添加失败！");
+					}
+				},
+				error:function(msg){
+					alert("网络出现问题！");
+				}
+			})
+		 }
+	 }
+	 
+	 function chongzhi(){
+		 location.href="<{$web_url}>/mannkgn.php/questionnaire/Addqus";
+	 }
+</script>
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background=images/title_bg1.jpg>当前位置:评估问卷库维护-添加</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+		</TR>
+	</TABLE>
+	<div id="class-container" class = "title-container" >
+		<div class="title">
+		维度：<select id="weidu" name="weidu">
+		<option value="">请选择</option>
+		<option value="公">公</option>
+		<{section name = wl loop = $neng}>
+			<option value="<{$neng[wl]}>"><{$neng[wl]}></option>
+		<{/section}>
+		</select>
+		</div>
+		<div style="clear:both;" ></div>
+	</div>
+		<div id="title-container" class = "title-container" >
+		<div class="title">
+		标题：<input type="text" id="title" value="" style="width:400px;height:20px;"/>
+		</div>
+		<div style="clear:both;" ></div>
+	</div>
+	<div id="info" style=" margin:10px 0px 10px 10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="80px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="300px" >答案内容</th> 
+    			<th scope="col" width="80px" >分值</th>   
+    			<th scope="col" width="100px" >操作</th>
+  			</tr>
+  			<tr id="answer1" data="1">
+  				<td style="border-left:1px solid #adceff;" >1</td>
+  				<td><input type="text" value="" id="answer-content-1" class="answer-content" style="width:280px; height:20px;"/></td>
+  				<td>
+  					<select id="fenzhi-1" class="fenzhi">
+  						<option value="">请选择</option>
+  						<option value="0">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  					</select>
+  				</td>
+  				<td>
+  					<input type="button" value="删除" onclick="delTr(1)" />
+  				</td>
+  			</tr>  
+  			<tr id="answer2" data="2">
+  				<td style="border-left:1px solid #adceff;" >2</td>
+  				<td><input type="text" value="" id="answer-content-2" class="answer-content" style="width:280px; height:20px;"/></td>
+  				<td>
+  					<select id="fenzhi-2" class="fenzhi">
+  						<option value="">请选择</option>
+  						<option value="0">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  					</select>
+  				</td>
+  				<td>
+  					<input type="button" value="删除" onclick="delTr(2)" />
+  				</td>
+  			</tr> 
+  			<tr id="answer3" data="3">
+  				<td style="border-left:1px solid #adceff;" >3</td>
+  				<td><input type="text" value="" id="answer-content-3" class="answer-content" style="width:280px; height:20px;"/></td>
+  				<td>
+  					<select id="fenzhi-3" class="fenzhi">
+  						<option value="">请选择</option>
+  						<option value="0">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  					</select>
+  				</td>
+  				<td>
+  					<input type="button" value="删除" onclick="delTr(3)" />
+  				</td>
+  			</tr> 
+  			<tr id="answer4" data="4">
+  				<td style="border-left:1px solid #adceff;" >4</td>
+  				<td><input type="text" value="" id="answer-content-4" class="answer-content" style="width:280px; height:20px;"/></td>
+  				<td>
+  					<select id="fenzhi-4" class="fenzhi">
+  						<option value="">请选择</option>
+  						<option value="0">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  					</select>
+  				</td>
+  				<td>
+  					<input type="button" value="删除" onclick="delTr(4)" />
+  				</td>
+  			</tr> 
+  			<tr id="answer5" data="5">
+  				<td style="border-left:1px solid #adceff;" >5</td>
+  				<td><input type="text" value="" id="answer-content-5" class="answer-content" style="width:280px; height:20px;"/></td>
+  				<td>
+  					<select id="fenzhi-5" class="fenzhi">
+  						<option value="">请选择</option>
+  						<option value="0">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  					</select>
+  				</td>
+  				<td>
+  					<input type="button" value="删除" onclick="delTr(5)" />
+  				</td>
+  			</tr> 
+  			<tr id="answer6" data="6">
+  				<td style="border-left:1px solid #adceff;" >6</td>
+  				<td><input type="text" value="" id="answer-content-6" class="answer-content" style="width:280px; height:20px;"/></td>
+  				<td>
+  					<select id="fenzhi-6" class="fenzhi">
+  						<option value="">请选择</option>
+  						<option value="0">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  					</select>
+  				</td>
+  				<td>
+  					<input type="button" value="删除" onclick="delTr(6)" />
+  				</td>
+  			</tr> 
+  			<tr id="answer7" data="7">
+  				<td style="border-left:1px solid #adceff;" >7</td>
+  				<td><input type="text" value="" id="answer-content-7" class="answer-content" style="width:280px; height:20px;"/></td>
+  				<td>
+  					<select id="fenzhi-7" class="fenzhi">
+  						<option value="">请选择</option>
+  						<option value="0">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  					</select>
+  				</td>
+  				<td>
+  					<input type="button" value="删除" onclick="delTr(7)" />
+  				</td>
+  			</tr> 
+  			<tr id="answer8" data="8">
+  				<td style="border-left:1px solid #adceff;" >8</td>
+  				<td><input type="text" value="" id="answer-content-8" class="answer-content" style="width:280px; height:20px;"/></td>
+  				<td>
+  					<select id="fenzhi-8" class="fenzhi">
+  						<option value="">请选择</option>
+  						<option value="0">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  					</select>
+  				</td>
+  				<td>
+  					<input type="button" value="删除" onclick="delTr(8)" />
+  				</td>
+  			</tr> 
+		</table> 
+	</div>
+	<div class ="meau-container">
+       <div class="pinggu-meau">
+       		<div style="padding-left:250px;padding-top:10px;height:20px; float:left;">
+      		 	<div class="pinggu-meau-btn" onclick="tijiao()">
+       			提交
+       			</div>
+       			<div class="pinggu-meau-btn" onclick="chongzhi()">
+       			重置
+       			</div>
+       		</div>
+       	</div>
+       </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor-1.2.1.min.js"></script>
+    <script type="text/javascript" src="<{$web_url}>/common/libs/xheditor-1.2.1/xheditor_lang/zh-cn.js"></script>
+    <script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+    <title>查看消息</title>
+
+
+<body>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+    <TR height=28><TD background="<{$web_url}>/common/admin/images/title_bg1.jpg">当前位置:查看消息</TD></TR>
+    <TR><TD bgColor=#b1ceef height=1></TD></TR>
+    <TR height=20>
+        <TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+    </TR>
+</TABLE>
+<table width="800px" border="0"  cellpadding="0" cellspacing="0">
+          <tr>
+            <td height="40"><div align="right">学年</div></td>
+            <td height="40" colspan="2">&nbsp;
+                <input type="text" name="activity_keywords" style="width:340px;height:20px;" disabled="disabled" value="<{$activityInfo['xuenian']}>"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td height="40"><div align="right">关键词</div></td>
+            <td height="40" colspan="2">&nbsp;
+               <textarea rows="12" cols="15" style="width: 340px" disabled="disabled"><{$activityInfo['mess_content']}></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td height="40"><div align="right">发送时间</div></td>
+            <td height="40" colspan="2">&nbsp;
+                <input id="activity_duty_preson" type="text" name="activity_duty_preson" style="width:340px;height:20px;" disabled="disabled" value="<{$activityInfo['create_time']}>"/>
+            </td>
+        </tr>
+
+    </form>
+</table>
+</body>
+</html>

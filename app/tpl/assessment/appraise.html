@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title></title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link type="text/css"
+	href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css"
+	rel="stylesheet">
+<link type="text/css"
+	href="<{$web_url}>/common/app/css/index/font-awesome.min.css"
+	rel="stylesheet">
+<link type="text/css" href="<{$web_url}>/common/app/css/index/site.css"
+	rel="stylesheet">
+<script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+<script src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+<script src="<{$web_url}>/common/app/js/holder.js"></script>
+<script type="text/javascript">
+ $(function(){
+	var obj = new Object();
+	obj.num = $("#num").val();
+	obj.assproid = $("#assproid").val();
+
+
+    $("#appraisecommit").click(function(){
+	   $(".pingjia").each(function(index,ele){
+		   //alert(index);
+		var score = $(this).find('option:selected').val();	
+		if($(this).parents("tr").find("td").eq(0).html() == '公'){
+		//var zhibiao = $(this).parents("tr").find("td").eq(0).html();
+		var zhibiao = 'gong';
+		}else{
+		//var zhibiao = $(this).parents("tr").find("td").eq(1).html();
+		var zhibiao = 'neng'+index;
+		}
+		//alert(zhibiao);
+		eval("obj."+zhibiao+" = "+score);
+		
+	});
+	   obj.good1 = $("#good_1").val();
+	   obj.good2 = $("#good_2").val();
+	   obj.good3 = $("#good_3").val();
+	   obj.bad1 = $("#bad_1").val();
+	   obj.bad2 = $("#bad_2").val();
+	   obj.bad3 = $("#bad_3").val();
+        if(obj.good1==''||obj.good2==''||obj.good3==''||obj.bad1==''||obj.bad2==''||obj.bad3==''){
+            alert('您还有未完成的互评项！');
+           return;
+        }
+	 $.ajax({
+				url:"<{$web_url}>/index.php/assessment/appraise_ajax",
+				async:false,
+				type:"POST",
+				data:obj,
+				success:function(msg){		
+					 var obj = eval("("+msg+")");
+					if(obj.json.state == 1){
+						//alert("评价完成");
+						alert(obj.json.msg);
+						location.href = "<{$web_url}>/index.php/assessment/mutualAssessment";  
+					 }else if(obj.json.state == 0){
+						alert("评价失败");
+					} 
+					//alert(msg);
+					},
+					error:function(){
+						alert("网络连接错误");
+					} 
+				}) 
+				//alert(JSON.stringify(obj));
+	
+}) 
+})
+</script>
+</head>
+<style>
+.zz_good_pingjia{color:#000};
+</style>
+<body>
+	<{include file='header.html'}>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="page-header">
+				<h3>当前位置：综合素质评估>学年末评估</h3>
+			</div>
+		</div>
+	<{assign var=lefttype value=4}>
+   <{include file='assessment/xnm-left-function.html'}>
+		<{if $exist==1}>
+		<div class="col-md-10">
+            <div class="row">
+                <div class="col-md-12">
+                  <span>姓名：<{$front_info['fu_realname']}></span>
+                    <ul class="nav nav-tabs">
+                        <li><a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$num}>/id/<{$front_info['fu_id']}>">查看成长档案</a></li>
+                    </ul>
+                </div>
+            </div>
+			<table class="table table-bordered">
+				<thead style="background-color: #e7e7e7">
+					<tr style="color:#000000">
+						<th>一级指标</th>
+						<th>二级指标</th>
+						<th>三级指标</th>
+						<th>评价</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td rowspan="<{$content.asspro_gong_num}>"
+							style="vertical-align: middle">公</td>
+						<td><{$content.second[0]}></td>
+						<td><{$content.third[0]}></td>
+						<td rowspan="<{$content.asspro_gong_num}>"
+							style="vertical-align: middle"><select class="pingjia" style="color:#000"
+							id="pingjia_0" >
+								<option value="6">1</option>
+								<option value="4">2</option>
+								<option value="2">3</option>
+						</select></td>
+					</tr>
+					<{section name=gong loop=$content.asspro_gong_num-1}>
+					<tr>
+						<td><{$content.second[$smarty.section.gong.rownum]}></td>
+						<td><{$content.third[$smarty.section.gong.rownum]}></td>
+						<{/section}> 
+						<{section name=neng start=$content.asspro_gong_num
+						loop=$content.asspro_gong_num+$content.asspro_neng_num}>
+					<tr>
+						<td>能</td>
+						<td><{$content.second[neng]}></td>
+						<td><{$content.third[neng]}></td>
+						<td><select class="pingjia" style="color:#000"
+							id="pingjia_<{$smarty.section.neng.rownum}>">
+								<option value="6">1</option>
+								<option value="4">2</option>
+								<option value="2">3</option>
+						</select></td>
+					</tr>
+					<{/section}>
+				</tbody>
+			</table>
+		</div>
+		
+	</div>
+	<div>
+<div>
+<center><div>评价选1非常好,继续保持;2.一般,还有提升空间;3.不太好,提升空间很大</div></center>
+<br/>
+<center>
+	  <div>
+	<table style="color:#FFFFFF;">
+		<tr>
+			<td>做的最好：</td>
+			<td>
+				<table class="table table-bordered" style="color:#FFFFFF;">
+					<tr>
+						<td>1</td>
+						<td>
+							<input id="good_1" class="textgood1" type="text"  value="" onfocus="if(this.value==''){this.value=''}" onblur="if(this.value==''){this.value=''}" style="color:#2E3641;" size="60"/>						</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>
+							<input id="good_2" class="textgood2" type="text"  value="" onfocus="if(this.value==''){this.value=''}" onblur="if(this.value==''){this.value=''}" style="color:#2E3641;" size="60"/>
+						</td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>
+							<input id="good_3" class="textgood3" type="text"  value="" onfocus="if(this.value==''){this.value=''}" onblur="if(this.value==''){this.value=''}" style="color:#2E3641;" size="60"/>						</td>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>还需改进：</td>
+			<td>
+				<table class="table table-bordered" style="border:1px;color:#FFFFFF;">
+					<tr>
+						<td>1</td>
+						<td>
+							<input id="bad_1" class="textImprovement1" type="text"  value="" onfocus="if(this.value==''){this.value=''}" onblur="if(this.value==''){this.value=''}" style="color:#2E3641;" size="60"/>						</td>
+						</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>
+							<input id="bad_2" class="textImprovement2" type="text"  value="" onfocus="if(this.value==''){this.value=''}" onblur="if(this.value==''){this.value=''}" style="color:#2E3641;" size="60"/>						</td>
+						</td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>
+							<input id="bad_3" class="textImprovement3" type="text"  value="" onfocus="if(this.value==''){this.value=''}" onblur="if(this.value==''){this.value=''}" style="color:#2E3641;" size="60"/>						</td>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+</center>
+</div>
+</div>
+	<center>
+	<input id="num" type = "hidden" value = "<{$num}>"/>
+	<input id="assproid" type = "hidden" value = "<{$assproid}>"/>
+		<button style="color:#000000" id="appraisecommit">提交</button>
+	</center>
+	</div>
+	<{else}>
+		目前学院未制定评估细则
+		<{/if}>
+	<{include file='footer.html'}>
+</body>
+</html>

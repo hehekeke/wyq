@@ -1,0 +1,4 @@
+#RewriteEngine on
+#RewriteRule index/$ index.php [L]
+#RewriteRule ^(index)/(.*) $1.php/$2 [L]
+#RewriteRule ^(index) index.php [L]

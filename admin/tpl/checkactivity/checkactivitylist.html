@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<title>活动审批</title>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<style type="text/css">
+ .myth{height:10px;border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;
+  letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ } 
+.mytd{  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+</style> 
+<script>
+function manageall(flagvalue){
+	if($("input[id='isnotcheck[]']").length==0){
+		alert('您没有未审批的活动');
+		return false;
+	}
+	var returnArr=new Array();
+	//置
+	var notcheck=$("input[id='isnotcheck[]']");
+	for(var i=0;i<notcheck.length;i++){
+		//alert(notcheck[i].value);
+		returnArr[i]=notcheck[i].value;
+	}
+
+	$.post('<{$web_url}>/mannkgn.php/CheckActivity/manageAll',{"listArr":returnArr,"flag":flagvalue,"do":"check"},function(data){
+		if(data==1){
+			alert('操作成功');
+			location.href="<{$web_url}>/mannkgn.php/CheckActivity/ActivityList";
+		}else{
+			alert('操作失败');
+			location.href="<{$web_url}>/mannkgn.php/CheckActivity/ActivityList";
+		}
+	});
+	
+}
+
+function submitall(){
+    var donotTijiao = '<{$donotTijiao}>';
+
+	if($("input[id='tijiaoall[]']").length=='0'){
+		alert('您没有可以提交的活动');
+		return false;
+	}
+    /*
+    if(donotTijiao==1){
+        alert("全部审核才可以提交！！");
+        return false;
+    }
+    */
+	var tijiaoreturnArr=new Array();
+	var tijiao=$("input[id='tijiaoall[]']");
+	for(var i=0;i<tijiao.length;i++){
+		tijiaoreturnArr[i]=tijiao[i].value;
+		//alert(tijiao[i].title);
+	}
+   $.post('<{$web_url}>/mannkgn.php/CheckActivity/manageAll',{"listArr":tijiaoreturnArr,"do":"tijiao"},function(data){
+		if(data==1){
+			alert('提交成功,请等待活动发布');
+			location.href="<{$web_url}>/mannkgn.php/CheckActivity/ActivityList";
+		}else{
+			alert('操作失败');
+			location.href="<{$web_url}>/mannkgn.php/CheckActivity/ActivityList";
+		}
+	});
+}
+
+</script>
+<div style="padding-left:30px;padding-top:0px;background-color:white;width:100px;height:30px; ">
+	
+</div>
+<form action="" method="post">
+<div id="search_activity" style="margin-left:20px;">
+		&nbsp;
+		活动类型:
+		<select name="source" id="source"> 
+		<option value="-1" >全部</option>
+		<option value="0" >学年活动</option>
+		<option value="1" >周活动</option>
+		</select>
+		&nbsp;
+		&nbsp;
+		审核状态:
+		<select name="checkstatus" id="checkstatus"> 
+		<option value="-1">全部</option>
+		<option value="0">未审核</option>
+		<option value="2">未通过</option>
+		<option value="1">已通过</option>
+		</select>
+        &nbsp;
+        &nbsp;
+        活动来源:
+        <select name="organizers" id="organizers">
+            <option value="-1">全部</option>
+            <{section name=og loop=$activityOrg}>
+            <option value="<{$activityOrg[og].id}>"><{$activityOrg[og].organize_name}></option>
+            <{/section}>
+        </select>
+        <input id ="search_button" type="submit" value="查询" />
+</div>
+</form>
+</br>
+
+<div id="info" style=" margin-left:10px;">
+	<font color="#CC0000"><{$msg}></font>
+	<table cellspacing="0" >  
+  		<tr>  
+    		<th class="myth" width="20px;">id</th>  
+    		<th class="myth" width="430px;">活动名称</th>   
+    		<th class="myth" width="60px;">类型</th>
+			<th class="myth" width="180px;">提交时间</th>
+    		<th class="myth" width="120;">审批状态</th>
+    		<th class="myth" width="250px;">操作</th>
+  		</tr> 
+		<{foreach $listInfoArr.list as $listInfo}>
+		<{if $listInfo != false}>
+		<tr>  
+    		<td class="mytd" width="20px;"><input type="hidden" id="tijiaoall[]" value="<{$listInfo.activity_id}>" /><{$listInfo.activity_id}></td>  
+    		<td class="mytd" width="430px;"><{$listInfo.activity_title}></td>   
+    		<td class="mytd" width="120px;"><{$listInfo.at_name}></td>
+			<td class="mytd" width="120px;"><{$listInfo.activity_create_time}></td>
+			<{if $listInfo.activity_approval eq 0 or $listInfo.activity_approval eq 4 }>
+				<td  class="mytd" width="120;">未审批</td>
+				<td  class="mytd"  width="250px;">				
+				<input type="hidden" id="isnotcheck[]"  value="<{$listInfo.activity_id}>" />
+				[<a href="<{$web_url}>/mannkgn.php/CheckActivity/checkPer/id/<{$listInfo.activity_id}>" >审批</a>]		
+				</td>
+			<{elseif $listInfo.activity_approval eq 1}>
+				<td  class="mytd" width="120;"><font color="gray">审批通过</font></td>
+				<td  class="mytd"  width="250px;">
+				[<a href="<{$web_url}>/mannkgn.php/CheckActivity/checkPer/id/<{$listInfo.activity_id}>" >重新审批</a>]
+				<{if $listInfo.activity_if_import eq 0 and  $listInfo.activity_class eq 1}>
+				[<a href="<{$web_url}>/mannkgn.php/CheckActivity/managePer/id/<{$listInfo.activity_id}>/flag/import/resflag/1" >重点推荐</a>]
+				<{elseif $listInfo.activity_if_import eq 1 and  $listInfo.activity_class eq 1}>
+				[<a href="<{$web_url}>/mannkgn.php/CheckActivity/managePer/id/<{$listInfo.activity_id}>/flag/import/resflag/0" ><font color="gray">取消推荐</font></a>]
+				<{/if}>				
+				</td>
+			<{elseif $listInfo.activity_approval eq 2}>
+				<td  class="mytd" width="120;"><font color="red">审批未通过</font></td>
+				<td  class="mytd"  width="250px;">				
+				[<a href="<{$web_url}>/mannkgn.php/CheckActivity/checkPer/id/<{$listInfo.activity_id}>" >重新审批</a>]
+				</td>
+			<{/if}>
+    		
+  		</tr>
+		<{else}>
+		 <b>暂无需要审批活动</b></br>
+		<{/if}>
+		<{/foreach}>
+	</table>
+	
+	<input type="button" onclick="manageall(1)" value="全部通过"> 
+	<input type="button" onclick="manageall(2)" value="全部不通过"> 
+	<input type="button" onclick="submitall()" value="提交当前页活动"> 
+	<span id="msg2"></span>
+	<{page info=$listInfoArr web_url=$web_url url="/mannkgn.php/checkActivity/ActivityList"}>
+</div>
+<div style="padding-left:30px;padding-top:0px;background-color:white;width:100px;height:30px; ">
+</div>
+</br>
+
+</body>
+</html>

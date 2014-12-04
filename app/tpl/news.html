@@ -1,0 +1,44 @@
+<style>
+
+    i{
+        color: wheat;
+    }
+    a{
+        color: #ffffff;
+    }
+</style>
+<table class="table table-bordered" id="newTable">
+    <thead>
+    <tr style="background:#EEAEEE">
+        <th><center>最新动态</center></th>
+    </tr>
+    </thead>
+    <tbody>
+    <{section name=ac loop=$activityByMajorGrade}>
+    <tr>
+        <td><a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/<{$activityByMajorGrade[ac].activity_class}>/activityId/<{$activityByMajorGrade[ac].activity_id}>"><i><{$activityByMajorGrade[ac].fu_realname}></i>&nbsp;&nbsp;参加了“<{$activityByMajorGrade[ac].activity_title}>”活动</a></td>
+    </tr>
+    <tr>
+        <td><{$activityByMajorGrade[ac].activity_registration_create_time}>　　浏览（<{$activityByMajorGrade[ac].activity_read_num}>次）</td>
+    </tr>
+    <{/section}>
+
+    <{section name=co loop=$commentByMajorGrade}>
+    <tr>
+        <td><a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/<{$commentByMajorGrade[co].activity_class}>/activityId/<{$commentByMajorGrade[co].activity_id}>"><i><{$commentByMajorGrade[co].fu_realname}></i>&nbsp;&nbsp;在“<{$commentByMajorGrade[co].activity_title}>”活动中发表了评论</a></td>
+    </tr>
+    <tr>
+        <td><{$commentByMajorGrade[co].comment_create_time}>　　浏览（<{$commentByMajorGrade[co].activity_read_num}>次）</td>
+    </tr>
+    <{/section}>
+
+    <{section name=gr loop=$growthProfileByMajorGrade}>
+    <tr>
+        <td><a href="<{$web_url}>/index.php/record/achievement/bks_code/<{$growthProfileByMajorGrade[gr].fu_username}>/id/<{$growthProfileByMajorGrade[gr].fu_id}>"><i><{$growthProfileByMajorGrade[gr].fu_realname}></i>&nbsp;&nbsp;录入了个人成果</a></td>
+    </tr>
+    <tr>
+        <td><{date("Y-m-d H:i:s",$growthProfileByMajorGrade[gr].gp_create_time)}>　　浏览（<{$growthProfileByMajorGrade[gr].gp_read_num}>次）</td>
+    </tr>
+    <{/section}>
+    </tbody>
+</table>

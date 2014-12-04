@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+footer{background:#181818; height:260px;}
+.footer {
+  margin: 10px 0px;
+  height: auto;
+}
+.footer p {
+  text-align: left;
+  color:#fff;
+  font-size:20px;
+}
+
+.footer p span {
+  margin: 0px 10px;
+}
+.footer p a{color:white;}
+.footer-item{float:left; margin-top:15px;}
+#footer2{margin-top:60px;}

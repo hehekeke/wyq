@@ -1,0 +1,50 @@
+.site-user-operation {
+  min-height: 24px;
+  margin-bottom: 5px;
+}
+#site-index-carousel{margin-top:15px;}
+
+/*通知公告*/
+#newsinfo{margin-top:15px;}
+#newsinfo-header{height: 50px; background:#2E3641;color:white; font-size:20px;}
+#newsinfo-header-words{width:100px; float:left;}
+#newsinfo-header-more{ width:76px; height:32px; float:right; background:url('../../images/index/newsinfo-header-more.png');}
+.news-item .list-group-item-heading{color:red;}
+.list-group-item-text{padding:10px 15px;}
+.panel{border:none;}
+.weibo-item-bottom{width:auto;background:url(../../images/index/weibo-item-bottom.png)}
+.site-user-operation li > a {
+  padding: 4px 10px;
+}
+
+.site-user-operation .navbar-text {
+  margin: 4px 10px;
+}
+
+.site-user-operation .navbar-text.navbar-right:last-child {
+    margin-right: 10px;
+}
+
+.full-banner {
+  background: url('../../images/banner.jpg');
+  background-size: cover;
+  height: 96px;
+  margin-bottom: 5px;
+}
+
+
+footer p {
+  text-align: center;
+}
+
+footer p span {
+  margin: 0px 10px;
+}
+
+
+.home-extern-link {
+  margin: 10px 0px;
+}
+.home-extern-link img {
+  max-width: 100%;
+}

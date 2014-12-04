@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="iwind" content="Ste Brennan - Code Computerlove - http://www.codecomputerlove.com/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,target-densitydpi=device-dpi,user-scalable=0" >
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="<{$web_url}>/common/clientapi/css/style.css" type="text/css" rel="stylesheet">
+<title>西部就业详情</title>
+</head>
+<body>
+<div id="title" class="item centertitle"><{$detail.ww_title}></div>
+<div align="center" style="font-size: 0.8em;height:1em;" >
+发布时间：<{$detail.ww_time}>&nbsp;&nbsp;
+阅读次数：<{$detail.ww_read}>&nbsp;&nbsp;
+分享次数：<{$detail.ww_share}>
+</div>
+<div id="img" class="imgdiv">
+	<{if $detail.pic_id != ""}>
+	<img src="<{$web_url}>/common/upload/images/<{$detail.pic_link}>" alt="<{$detail.pic_link}>" />
+	<{/if}>
+</div>
+<div id="content" class="item">
+	<{$detail.ww_content}>
+</div>
+</body>
+</html>

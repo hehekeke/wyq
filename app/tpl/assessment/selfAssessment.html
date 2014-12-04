@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+<script type="text/javascript">
+	function clickSave(){
+	  var txt = document.getElementById('content').value;
+	  var type = 1;
+	  var stuId = <{$stuId}>;
+	  <{if isset($item)}>
+		var id = <{$item.id}>;
+	  <{else}>
+	    var id = 0;
+	  <{/if}>
+	  $.post("<{$web_url}>/index.php/assessment/saveItem",{content:txt,id:id,type:type,stuId:stuId},function(result){
+		  var f=result;
+		     if (f>0){
+		    	 alert("保存成功！");
+		    	 location.reload();
+		     }else{
+		    	 alert("保存失败！");
+		     }
+	  });
+	}
+
+	function clickCommit(){
+		<{if isset($item)}>
+			var id = <{$item.id}>;
+		<{else}>
+			alert("请先点击保存按钮！");
+		<{/if}>
+		$.post("<{$web_url}>/index.php/assessment/commitItem",{id:id},function(result){
+			var c=result;
+		     if (c>0){
+		    	 alert("提交成功！");
+		    	 $('#content').prop('disabled', 'disabled');
+		     }else{
+		    	 alert("提交失败！");
+		     }
+		});
+	}
+
+	$(function(){
+		$("#zz_question").click(function(){
+			window.location.href="<{$web_url}>/index.php/assessment/question/mod/show";
+		})
+	})
+</script>
+<style>
+.tieshi tr td a{color:#2E3641;}
+</style>
+  </head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估>新生入学评估</h3></div>
+  </div>
+  <{assign var=lefttype value=3}>
+ <{include file='assessment/left-function.html'}>
+
+  <div class="col-md-7">
+	<center><h3>自我评价</h3></center>
+	<{if isset($weikaishi)}>
+	评价尚未开始
+	<{else}>
+	<{if $commit == false}>
+	定性评价：<button type="button" id="zz_question" class="btn btn-default"><a href="<{$web_url}>/index.php/assessment/question">开始答卷</a></button>
+	<{else}>
+	<table class="table table-bordered" style="margin:20px;">
+	  <{section name=x loop=$info}>
+	  <tr>
+	  <td><{$info[x].0}></td>
+	  <td><{$info[x].1}></td>
+	  </tr>
+	  <{/section}>
+	</table>
+	书面总结：
+	<{if isset($item)}>
+	  <{if ($item.commit==1)}>
+	    <textarea class="form-control" rows="15" name="content" id="content" placeholder="提示信息" disabled="disabled"><{$item.content}>
+	  <{else}>
+	    <textarea class="form-control" rows="15" name="content" id="content" placeholder="提示信息"><{$item.content}>
+	  <{/if}>
+	<{else}>
+	    <textarea class="form-control" rows="15" name="content" id="content" placeholder="提示信息">
+	<{/if}>
+	</textarea>
+    <center>
+      <button type="button" class="btn btn-success" style="margin:10px;" onclick="clickSave()">保存</button>
+      <button type="button" class="btn btn-danger" style="margin:10px;" onclick="clickCommit()">提交</button>
+    </center>
+    <{/if}>
+    <{/if}>
+  </div>
+  <div class="col-md-3">
+    <table class="table table-bordered">
+    <thead>
+      <tr style="background:#2E3641">
+        <th><center>如何做好评价</center></th>
+      </tr>
+    </thead>
+    <tbody style="background:white;" id="tieshi">
+     <{section name=n loop=$articleList max=5}>
+      <tr>
+        <td><a href="<{$web_url}>/index.php/assessment/helpDetail/id/<{$articleList[n].article_id}>"><{$articleList[n].article_title}></a></td>
+      </tr>
+    <{/section}>
+      <tr>
+        <td style="float:right;border:none;"><a href="<{$web_url}>/index.php/assessment/helpList/type/4">更多》</a></td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

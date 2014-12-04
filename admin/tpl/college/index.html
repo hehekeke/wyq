@@ -1,0 +1,444 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<title>学院评估工作</title>
+<script type="text/javascript">
+	$(function(){
+		$(".leibie").click(function(){
+			//alert("111");
+			var type_id = $(this).attr("data");
+			$(".leibie-selected").removeClass("leibie-selected");
+			$(this).addClass("leibie-selected");
+			location.href="<{$web_url}>/mannkgn.php/college/index/type/"+type_id;
+		});
+	});
+	function chaxun(){
+		var selectId = $("#pinggutonggao").val();
+		var majorId = $("#xuesheng_zhuanye").val();
+		var grade = $("#xuesheng_nianji").val();
+		//alert(grade);
+		var name = $("#xingming_text").val();
+		location.href="<{$web_url}>/mannkgn.php/college/index?type=5&selected="+selectId+"&grade="+grade+"&major="+majorId+"&name="+name;
+	}
+    function chaxun_banji(){
+        var selectid=$("#pingguxiangmu").val();
+        location.href="<{$web_url}>/mannkgn.php/college/index?type=4&selected="+selectid;
+    }
+</script>
+<style type="text/css"> 
+.leibie-container{margin-left:10px;  height:27px; width:auto; border-left: #999 double 1px; }
+.leibie{cursor:pointer; width:190px; height:25px; line-height:25px;border-right: #999 double 1px; border-bottom: #999 double 1px; border-top: #999 double 1px; float:left; text-align:center; background:#E7E7E7;}
+.leibie:hover{background:#FCF1CA;}
+.leibie-selected{	width:190px; height:25px; line-height:25px;border-right: #999 double 1px;border-bottom: #999 double 1px; border-top: #999 double 1px; float:left; text-align:center; background: #FCF1CA;}
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+}  
+.jindu{position:relative; border:1px #CCC solid; height:28px; width:240px; margin:0 auto; padding:1px;float:left;}
+.jindu_text{margin:0px 0px 0px 5px; width:100px; height:28px; line-height: 20px; font-size:10px;float:left;}
+.jindu-weiqidong{ display:block;width:0px; height:28px;}
+.jindu-daishenhe{ display:block;width:60px; height:28px;background:#FFCC99;}
+.jindu-gognshi{ display:block;width:120px; height:28px;background:#FFFF99;}
+.jindu-pinggu{ display:block;width:180px; height:28px;background:#9900FF;}
+.jindu-jiesu{ display:block;width:240px; height:28px;background:#008000;}
+.jindu-nonew-ziping{ display:block;width:60px; height:28px;background:#FFCC99;}
+.jindu-nonew-kaopinghui{ display:block;width:120px; height:28px;background:#FFFF99;}
+.jindu-nonew-fankui{ display:block;width:180px; height:28px;background:#9900FF;}
+.school-jindu-weiqidong{ display:block;width:0px; height:28px;}
+.school-jindu-daishenhe{ display:block;width:48px; height:28px;background:#FFCC99;}
+.school-jindu-gognshi{ display:block;width:96px; height:28px;background:#FFFF99;}
+.school-jindu-xuanjiang{ display:block;width:144px; height:28px;background:#CCCCFF;}
+.school-jindu-pinggu{ display:block;width:192px; height:28px;background:#9900FF;}
+.school-jindu-jiesu{ display:block;width:240px; height:28px;background:#008000;
+</style> 
+</head>
+<body>
+	<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  		<TR height=28><TD background=images/title_bg1.jpg>当前位置:学院评估工作</TD></TR>
+  		<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  		<TR height=20>
+    		<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+		</TR>
+	</TABLE>
+	<div id="leibie-container" class = "leibie-container" >
+		<div <{if $type == 1}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="1">学校评估通知</div>
+		<div <{if $type == 2}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="2">学院项目说明</div>
+		<div <{if $type == 3}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="3">学院评估方案、通知和宣讲方案</div>
+		<div <{if $type == 4}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="4">查看班级评估进度</div>
+		<{if $setting.ss_view_other_college == 1}><div <{if $type == 6}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="6">查看其他学院进度</div><{/if}>
+		<div <{if $type == 5}> class="leibie leibie-selected"<{else}>class="leibie"<{/if}> data="5">查看评估结果</div>
+		<div style="clear:both;" ></div>
+	</div>
+	<{if $type == 1}>
+	</br>
+	<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="150px" >学年</th> 
+    			<th scope="col" width="200px" >标题</th>   
+    			<th scope="col" width="80px" >评估时间段</th>
+    			<th scope="col" width="100px" >发布时间</th>
+    			<th scope="col" width="50px" >操作</th>
+  			</tr>  
+  			<{section name=al loop=$list.list}>
+ 		 	<tr >  
+    			<td style="border-left:1px solid #adceff;" ><{$list.list[al].article_id}></td>
+    			<td><{$list.list[al].article_xuenian}></td>
+    			<td><{$list.list[al].article_title}></td>
+    			<td><{$list.list[al].article_begin_time}>至<{$list.list[al].article_end_time}></td>
+    			<td><{$list.list[al].article_create_time}></td>
+			<td>
+		    	<a href="<{$web_url}>/mannkgn.php/college/detail/id/<{$list.list[al].article_id}>">查看通知</a>
+			</td>
+  		</tr>  
+  		<{sectionelse}>
+ 		 <tr >
+    		<th class="spec" colspan="6">暂无评估通告！</td>
+  		</tr>
+  		<{/section}>
+	</table> 
+	<{page info=$list web_url=$web_url url="/mannkgn.php/college/index/type/<{$type}>"}> 
+	</div>
+	<{else if $type == 2}>
+		</br>
+		<div style="margin-left:50px;margin-top:0px;background-color:white;width:400px;height:30px;font-size:10px;">
+			<a href="<{$web_url}>/mannkgn.php/college/addass">制定评估细则</a>
+		</div>
+		</br>
+			<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="150px" >学年</th> 
+    			<th scope="col" width="250px" >标题</th>   
+    			<th scope="col" width="100px" >发布时间</th> 
+    			<th scope="col" width="80px" >操作</th> 
+  			</tr>  
+  			<{section name=cl loop=$list.list}>
+ 		 	<tr>  
+    			<td style="border-left:1px solid #adceff;" ><{$list.list[cl].asspro_id}></td>
+    			<td><{$list.list[cl].asspro_xuenian}></td>
+    			<td><{$list.list[cl].asspro_title}></td>
+    			<td><{$list.list[cl].asspro_create_time}></td>
+    			<td>
+    			<{if $list.list[cl].asspro_state == 1 || $list.list[cl].asspro_state == 3 }>
+    				<a href="<{$web_url}>/mannkgn.php/college/assdetail/id/<{$list.list[cl].asspro_id}>">查看</a>
+    			<{else}>
+    				<a href="<{$web_url}>/mannkgn.php/college/modifyass/id/<{$list.list[cl].asspro_id}>">修改</a>
+    			<{/if}>
+    			</td>
+  			</tr>  
+  		<{/section}>
+	</table> 
+	<{page info=$list web_url=$web_url url="/mannkgn.php/college/index/type/<{$type}>"}> 
+	</div>
+	<{else if $type == 3}>
+	</br>
+	<div style="margin-left:50px;margin-top:0px;background-color:white;width:400px;height:30px;font-size:10px;">
+			<a href="<{$web_url}>/mannkgn.php/college/addxuejiang">发布学院评估方案、通知和宣讲方案</a>
+	</div>
+	</br>
+	<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="150px" >学年</th> 
+    			<th scope="col" width="250px" >本学院评估时段</th>   
+    			<th scope="col" width="100px" >发布时间</th> 
+    			<th scope="col" width="80px" >操作</th> 
+  			</tr>  
+  			<{section name=pgl loop=$list.list}>
+ 		 	<tr>  
+    			<td style="border-left:1px solid #adceff;" ><{$list.list[pgl].article_id}></td>
+    			<td><{$list.list[pgl].article_xuenian}></td>
+    			<td><{$list.list[pgl].article_begin_time}>至<{$list.list[pgl].article_end_time}></td>
+    			<td><{$list.list[pgl].article_create_time}></td>
+    			<td>
+    				<a href="<{$web_url}>/mannkgn.php/college/detailxuejiang/id/<{$list.list[pgl].article_id}>">查看</a>
+    			</td>
+  			</tr>  
+  			<{sectionelse}>
+  			<th class="spec" colspan="5">暂无！</th>
+  		<{/section}>
+	</table> 
+	<{page info=$list web_url=$web_url url="/mannkgn.php/college/index/type/<{$type}>"}> 
+	</div>
+	<{else if $type == 4}>
+	</br>
+    <div style="width:600px;height:30px">
+    <div id="notice_search" style="margin-left:20px;float: left">
+        评估:
+        <select name="pingguxiangmu" id="pingguxiangmu">
+                <option value="0"  <{if $isnew==0}>selected="selected"<{/if}>>学年末评估</option>
+                <option value="1"  <{if $isnew==1}>selected="selected"<{/if}>>新生入学</option>
+
+        </select>
+     </div>
+    <div id="anniu_search" style="margin-left:20px;float: right">
+        <input type="button" id= "chaxuan_bj" onclick="chaxun_banji();" style="width:80px; height:25px;" value="查询" />
+    </div>
+    </div>
+	<div id="info" style=" margin-left:10px;margin-top: 15px">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="200px" >专业</th> 
+    			<th scope="col" width="100px" >年级</th>   
+    			<th scope="col" width="380px" >进度</th> 
+  			</tr>  
+  			<{section name=gdl loop=$list.list}>
+ 		 	<tr>  
+    			<td style="border-left:1px solid #adceff;" ><{$list.list[gdl].gd_id}></td>
+    			<td><{$list.list[gdl].major_name}></td>
+    			<td><{$list.list[gdl].gd_grade}></td>
+    			<td>
+    				<{if $list.list[gdl].new == 0}>
+    					<{if $list.list[gdl].gd_state == 0}>
+    						<div class="jindu">
+    				 			<div class="jindu-weiqidong"></div>
+    						</div>
+    						<div class="jindu_text">
+    							未启动
+    						</div>
+    						<div style="clear:both;"></div>
+    					<{else if $list.list[gdl].gd_state == 1}>
+    						<div class="jindu">
+    					 		<div class="jindu-nonew-ziping"></div>
+    						</div>
+    						<div class="jindu_text">
+    							自评
+    						</div>
+    					<{else if $list.list[gdl].gd_state == 2}>
+    						<div class="jindu">
+    					 		<div class="jindu-nonew-kaopinghui"></div>
+    						</div>
+    						<div class="jindu_text">
+    							班级公开展示
+    						</div>
+    					<{else if $list.list[gdl].gd_state == 3}>
+    						<div class="jindu">
+    					 		<div class="jindu-nonew-fankui"></div>
+    						</div>
+    						<div class="jindu_text">
+    							结果统计和反馈
+    						</div>
+    					<{else if $list.list[gdl].gd_state == 4}>
+    						<div class="jindu">
+    					 		<div class="jindu-jiesu"></div>
+    						</div>
+    						<div class="jindu_text">
+    							完成
+    						</div>
+    					<{else}>
+    					<{/if}>
+    				<{else if $list.list[gdl].new == 1}>
+    					<{if $list.list[gdl].gd_state == 0}>
+    						<div class="jindu">
+    				 			<div class="jindu-weiqidong"></div>
+    						</div>
+    						<div class="jindu_text">
+    							未启动
+    						</div>
+    						<div style="clear:both;"></div>
+    					<{else if $list.list[gdl].gd_state == 1}>
+    						<div class="jindu">
+    					 		<div class="jindu-daishenhe"></div>
+    						</div>
+    						<div class="jindu_text">
+    							自评
+    						</div>
+    					<{else if $list.list[gdl].gd_state == 2}>
+    						<div class="jindu">
+    					 		<div class="jindu-gognshi"></div>
+    						</div>
+    						<div class="jindu_text">
+    							班级公开展示
+    						</div>
+    					<{else if $list.list[gdl].gd_state == 3}>
+    						<div class="jindu">
+    					 		<div class="jindu-pinggu"></div>
+    						</div>
+    						<div class="jindu_text">
+    							辅导员反馈
+    						</div>
+    					<{else if $list.list[gdl].gd_state == 4}>
+    						<div class="jindu">
+    					 		<div class="jindu-jiesu"></div>
+    						</div>
+    						<div class="jindu_text">
+    							完成
+    						</div>
+    					<{else}>
+    					<{/if}>
+    				<{else}>
+    				<{/if}>
+    			</td>
+  			</tr>  
+  		<{/section}>
+	</table> 
+	      <{page info=$list web_url=$web_url url="/mannkgn.php/college/index/type/<{$type}>"}>
+	</div>	
+	<{else if $type == 5}>
+	</br>
+	<div id="notice_search" style="margin-left:20px;">
+		评估:
+		<select name="pinggutonggao" id="pinggutonggao"> 
+		<{section name = pgtgl loop = $noticelist}>
+		<option value="<{$noticelist[pgtgl].asspro_id}>" <{if $select == $noticelist[pgtgl].asspro_id}>selected="selected"<{/if}> ><{$noticelist[pgtgl].asspro_title}></option>
+		<{/section}>
+		</select>
+	</div>
+	</br>
+	<div id="xuesheng_search" style="margin-left:20px;">
+		年级:
+		<select name="xuesheng_nianji" id="xuesheng_nianji"> 
+		<option value="0" <{if $grade == 0}>selected="selected"<{/if}>>所有</option>
+		<option value="2007" <{if $grade == 2007}>selected="selected"<{/if}>>2007</option>
+		<option value="2008" <{if $grade == 2008}>selected="selected"<{/if}>>2008</option>
+		<option value="2009" <{if $grade == 2009}>selected="selected"<{/if}>>2009</option>
+		<option value="2010" <{if $grade == 2010}>selected="selected"<{/if}>>2010</option>
+		<option value="2011" <{if $grade == 2011}>selected="selected"<{/if}>>2011</option>
+		<option value="2012" <{if $grade == 2012}>selected="selected"<{/if}>>2012</option>
+		<option value="2013" <{if $grade == 2013}>selected="selected"<{/if}>>2013</option>
+		<option value="2014" <{if $grade == 2014}>selected="selected"<{/if}>>2014</option>
+        <option value="2015" <{if $grade == 2013}>selected="selected"<{/if}>>2015</option>
+        <option value="2016" <{if $grade == 2014}>selected="selected"<{/if}>>2016</option>
+		</select>
+		&nbsp;
+		专业：
+		<select name="xuesheng_zhuanye" id="xuesheng_zhuanye"> 
+		<option value="0" selected="selected">所有</option>
+		<{section name = zyl loop = $majorlist}>
+		<option value="<{$majorlist[zyl].major_id}>" <{if $major == $majorlist[zyl].major_id}>selected="selected"<{/if}> ><{$majorlist[zyl].major_name}></option>
+		<{/section}>
+		</select>
+	</div>
+	</br>
+	<div id="anniu_search" style="margin-left:20px;">
+		姓名：<input type="text" id= "xingming_text" style="width:100px; height:20px;" value="" />
+		&nbsp;
+		<input type="button" id= "shousuo" onclick="chaxun();" style="width:80px; height:25px;" value="查询" />
+	</div>
+	</br>
+	<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="80px" >学号</th> 
+    			<th scope="col" width="120px" >姓名</th>
+    			<th scope="col" width="150px" >公指标</th>
+    			<{section name = nl loop = $nenglist}>
+    				<th scope="col" width="150px" ><{$nenglist[nl]}></th>
+    			<{/section}>
+  			</tr>  
+  			<{section name = ul loop = $list.list}>
+  				<tr>
+  					<td style="border-left:1px solid #adceff;"><{$smarty.section.ul.index_next}></td>
+  					<td><{$list.list[ul].fu_username}></td>
+  					<td><a href="<{$web_url}>/mannkgn.php/common/index/fuid/<{$list.list[ul].fu_id}>/isnew/<{$isnew}>"><{$list.list[ul].fu_realname}></a></td>
+  					<{section name = snl loop = $list.list[ul].score}>
+  						<td><{$list.list[ul].score[snl]}></td>
+  					<{/section}>
+  				</tr>
+  			<{sectionelse}>
+  				<th class="spec" colspan="<{$num}>">暂无评估学生！</td>
+  			<{/section}>
+		</table>
+         <{page info=$list web_url=$web_url url="/mannkgn.php/college/index/type/<{$type}>/selected/<{$select}>/grade/<{$grade}>/major/<{$major}>/name/<{$name}>"}>
+	</div>
+	<{else if $type == 6}>
+	</br>
+		<div style="margin-left:200px;margin-top:0px;background-color:white;width:400px;height:30px;font-size:20px;">
+			2013-2014学年各个学院进度表
+		</div>
+		</br>
+			<div id="info" style=" margin-left:10px;">
+		<table id="mytable" cellspacing="0" >  
+  			<tr>  
+    			<th scope="col" width="50px" style="border-left:1px solid #adceff;" >序号</th>  
+    			<th scope="col" width="200px" >学院</th> 
+    			<th scope="col" width="380px" >进度</th>   
+  			</tr>  
+  			<{section name=cl loop=$list.list}>
+ 		 	<tr>  
+    			<td style="border-left:1px solid #adceff;" ><{$list.list[cl].college_id}></td>
+    			<td><{$list.list[cl].college_name}></td>
+    			<td>
+    			<{if $list.list[cl].college_isstate == 0}>
+    				<div class="jindu">
+    				 	<div class="school-jindu-weiqidong"></div>
+    				</div>
+    				<div class="jindu_text">
+    				未启动
+    				</div>
+    				<div style="clear:both;"></div>
+    			<{else if $list.list[cl].college_isstate == 1}>
+    				<div class="jindu">
+    					 <div class="school-jindu-daishenhe"></div>
+    				</div>
+    				<div class="jindu_text">
+    					待审核
+    				</div>
+    			<{else if $list.list[cl].college_isstate == 2}>
+    				<div class="jindu">
+    					 <div class="school-jindu-gognshi"></div>
+    				</div>
+    				<div class="jindu_text">
+    					公示
+    				</div>
+    			<{else if $list.list[cl].college_isstate == 3}>
+    				<div class="jindu">
+    					 <div class="school-jindu-xuanjiang"></div>
+    				</div>
+    				<div class="jindu_text">
+    					宣讲
+    				</div>
+    			<{else if $list.list[cl].college_isstate == 4}>
+    				<div class="jindu">
+    					 <div class="school-jindu-pinggu"></div>
+    				</div>
+    				<div class="jindu_text">
+    					评估
+    				</div>
+    			<{else if $list.list[cl].college_isstate == 5}>
+    				<div class="jindu">
+    					 <div class="school-jindu-jiesu"></div>
+    				</div>
+    				<div class="jindu_text">
+    					结束
+    				</div>
+    			<{else}>
+    			<{/if}>
+    			</td>
+  		</tr>  
+  		<{/section}>
+	</table> 
+	<{page info=$list web_url=$web_url url="/mannkgn.php/college/index/type/<{$type}>"}> 
+	</div>
+	<{/if}>
+</body>
+</html>

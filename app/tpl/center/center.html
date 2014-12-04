@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+     <script src="<{$web_url}>/common/app/js/dot.min.js"></script>
+	 <script type="text/javascript" src="<{$web_url}>/common/libs/upload/jquery.uploadify.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="<{$web_url}>/common/app/css/dialog.css">
+    <script src="<{$web_url}>/common/app/js/dialog.min.js"></script>
+    <script type="text/javascript">
+        function editName(){
+            var id = '<{$student.fu_id}>';
+            var name = $('#name').val();
+            $.post("<{$web_url}>/index.php/Center/editName",{"name":name,"id":id},function(data){
+
+                if(data==1){
+                    alert("修改成功,下次登录生效");
+                }else{
+                    alert("修改失败");
+                }
+            });
+        }
+		
+	
+    </script>
+    <style>
+        input{
+            color: #000000;
+        }
+    </style>
+</head>
+<body><{include file='header.html'}>
+  <p id="pw" style="display:none;"><{$stupw.fu_pw}></p>
+  <p id="salt" style="display:none;"><{$stupw.fu_salt}></p>
+ <div class="row">
+    <div class="col-md-12">
+        <div class="page-header"><h3><{$student.fu_realname}>的个人中心</h3></div>
+    </div>
+    <div class="col-md-2">
+        <div class="list-group">
+            <a href="<{$web_url}>/index.php/Center/mycenter" class="list-group-item active">个人资料</a>
+            <a href="<{$web_url}>/index.php/Center/followActivity" class="list-group-item">我关注的活动</a>
+            <a href="<{$web_url}>/index.php/Center/syllabus" class="list-group-item">我的课程表</a>
+			<a href="<{$web_url}>/index.php/Center/message" class="list-group-item">我的消息</a>
+        </div>
+    </div>
+    <div class="col-md-8" style="height: 350px">
+
+        <fieldset style="border-bottom: solid 1px">
+            <legend style="color:#FFFFFF">个人资料设置</legend>
+            <form>
+                昵称：<input id="name" type="text" name="name" value="<{$__userinfo__.fu_nickname}>"/><input type="button" onclick="editName()" value="修改"/>
+            </form>
+            <div style="margin-left: 45px;margin-top: 10px">
+                <form action="<{$web_url}>/index.php/Center/pictureUpload" method="post" enctype="multipart/form-data" style="margin-bottom: 20px">
+                    <input type="file" id="upFile" name="upFile"   value="选择图片">
+					<div id="img">
+						<img  style="width: 150px;height: 150px" src="<{$web_url}>/<{$headPicture}>"><br>
+					</div>
+					<input type="hidden" name="picid" id="hidFileID" value="<{$detail.pic_id}>" />
+                    <input type="submit" value="保存头像"><span style="color: red"><{$smg}></span>
+                </form>
+            </div>
+        </fieldset>
+
+    </div>
+</div>
+   <{include file='footer.html'}>
+</body>
+</html>

@@ -1,0 +1,11 @@
+﻿ <style type="text/css">
+        .table_border td
+        {
+           border: 1px red solid;
+        }
+		.shao{
+		   border: 1px red solid;
+		}
+        
+    </style>
+<table class="table_border"><tr><td class="shao">名字</td><td class="shao">名字</td><td class="shao">名字</td><td class="shao">名字</td> </tr></table

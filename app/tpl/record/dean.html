@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+  </head>
+  <style>
+      a{
+          color: #ffffff;
+      }
+  </style>
+  <script>
+      function select(){
+          var searchData = $("#search").val();
+          var selectData = $("#select").val();
+          var grade = $("#grade").val();
+          location.href="<{$web_url}>/index.php/record/dean/id/<{$collegePre.fu_id}>/grade/"+grade+"/major_id/"+selectData+"/fu_realname/"+searchData;
+
+      }
+
+      function selectPrePage(prePage){
+          var selectData = $("#select").val();
+          var grade = $("#grade").val();
+          var realName = $("#search").val();
+          location.href="<{$web_url}>/index.php/record/dean/id/<{$collegePre.fu_id}>/page/"+prePage+"/major_id/"+selectData+"/grade/"+grade+"/fu_realname/"+realName;
+      }
+
+      function selectNextPage(NextPage){
+          var selectData = $("#select").val();
+          var grade = $("#grade").val();
+          var realName = $("#search").val();
+          location.href="<{$web_url}>/index.php/record/dean/id/<{$collegePre.fu_id}>/page/"+NextPage+"/major_id/"+selectData+"/grade/"+grade+"/fu_realname/"+realName;
+      }
+
+      function selectFirPage(){
+          var selectData = $("#select").val();
+          var grade = $("#grade").val();
+          var realName = $("#search").val();
+          location.href="<{$web_url}>/index.php/record/dean/id/<{$collegePre.fu_id}>/page/1/major_id/"+selectData+"/grade/"+grade+"/fu_realname/"+realName;
+      }
+      function selectEndPage(){
+          var selectData = $("#select").val();
+          var grade = $("#grade").val();
+          var realName = $("#search").val();
+          location.href="<{$web_url}>/index.php/record/dean/id/<{$collegePre.fu_id}>/page/<{$studentsList.totalPage}>/major_id/"+selectData+"/grade/"+grade+"/fu_realname/"+realName;
+      }
+
+      function skip(){
+          var totalPage = parseInt('<{$studentsList.totalPage}>');
+          var selectData = $("#select").val();
+          var grade = $("#grade").val();
+          var realName = $("#search").val();
+          var num = $("#num").val();
+          var pattern = /^([0-9]+)$/;
+          if(num==""){
+              alert("请输入页数！");
+          }else if(!pattern.test(num)){
+              alert("请输入数字！");
+          }else if(num > totalPage){
+              alert("超过最大页码");
+          }else{
+            location.href="<{$web_url}>/index.php/record/dean/id/<{$collegePre.fu_id}>/page/"+num+"/major_id/"+selectData+"/grade/"+grade+"/fu_realname/"+realName;
+          }
+      }
+
+  </script>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-8">
+    <div class="page-header"><h3>当前位置：成长档案</h3></div>
+    <center><h1><{$studentsList.list[0].college_name}> 成长档案</h1></center>
+    <table class="table" style="border:1px solid #ddd;"><tr>
+        <td>年级：</td><td>
+        <select class="form-control" id="grade">
+            <option value="all" >全部</option>
+            <{section name=gra loop=$allGrade}>
+            <{if $allGrade[gra] ==$smarty.session.seGrade}>
+            <option value="<{$allGrade[gra]}>" selected><{$allGrade[gra]}></option>
+            <{else}>
+            <option value="<{$allGrade[gra]}>" ><{$allGrade[gra]}></option>
+            <{/if}>
+            <{/section}>
+        </select>
+    </td>
+        <td>专业：</td><td>
+        <select class="form-control" id="select">
+            <option value="null">全部</option>
+           <{section name=ma loop=$majors}>
+            <{if $majors[ma].major_id==$smarty.session.seMajor_id }>
+            <option value="<{$majors[ma].major_id}>" selected><{$majors[ma].major_name}></option>
+            <{else}>
+             <option value="<{$majors[ma].major_id}>"><{$majors[ma].major_name}></option>
+            <{/if}>
+            <{/section}>
+		</select>
+        </td>
+      	<td>姓名：</td><td><input class="form-control" id="search" value="<{$smarty.session.seRealName}>"></td>
+      	<td><button type="button" style="color: #661550" class="select" onclick="select()">查询</button></td>
+    </tr></table>
+    <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>序号</th>
+        <th>年级</th>
+        <th>专业</th>
+        <th>姓名</th>
+        <th>学号</th>
+        <th>个人成长计划</th>
+        <th>个人成果</th>
+        <th>辅学活动成长记录</th>
+        <th>成长档案</th>
+       </tr>
+    </thead>
+    <tbody>
+    <{section name=stu loop=$studentsList.list}>
+      <tr>
+        <td><{$smarty.section.stu.index +1}></td>
+        <td><{$studentsList.list[stu].bks_grade}></td>
+        <td><{$studentsList.list[stu].bks_major}></td>
+        <td><{$studentsList.list[stu].bks_name}></td>
+        <td><{$studentsList.list[stu].bks_code}></td>
+        <td><{$studentsList.list[stu].plans}></td>
+        <td><{$studentsList.list[stu].gps}></td>
+        <td><{$studentsList.list[stu].acts}></td>
+          <td><a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$studentsList.list[stu].bks_code}>/id/<{$studentsList.list[stu].fu_id}>">查看</a></td>
+      </tr>
+    <{/section}>
+
+    </tbody>
+    </table>
+      <div class="doPage" style="height: 50px;text-align: center">
+          <a style="cursor: pointer" onclick="selectFirPage()">首页</a>
+          <{if $studentsList.page>1}>
+          <{$prePage = $studentsList.page -1}>
+          <a style="cursor: pointer" onclick="selectPrePage('<{$prePage}>')">上一页</a>
+          <{/if}>
+
+          <{if $studentsList.page < $studentsList.totalPage}>
+          <{$nextPage = $studentsList.page +1}>
+          <a style="cursor: pointer" onclick="selectNextPage('<{$nextPage}>')">下一页</a>
+          <{/if}>
+          <a style="cursor: pointer" onclick="selectEndPage()">尾页</a>
+          <span style="margin-left: 20px">当前第<{$studentsList.page}>页/共<{$studentsList.totalPage}>页</span>
+          跳转到<input id="num" type="text" style="line-height:10px;color:#000000;width: 50px;height: 20px;margin-left: 5px"><input style="height:20px;line-height:10px;color: #000000" type="button" value="GO" onclick="skip()">
+      </div>
+  </div>
+
+
+    <div class="col-md-4">
+        <table class="table table-bordered" id="newTable">
+            <thead>
+            <tr style="background:#EEAEEE">
+                <th><center>最新动态</center></th>
+            </tr>
+            </thead>
+            <tbody>
+            <{section name=ac loop=$activityByCollege}>
+            <tr>
+                <td><a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/<{$activityByCollege[ac].activity_class}>/activityId/<{$activityByCollege[ac].activity_id}>"><i><{$activityByCollege[ac].fu_realname}></i>&nbsp;&nbsp;参加了“<{$activityByCollege[ac].activity_title}>”活动</a></td>
+            </tr>
+            <tr>
+                <td><{$activityByCollege[ac].activity_registration_create_time}>　　浏览（<{$activityByCollege[ac].activity_read_num}>次）</td>
+            </tr>
+            <{/section}>
+
+            <{section name=co loop=$commentByCollege}>
+            <tr>
+                <td><a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/<{$commentByCollege[co].activity_class}>/activityId/<{$commentByCollege[co].activity_id}>"><i><{$commentByCollege[co].fu_realname}></i>&nbsp;&nbsp;在“<{$commentByCollege[co].activity_title}>”活动中发表了评论</a></td>
+            </tr>
+            <tr>
+                <td><{$commentByCollege[co].comment_create_time}>　　浏览（<{$commentByCollege[co].activity_read_num}>次）</td>
+            </tr>
+            <{/section}>
+            <{if isset($growthProfileByCollege)}>
+            <{section name=gr loop=$growthProfileByCollege}>
+            <tr>
+                <td><a href="<{$web_url}>/index.php/record/achievement/bks_code/<{$growthProfileByCollege[gr].fu_username}>/id/<{$growthProfileByCollege[gr].fu_id}>"><i><{$growthProfileByCollege[gr].fu_realname}></i>&nbsp;&nbsp;录入了个人成果</a></td>
+            </tr>
+            <tr>
+                <td><{date("Y-m-d H:i:s",$growthProfileByCollege[gr].gp_create_time)}>浏览（<{$growthProfileByCollege[gr].gp_read_num}>次）</td>
+            </tr>
+            <{/section}>
+            <{/if}>
+            </tbody>
+        </table>
+
+    </div>
+</ul>
+</div>
+
+<{include file='footer.html'}>
+</body>
+</html>

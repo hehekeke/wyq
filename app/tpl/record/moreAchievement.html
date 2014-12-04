@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script src="<{$web_url}>/common/app/js/removeSpaces.js"></script>
+
+</head>
+<script>
+
+
+    function cancelEdit(){
+        $('#editBox').css("display","none");
+    }
+    function edit(gp_content,gp_id,rule){
+        var gp_content = gp_content;
+        var gp_id = gp_id;
+        var rule = rule;
+
+        $('.e_content').val(gp_content);
+        $('.gp_id').val(gp_id);
+        if(rule==1){
+            $("#rule").html("<input id='open' type='radio' name='rule' value='0'/>公开<input id='limit' type='radio' name='rule' value='1' checked/>只允许老师查看");
+            //$("#limit").attr("checked","true");
+        }else{
+            $("#rule").html("<input id='open' type='radio' name='rule' value='0' checked/>公开<input id='limit' type='radio' name='rule' value='1'/>只允许老师查看");
+            //$("#open").attr("checked","true");
+        }
+        $('#editBox').css("display","block");
+    }
+
+    function modify(){
+        var gp_id = $('.gp_id').val();
+        var gp_content = $(".e_content").val();
+        gp_content = trim(gp_content);
+        var rule = $("input[name='rule']:checked").val();
+        if(gp_content==""){
+            alert("内容不能为空！");
+        }else{
+            $.post("<{$web_url}>/index.php/record/editAchievement",{"gp_id":gp_id,"gp_content":gp_content,"rule":rule},function(data){
+                if(data>0){
+                    alert("修改成功！");
+                    location.reload();
+                }else{
+                    alert("修改失败");
+                }
+            });
+        }
+    }
+
+    function more(gpt_name){
+
+        location.href="<{$web_url}>/index.php/record/moreAchievement/isALL/1/fu_id/<{$student.fu_id}>/gpt_name/"+gpt_name;
+    }
+</script>
+<script>
+    function btn1(){
+        //全部
+        location.href="<{$web_url}>/index.php/record/moreAchievement/gpt_name/<{$gpt_name}>/fu_id/<{$student.fu_id}>/isALL/1/bks_code/<{$bks_code}>";
+    }
+
+    function btn2(){
+        //入学年~入学年+1 = 大一
+        var data = '<{$student.fu_grade}>';
+        var start_time = '<{$student.fu_grade}>'+'-09';
+        var end_time = parseInt(data)+1+"-09";
+        location.href="<{$web_url}>/index.php/record/moreAchievement/gpt_name/<{$gpt_name}>/fu_id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time+"/bks_code/<{$bks_code}>";
+    }
+
+    function btn3(){
+        //入学年+1~入学年+2 = 大二
+        var data = '<{$student.fu_grade}>';
+        var start_time = parseInt(data)+1+'-09';
+        var end_time = parseInt(data)+2+"-09";
+        location.href="<{$web_url}>/index.php/record/moreAchievement/gpt_name/<{$gpt_name}>/fu_id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time+"/bks_code/<{$bks_code}>";
+    }
+
+    function btn4(){
+        //入学年+2~入学年+3 = 大三
+        var data = '<{$student.fu_grade}>';
+        var start_time = parseInt(data)+2+'-09';
+        var end_time = parseInt(data)+3+"-09";
+        location.href="<{$web_url}>/index.php/record/moreAchievement/gpt_name/<{$gpt_name}>/fu_id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time+"/bks_code/<{$bks_code}>";
+    }
+
+    function btn5(){
+        //入学年+2~入学年+3 = 大四
+        var data = '<{$student.fu_grade}>';
+        var start_time = parseInt(data)+3+'-09';
+        var end_time = parseInt(data)+4+"-09"
+        location.href="<{$web_url}>/index.php/record/moreAchievement/gpt_name/<{$gpt_name}>/fu_id/<{$student.fu_id}>/start_time/"+start_time+"/end_time/"+end_time+"/bks_code/<{$bks_code}>";
+    }
+</script>
+<style type="text/css">
+li{
+    list-style-type:none;
+}
+#addBox,#editBox{
+    color: #000000;
+}
+.gpt_list li{
+color: #000000;
+margin-top: 20px;
+
+}
+.gpt_list li button{
+    width: 200px;
+    height: 40px;
+}
+#liColor a{
+    color: #000000;
+    font-weight: bold;
+}
+</style>
+<script>
+
+    function exportExcel(){
+        location.href="<{$web_url}>/index.php/ExportExcelOfAch/export/id/<{$student.fu_id}>/gpt_id/<{$gpt_id}>/gpt/<{$gpt_name}>/realName/<{$student.fu_realname}>";
+    }
+    function printExcel(){
+       $("#gpTable").css("display","block");
+       $("#bigDiv").css("display","none");
+       window.print();
+       location.reload();
+    }
+    function returnBack(){
+        location.reload();
+    }
+</script>
+
+<body>
+<div id="bigDiv">
+<{include file='header.html'}>
+<div class="row" style="padding-top:15px;">
+    <div class="col-md-12">
+        <div class="page-header"><h3>当前位置：成长档案>成长档案详情</h3></div>
+        <center><h1><{$student.fu_grade}>级 <{$student.college_name}> <{$student.major_name}> <{$student.fu_realname}> 成长档案</h1></center>
+    </div>
+    <div class="col-md-12" id="liColor">
+        <ul class="nav nav-tabs navbar-right">
+            <{if $__userinfo__.fu_id == $student.fu_id}>
+            <li><a href="<{$web_url}>/index.php/record/myplan/id/<{$student.fu_id}>">个人成长计划</a></li>
+            <li  class="active"><a href="<{$web_url}>/index.php/record/achievement/id/<{$student.fu_id}>">个人成果清单</a></li>
+            <li><a href="<{$web_url}>/index.php/record/myrecord/id/<{$student.fu_id}>">辅学活动成长记录</a></li>
+            <{else}>
+            <li><a href="<{$web_url}>/index.php/record/myplan/bks_code/<{$bks_code}>/id/<{$student.fu_id}>">个人成长计划</a></li>
+            <li class="active"><a href="<{$web_url}>/index.php/record/achievement/bks_code/<{$bks_code}>/id/<{$student.fu_id}>">个人成果清单</a></li>
+            <li><a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$bks_code}>/id/<{$student.fu_id}>">辅学活动成长记录</a></li>
+            <{/if}>
+        </ul>
+    </div>
+
+    <div class="col-md-12 panel panel-default">
+        <div class="panel-body">
+            阶段：
+            <button type="button" class="btn btn-default" onclick="btn1()">全部</button>
+            <button type="button" class="btn btn-default" onclick="btn2()">大一</button>
+            <button type="button" class="btn btn-default" onclick="btn3()">大二</button>
+            <button type="button" class="btn btn-default" onclick="btn4()"> 大三</button>
+            <button type="button" class="btn btn-default" onclick="btn5()">大四</button>
+            <button style="float: right" type="button" class="btn btn-default" onclick="printExcel()">打印</button>
+            <button style="float: right" type="button" class="btn btn-default" onclick="exportExcel()">导出</button>
+        </div>
+
+        <div id="editBox" style="width: 560px;height: 233px;display: none;border: 1px solid;background: #ffffff;position:absolute;position:fixed;top:50%;left:20%" >
+            <div style="width: 500px;height: 200px;margin-left: 26px;margin-top: 20px;border: 1px solid">
+                <table>
+                    <form name="editForm">
+                        <input type="hidden" class="gp_id"/>
+                        <tr>
+                            <td>成果内容：</td>
+                            <td><textarea style="width: 400px;height: 120px" class="e_content"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>查看范围：</td>
+                            <td id="rule"><input id="open" type="radio" name="rule" value="0"/>公开<input id="limit" type="radio" name="rule" value="1" />只允许老师查看</td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" value="修改" onclick="modify()"/></td>
+                            <td><input type="button" value="取消" onclick="cancelEdit()"/></td>
+                        </tr>
+                    </form>
+
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <div style="margin-top: 20px;margin-left: 50px;width: 750px;display:block;float: left;margin-bottom: 10px">
+                <div style="height: 500px;border: 1px solid;display:block">
+                    <{section name=gp loop=$gpListPage.list}>
+                        <ul style="margin-top: 20px;font-size: 20px;">
+                            <{if $__userinfo__.fu_id == $student.fu_id}>
+                                <{if $achievement_end_time>=time()}>
+                                    <{if $limitAddAndEdit==1}>
+                                    <li style="cursor: pointer" title="<{$smarty.section.gp.index + 1}>.【<{$gpListPage.list[gp].gpt_name}>】<{$gpListPage.list[gp].grade_id}>年<{$gpListPage.list[gp].gp_content}>" onclick="edit('<{$gpListPage.list[gp].gp_content}>','<{$gpListPage.list[gp].gp_id}>','<{$gpListPage.list[gp].rule}>')"><div style="margin-bottom:18px;float:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:550px;height:30px;">【<{$gpListPage.list[gp].gpt_name}>】<{$gpListPage.list[gp].grade_id}>年<{$gpListPage.list[gp].gp_content}></div><i style="display:block;float: right;color: #FFCCCC;margin-right:10px"><{date("Y-m-d",$gpListPage.list[gp].gp_create_time)}></i></li>
+                                    <{else}>
+                                     <li style="cursor: pointer" title="<{$smarty.section.gp.index + 1}>.【<{$gpListPage.list[gp].gpt_name}>】<{$gpListPage.list[gp].grade_id}>年<{$gpListPage.list[gp].gp_content}>" ><div style="margin-bottom:18px;float:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:550px;height:30px;">【<{$gpListPage.list[gp].gpt_name}>】<{$gpListPage.list[gp].grade_id}>年<{$gpListPage.list[gp].gp_content}></div><i style="display:block;float: right;color: #FFCCCC;margin-right:10px"><{date("Y-m-d",$gpListPage.list[gp].gp_create_time)}></i></li>
+                                    <{/if}>
+                                <{else}>
+                                <li style="cursor: pointer" title="<{$smarty.section.gp.index + 1}>.【<{$gpListPage.list[gp].gpt_name}>】<{$gpListPage.list[gp].grade_id}>年<{$gpListPage.list[gp].gp_content}>" onclick="alert('已经超过修改个人成果时间')"><div style="margin-bottom:18px;float:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:550px;height:30px;">【<{$gpListPage.list[gp].gpt_name}>】<{$gpListPage.list[gp].grade_id}>年<{$gpListPage.list[gp].gp_content}></div><i style="display:block;float: right;color: #FFCCCC;margin-right:10px"><{date("Y-m-d",$gpListPage.list[gp].gp_create_time)}></i></li>
+                                <{/if}>
+                            <{else}>
+                                <{if  $__userinfo__.role_id== 7 && $gpListPage.list[gp].rule == 1}>
+                                <li>此个人成果只允许老师查看<i style="float: right;color: #FFCCCC;margin-right:10px"><{$gpListPage.list[gp].gp_create_time}></i></li>
+                                <{else}>
+                                <li title="<{$smarty.section.gp.index + 1}>.【<{$gpListPage.list[gp].gpt_name}>】<{$gpListPage.list[gp].grade_id}>年<{$gpListPage.list[gp].gp_content}>"><div style="margin-bottom:18px;white-space:nowrap;text-overflow:ellipsis;float:left;overflow:hidden;width:550px;height:30px;">【<{$gpListPage.list[gp].gpt_name}>】<{$gpListPage.list[gp].grade_id}>年<{$gpListPage.list[gp].gp_content}></div><i style="float: right;color: #FFCCCC;margin-right:10px"><{date("Y-m-d",$gpListPage.list[gp].gp_create_time)}></i></li>
+                                <{/if}>
+                            <{/if}>
+                        </ul>
+                    <{/section}>
+                </div>
+                <{if $gpListPage.totalPage > 1}>
+                <div class="page" style="margin-top: 20px;text-align: center" >
+                    <a href="<{$web_url}>/index.php/record/moreAchievement/isALL/1/gpt_name/<{$gpt_name}>/fu_id/<{$student.fu_id}>/page/1">首页</a>
+                    <{if $gpListPage.page>1}>
+                    <{$prePage = $gpListPage.page -1}>
+                    <a href="<{$web_url}>/index.php/record/moreAchievement/isALL/1/gpt_name/<{$gpt_name}>/fu_id/<{$student.fu_id}>/page/<{$prePage}>">上一页</a>
+                    <{/if}>
+
+                    <{if $gpListPage.page < $gpListPage.totalPage}>
+                    <{$nextPage = $gpListPage.page +1}>
+                    <a href="<{$web_url}>/index.php/record/moreAchievement/isALL/1/gpt_name/<{$gpt_name}>/fu_id/<{$student.fu_id}>/page/<{$nextPage}>">下一页</a>
+                    <{/if}>
+                    <a  href="<{$web_url}>/index.php/record/moreAchievement/isALL/1/gpt_name/<{$gpt_name}>/fu_id/<{$student.fu_id}>/page/<{$gpListPage.totalPage}>">尾页</a>
+                    <span style="margin-left: 20px">当前第<{$gpListPage.page}>页/共<{$gpListPage.totalPage}>页</span>
+                </div>
+                <{/if}>
+            </div>
+
+            <div style="width: 250px;float:right;margin-right: 45px">
+                <ul class="gpt_list">
+                    <{section name=gpt loop=$gpt}>
+                    <li><button type="button" onclick="more('<{$gpt[gpt].gpt_name}>')"><{$gpt[gpt].gpt_name}></button></li>
+                    <{/section}>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </ul>
+</div>
+<{include file='footer.html'}>
+</div>
+</body>
+</html>

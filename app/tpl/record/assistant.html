@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+  </head>
+  <style>
+      a{
+          color: #ffffff;
+      }
+  </style>
+  <script>
+      function skip(){
+          var totalPage = parseInt('<{$studentsList.totalPage}>');
+          var num = $("#num").val();
+          var pattern = /^([0-9]+)$/;
+          if(num==""){
+              alert("请输入页数！");
+          }else if(!pattern.test(num)){
+              alert("请输入数字！");
+          }else if(num > totalPage){
+               alert("超过最大页码");
+          }else{
+            location.href="<{$web_url}>/index.php/record/assistant/id/<{$student.fu_id}>/page/"+num;
+          }
+      }
+      function select(){
+          var searchData = $("#search").val();
+          location.href="<{$web_url}>/index.php/record/assistant/id/<{$student.fu_id}>/fu_realname/"+searchData;
+
+      }
+  </script>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-8">
+    <div class="page-header"><h3>当前位置：成长档案</h3></div>
+    <center><h1><{$studentsList.list[0].major_name}>专业 成长档案</h1></center>
+    <table class="table" style="border:1px solid #ddd;"><tr>
+      	<td>姓名：</td><td><input class="form-control" id="search"></td>
+      	<td><button style="color: #661550" type="button" class="select" onclick="select()">查询</button></td>
+    </tr></table>
+    <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>序号</th>
+        <th>姓名</th>
+        <th>学号</th>
+        <th>个人成长计划</th>
+        <th>个人成果</th>
+        <th>辅学活动成长记录</th>
+        <th>成长档案</th>
+       </tr>
+    </thead>
+    <tbody>
+    <{section name=stu loop=$studentsList.list}>
+    <tr>
+        <td><{$smarty.section.stu.index + 1}></td>
+        <td><{$studentsList.list[stu].bks_name}></td>
+        <td><{$studentsList.list[stu].bks_code}></td>
+        <td><{$studentsList.list[stu].plans}></td>
+        <td><{$studentsList.list[stu].gps}></td>
+        <td><{$studentsList.list[stu].acts}></td>
+        <td><a href="<{$web_url}>/index.php/record/myrecord/bks_code/<{$studentsList.list[stu].bks_code}>/id/<{$studentsList.list[stu].fu_id}>">查看</a></td>
+    </tr>
+    <{/section}>
+
+    </tbody>
+    </table>
+      <div class="doPage" style="height: 50px;text-align: center">
+          <a href="<{$web_url}>/index.php/record/assistant/id/<{$student.fu_id}>/page/1">首页</a>
+          <{if $studentsList.page>1}>
+          <{$prePage = $studentsList.page -1}>
+          <a href="<{$web_url}>/index.php/record/assistant/id/<{$student.fu_id}>/page/<{$prePage}>">上一页</a>
+          <{/if}>
+
+          <{if $studentsList.page < $studentsList.totalPage}>
+          <{$nextPage = $studentsList.page +1}>
+          <a href="<{$web_url}>/index.php/record/assistant/id/<{$student.fu_id}>/page/<{$nextPage}>">下一页</a>
+          <{/if}>
+          <a href="<{$web_url}>/index.php/record/assistant/id/<{$student.fu_id}>/page/<{$studentsList.totalPage}>">尾页</a>
+
+          <span style="margin-left: 20px">当前第<{$studentsList.page}>页/共<{$studentsList.totalPage}>页</span>
+          跳转到<input id="num" type="text" style="line-height:10px;color:#000000;width: 50px;height: 20px;margin-left: 5px"><input style="height:20px;line-height:10px;color: #000000" type="button" value="GO" onclick="skip()">
+      </div>
+  </div>
+    <div class="col-md-4">
+        <table class="table table-bordered" id="newTable">
+            <thead>
+            <tr style="background:#EEAEEE">
+                <th><center>最新动态</center></th>
+            </tr>
+            </thead>
+            <tbody>
+            <{section name=ac loop=$activityByMajorGrade}>
+            <tr>
+                <td><a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/<{$activityByMajorGrade[ac].activity_class}>/activityId/<{$activityByMajorGrade[ac].activity_id}>"><i><{$activityByMajorGrade[ac].fu_realname}></i>&nbsp;&nbsp;参加了“<{$activityByMajorGrade[ac].activity_title}>”活动</a></td>
+            </tr>
+            <tr>
+                <td><{$activityByMajorGrade[ac].activity_registration_create_time}>　　浏览（<{$activityByMajorGrade[ac].activity_read_num}>次）</td>
+            </tr>
+            <{/section}>
+
+            <{section name=co loop=$commentByMajorGrade}>
+            <tr>
+                <td><a href="<{$web_url}>/index.php/Assist/getWeekActivityContent/activity_class/<{$commentByMajorGrade[co].activity_class}>/activityId/<{$commentByMajorGrade[co].activity_id}>"><i><{$commentByMajorGrade[co].fu_realname}></i>&nbsp;&nbsp;在“<{$commentByMajorGrade[co].activity_title}>”活动中发表了评论</a></td>
+            </tr>
+            <tr>
+                <td><{$commentByMajorGrade[co].comment_create_time}>　　浏览（<{$commentByMajorGrade[co].activity_read_num}>次）</td>
+            </tr>
+            <{/section}>
+
+            <{section name=gr loop=$growthProfileByMajorGrade}>
+            <tr>
+                <td><a href="<{$web_url}>/index.php/record/achievement/bks_code/<{$growthProfileByMajorGrade[gr].fu_username}>/id/<{$growthProfileByMajorGrade[gr].fu_id}>"><i><{$growthProfileByMajorGrade[gr].fu_realname}></i>&nbsp;&nbsp;录入了个人成果</a></td>
+            </tr>
+            <tr>
+                <td><{date("Y-m-d H:i:s",$growthProfileByMajorGrade[gr].gp_create_time)}>　　浏览（<{$growthProfileByMajorGrade[gr].gp_read_num}>次）</td>
+            </tr>
+            <{/section}>
+            </tbody>
+        </table>
+
+    </div>
+</ul>
+</div>
+</div>
+<{include file='footer.html'}>
+</body>
+</html>

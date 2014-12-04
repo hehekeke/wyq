@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+
+  </head>
+  <script>
+
+      function skip(){
+          var totalPage = parseInt('<{$assList.totalPage}>');
+          var num = $("#num").val();
+          var pattern = /^([0-9]+)$/;
+          if(num==""){
+              alert("请输入页数！");
+          }else if(!pattern.test(num)){
+              alert("请输入数字！");
+          }else if(num > totalPage){
+              alert("超过最大页码");
+          }else{
+              location.href="<{$web_url}>/index.php/assessment/helpList/type/1/page/"+num;
+          }
+      }
+  </script>
+<body>
+<{include file='header.html'}>
+<div class="row">
+        
+  <div class="col-md-12">
+    <div class="page-header" style="margin: 0;margin-top: 10px"><h3>当前位置：小贴士</h3></div>
+  </div>
+  <div class="col-md-1">
+  </div>
+  <div class="col-md-11">
+    <table class="table">
+       <{if isset($list)}>
+     <{section name=n loop=$list['list']}>
+       <tr>
+           <td style="width:700px"><a href="<{$web_url}>/index.php/assessment/helpDetail/id/<{$list['list'][n].article_id}>"><{$list['list'][n].article_title}></a></td>
+           <td><{$list['list'][n].article_create_time}></td>
+       </tr>
+    <{/section}>
+        <{else if}>
+        暂无数据
+        <{/if}>
+    </table>
+      <{if $list}>
+      <div style="text-align:center;margin-top:20px" id="page">
+          <{if $list.page>1}>
+          <a href="<{$web_url}>/index.php/assessment/helpList/type/1/page/1">首页</a>
+          <{$prePage = $list.page-1}>
+          <a href="<{$web_url}>/index.php/assessment/helpList/type/1/page/<{$prePage}>">上一页</a>
+          <{/if}>
+          <{if $list.page < $list.totalPage}>
+          <{$nextPage =$list.page+1 }>
+          <a href="<{$web_url}>/index.php/assessment/helpList/type/1/page/<{$nextPage}>">下一页</a>
+          <a href="<{$web_url}>/index.php/assessment/helpList/type/1/page/<{$list['totalPage']}>">尾页</a>
+          <{/if}>
+          <{if $list.totalPage>1}>
+          跳转到<input id="num" type="text" style="color:#000000;width: 40px;height:20px;margin-left: 5px">
+          <button onclick="skip()">GO</button>
+          <{/if}>
+          <span style="margin-left: 20px">当前第<{$list.page}>页/共<{$list.totalPage}>页</span>
+      </div>
+      <{/if}>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

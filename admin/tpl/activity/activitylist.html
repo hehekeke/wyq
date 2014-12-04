@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<script language="javascript" type="text/javascript" src="<{$web_url}>/common/libs/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<title>历史活动库维护</title>
+<script type="text/javascript">
+	$(function() {
+		$("#search_button").live("click",function() {
+			var leixing = $("#type").val();
+			var chuangjianzhe = $("#chuanjian").val();
+			var laiyuan = $("#source").val();
+            var xuenian = $("#xuenian").val();
+            var activity_start_time = $("#activity_start_time").val();
+            var activity_end_time = $("#activity_end_time").val();
+			window.location.href="<{$web_url}>/mannkgn.php/activity/getactivitylist/page/<{$page}>/type/"+
+                    leixing+"/source/"+laiyuan+"/create/"+chuangjianzhe+"/xuenian/"+xuenian
+                    +"/activity_start_time/"+activity_start_time+"/activity_end_time/"+activity_end_time;
+		});
+	});
+	
+	//点击选中
+	$(function(){
+		$(":checkBox#quanxuan").click(function(){
+				//点击一次
+				var checked=$(this).attr('checked');
+				if(checked=='checked'){
+					$(":checkBox").attr("checked",true);
+				}
+				if(checked!='checked'){
+					$(":checkBox").attr("checked",false);
+				}				
+			});
+	});
+	
+	//添加历史新纪录
+	function mkseleect(){
+		var selectTo=$("#selectTo").val();
+		//获取所有选择狂
+		var i=0;
+		var selectValue=new Array();
+		var checkBoxs=$(":checkBox[id='selectchecked[]']");
+		//alert(checkBoxs.length);
+		for(var j=0;j<checkBoxs.length;j++){
+			if(checkBoxs[j].checked==true){
+				selectValue[i]=checkBoxs[j].value;//假如数组
+				i++;
+			}
+		}
+		selectValue=JSON.stringify(selectValue);
+		$.post('<{$web_url}>/mannkgn.php/AddActivity/ActivityFromH',{"checkedValue":selectValue,"activity_class":selectTo},function(data){
+			if(data=='1'){
+				$("#msg2").html('<font color="red">添加成功,</font><a href="<{$web_url}>/mannkgn.php/AddActivity/ActivityList/type/'+selectTo+'">点此查看</a>');
+			}
+			if(data=='2'){
+				$("#msg2").html('<font color="red">请选择至少一项</font>');
+			}		
+		});
+	}
+	$(function(){
+		$("#activity_start_time").focus(function(){
+			WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+		});
+		$("#activity_end_time").focus(function(){
+			WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+		});
+		
+		}
+);
+</script>
+</head>
+<body>
+<style type="text/css">
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+}  
+</style> 
+
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  	<TR height=28><TD background=images/title_bg1.jpg>当前位置:历史活动库维护</TD></TR>
+  	<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  	<TR height=20>
+    	<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+	</TR>
+</TABLE>
+<div style="padding-left:30px;padding-top:0px;background-color:white;width:100px;height:30px; ">
+	
+</div>
+</br>
+<div id="search_activity" style="margin-left:20px;">
+		学年:
+		<select name="xuenian" id="xuenian">
+		<option value="0" >全部</option>
+        <option value="2013" <{if $xuenian == 2013}>selected="selected"<{/if}> >2013</option>
+        <option value="2014" <{if $xuenian == 2014}>selected="selected"<{/if}> >2014</option>
+        <option value="2015" <{if $xuenian == 2015}>selected="selected"<{/if}> >2015</option>
+        <option value="2016" <{if $xuenian == 2016}>selected="selected"<{/if}> >2016</option>
+        <option value="2017" <{if $xuenian == 2017}>selected="selected"<{/if}> >2017</option>
+        <option value="2018" <{if $xuenian == 2018}>selected="selected"<{/if}> >2018</option>
+		</select>
+		&nbsp;
+		类型：
+		<select name="type" id="type"> 
+		<option value="0" <{if $type == 0}> selected="selected" <{/if}>>全部</option>
+		<{section name = tl loop = $typelist}>
+		<option value="<{$typelist[tl].at_id}>" <{if $type == $typelist[tl].at_id}> selected="selected" <{/if}>><{$typelist[tl].at_name}></option>
+		<{/section}>
+		</select>
+		&nbsp;
+		创建人:
+		<select name="chuanjian" id="chuanjian"> 
+		<option value="0" <{if $create == 0}> selected="selected" <{/if}>>全部</option>
+		<{section name = ul loop = $user}>
+		<option value="<{$user[ul].activity_create_user_id}>" <{if $create == $user[ul].activity_create_user_id}> selected="selected" <{/if}>><{$user[ul].name}></option>
+		<{/section}>
+		</select>
+		&nbsp;
+		数据来源:
+		<select name="source" id="source"> 
+		<option value="0" <{if $source == 0}>selected="selected"<{/if}> >全部</option>
+		<option value="1" <{if $source == 1}>selected="selected"<{/if}> >学年活动</option>
+		<option value="2" <{if $source == 2}>selected="selected"<{/if}> >周活动</option>
+		</select>
+		&nbsp;
+		活动时间：
+		<input class="Wdate" id="activity_start_time" name="activity_start_time">到
+		
+		<input class="Wdate" id="activity_end_time" name="activity_end_time">
+		&nbsp;
+		<input id ="search_button" type="button" value="查询" />
+</div>
+</br>
+<div id="info" style=" margin-left:10px;">
+	<font color="#CC0000"><{$result|default:""}></font>
+	<table id="mytable" cellspacing="0" >  
+  		<tr>  
+    		<th scope="col" width="50px" style="border-left:1px solid #adceff;" ><input type="checkBox" id="quanxuan" />全选</th>  
+    		<th scope="col" width="150px" >学年</th> 
+    		<th scope="col" width="400px" >名称</th>   
+    		<th scope="col" width="80px" >类型</th>
+    		<th scope="col" width="80px" >专业性级别</th>
+    		<th scope="col" width="80px" >主办方</th>
+    		<th scope="col" width="80px" >创建者</th>
+    		<th scope="col" width="50px" >操作</th>
+  		</tr>  
+  		<{section name=al loop=$list.list}>
+  		<tr >  
+    		<td style="border-left:1px solid #adceff;" ><input type="checkBox" id="selectchecked[]" value="<{$list.list[al].activity_id}>"/></td>
+    		<td><{$list.list[al].activity_school_year}></td>
+   		    <td><{$list.list[al].activity_title}></td>
+   		    <td><{$list.list[al].at_name}></td>
+   		    <td><{$list.list[al].activity_level}></td>
+   		    <td>
+   		    <{section name = ol loop = $list.list[al].ori}>
+   		    	<{$list.list[al].ori[ol].organizers_name}>
+   		    <{sectionelse}>
+   		    	无主办方
+   		    <{/section}>
+   		    </td>
+   		    <td><{$list.list[al].admin_realname}></td>
+   		    <td><a href="<{$web_url}>/mannkgn.php/activity/detail/id/<{$list.list[al].activity_id}>">查看</a></td>
+  		</tr>  
+  		<{sectionelse}>
+  		<tr >
+    		<th class="spec" colspan="5">暂无活动！</td>
+  		</tr>
+  		<{/section}>
+	</table>
+	添加至<select id="selectTo" >
+		<option value="0">学年活动</option>
+		<option value="1">周活动</option>	
+	</select>
+	<input type="button" value="添加选中" id="mkselect" onclick="mkseleect();" style="float:rigth;margin:10px 20px"/>
+	<span id="msg2"></span>
+	<div>
+		<{page info=$list web_url=$web_url url="/mannkgn.php/activity/getactivitylist/page/<{$page}>/type/<{$type}>/source/<$source>/create/<{$create}>"}>
+	</div>
+	
+</div>
+</body>
+</html>

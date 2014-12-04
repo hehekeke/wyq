@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+    <script src="<{$web_url}>/common/libs/highcharts/highcharts.js"></script>
+	<script src="<{$web_url}>/common/libs/highcharts/highcharts-more.js"></script>
+<script type="text/javascript">
+  function tab1(val){
+	  var mutual=document.getElementById('mutual');
+	  var other=document.getElementById('other');
+	  var radar=document.getElementById('radar');
+	  if (val==1){
+		  mutual.style.display='block';
+		  other.style.display='none';
+		  radar.style.display='none';
+	  }else if (val==2){
+		  mutual.style.display='none';
+		  other.style.display='block';
+		  radar.style.display='none';
+	  }else if (val==3){
+		  mutual.style.display='none';
+		  other.style.display='none';
+		  radar.style.display='block';
+	  }
+  }
+  function tab2(val){
+	  var best=document.getElementById('best');
+	  var change=document.getElementById('change');
+	  if (val==1){
+		  best.style.display='block';
+		  change.style.display='none';
+	  }else if (val==2){
+		  best.style.display='none';
+		  change.style.display='block';
+	  }
+  }
+</script>
+<script type="text/javascript">
+$(function () {
+	$('#container1').highcharts({
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+
+	    title: {
+	        text: '他评结果',
+	        x: -40
+	    },
+
+	    pane: {
+	    	size: '80%'
+	    },
+
+	    xAxis: {
+	        categories: ['能1', '能2', '能3', '能4', '能5'],
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:20,
+			max:100,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+
+		credits: {
+			enabled:false
+		},
+
+	    series: [{
+	        name: '我的分数',
+	        data: [86, 91, 86, 35, 71],
+	        pointPlacement: 'on',
+			color: '#ff0000'
+	    }, {
+	        name: '班级平均分',
+	        data: [75, 83, 84, 62, 68],
+	        pointPlacement: 'on'
+	    }]
+
+	});
+
+	$('#container2').highcharts({
+
+	    chart: {
+	        polar: true,
+	        type: 'line'
+	    },
+
+	    title: {
+	        text: '互评VS自评',
+	        x: -40
+	    },
+
+	    pane: {
+	    	size: '80%'
+	    },
+
+	    xAxis: {
+	        categories: ['能1', '能2', '能3', '能4', '能5'],
+	        tickmarkPlacement: 'on',
+	        lineWidth: 0
+	    },
+
+	    yAxis: {
+	        gridLineInterpolation: 'polygon',
+			tickInterval:20,
+			max:100,
+			min:0,
+	        lineWidth: 0,
+	        min: 0
+	    },
+
+	    tooltip: {
+	    	shared: true,
+	        pointFormat: '<div style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+	    },
+
+	    legend: {
+	        align: 'right',
+	        verticalAlign: 'top',
+	        y: 70,
+	        layout: 'vertical'
+	    },
+
+		credits: {
+			enabled:false
+		},
+
+	    series: [{
+	        name: '我的分数',
+	        data: [66, 91, 96, 35, 81],
+	        pointPlacement: 'on',
+			color: '#ff0000'
+	    }, {
+	        name: '班级平均分',
+	        data: [75, 73, 84, 62, 68],
+	        pointPlacement: 'on'
+	    }]
+
+	});
+});
+</script>
+</head>
+<body>
+<div class="row">
+
+  <div class="col-md-10">
+
+    <center><h3>评估结果</h3></center>
+	<div class="btn-group">
+	  <button type="button" class="btn btn-info" onclick="tab1(1)">互评结果</button>
+	  <button type="button" class="btn btn-info" onclick="tab1(2)">他评结果</button>
+	  <button type="button" class="btn btn-info" onclick="tab1(3)">雷达图</button>
+	</div>
+	<div id="mutual" style="margin-top:20px;">
+	  <table class="table table-bordered" style="margin-top:20px;">
+		<thead>
+		  <tr><th>指标</th><th>我的定性评价</th><th>互评定性评价</th></tr>
+		</thead>
+		<tbody>
+		  <tr>
+		    <td>公</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能1</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能2</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能3</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能4</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  <tr>
+		    <td>能5</td>
+		    <td>8.0</td>
+		    <td>7.0</td>
+		  </tr>
+		  </tbody>
+		</table>
+		<div class="btn-group">
+		  <button type="button" class="btn btn-info" onclick="tab2(1)">做的最好</button>
+		  <button type="button" class="btn btn-info" onclick="tab2(2)">最需改进</button>
+		</div>
+		<div id="best" style="margin-top:20px;">
+		  <table class="table table-bordered">
+		    <tr><td>1</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>2</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>3</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>4</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>5</td><td>aaaaaaaaa</td></tr>
+		  </table>
+		</div>
+		<div id="change" style="margin-top:20px;display:none;">
+		  <table class="table table-bordered">
+		    <tr><td>1</td><td>bbbbbbbbbb</td></tr>
+		    <tr><td>2</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>3</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>4</td><td>aaaaaaaaa</td></tr>
+		    <tr><td>5</td><td>aaaaaaaaa</td></tr>
+		  </table>
+		</div>
+	</div>
+	<div id="other" style="margin-top:20px;display:none;">
+		<table class="table table-bordered" style="margin-top:20px;">
+		  <thead style="background-color:#e7e7e7">
+		    <tr><th>一级指标</th><th>二级指标</th><th>内容</th><th>平均分值</th><th>班级排名</th></tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		      <td rowspan="3" style="vertical-align:middle">公</td>
+		      <td>公2</td>
+		      <td>公3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>公2</td>
+		      <td>公3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>公2</td>
+		      <td>公3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td rowspan="5" style="vertical-align:middle">能</td>
+		      <td>生活</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>学习</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>创新</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>文化素养</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+		    <tr>
+		      <td>协作</td>
+		      <td>能3</td>
+		      <td>9.2</td>
+		      <td>13</td>
+		    </tr>
+
+		  </tbody>
+		</table>
+	</div>
+	<div id="radar" style="margin-top:20px;display:none;">
+		<div id="container1" style="min-width: 400px; max-width: 600px; height: 400px;float:left;"></div>
+		<div id="container2" style="min-width: 400px; max-width: 600px; height: 400px;float:right;"></div>
+	</div>
+
+  </div>
+</div>
+</div>
+  </body>
+</html>

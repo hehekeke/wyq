@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="<{$web_url}>/common/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="<{$web_url}>/common/app/css/index/site.css" rel="stylesheet">
+    <script src="<{$web_url}>/common/libs/jquery.min.js"></script>
+    <script src="<{$web_url}>/common/libs/bootstrap/bootstrap.min.js"></script>
+    <script src="<{$web_url}>/common/app/js/holder.js"></script>
+<script type="text/javascript">
+	function clickSave(){
+	  var txt = document.getElementById('content').value;
+	  var type = 3;
+	  var stuId = <{$stuId}>;
+	  <{if isset($item)}>
+		var id = <{$item.id}>;
+	  <{else}>
+	    var id = 0;
+	  <{/if}>
+	  $.post("<{$web_url}>/index.php/assessment/saveItem",{content:txt,id:id,type:type,stuId:stuId},function(result){
+		  var f=result;
+		     if (f>0){
+		    	 alert("保存成功！");
+		    	 location.reload();
+		     }else{
+		    	 alert("保存失败！");
+		     }
+	  });
+	}
+
+	function clickCommit(){
+		<{if isset($item)}>
+			var id = <{$item.id}>;
+		<{else}>
+			alert("请先点击保存按钮！");
+		<{/if}>
+		$.post("<{$web_url}>/index.php/assessment/commitItem",{id:id},function(result){
+			var c=result;
+		     if (c>0){
+		    	 alert("提交成功！");
+		    	 $('#content').prop('disabled', 'disabled');
+		     }else{
+		    	 alert("提交失败！");
+		     }
+		});
+	}
+</script>
+  </head>
+<body>
+<{include file='header.html'}>
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header"><h3>当前位置：综合素质评估>新生入学评估</h3></div>
+  </div>
+   <{assign var=lefttype value=5}>
+  <{include file='assessment/left-function.html'}>
+
+  <div class="col-md-10">
+	<center><h3>新生入学成长训练计划</h3></center>
+	<h6>当前状态：
+		<{if isset($item)}>
+		  <{$item.status}>
+		<{else}>
+		  <{$status}>
+		<{/if}>
+	</h6>
+
+	<{if isset($item)}>
+	  <{if ($item.commit==1)}>
+	    <textarea class="form-control" rows="15" name="content" id="content" placeholder="提示信息" disabled="disabled"><{$item.content}>
+	  <{else}>
+	    <textarea class="form-control" rows="15" name="content" id="content" placeholder="提示信息"><{$item.content}>
+	  <{/if}>
+	<{else}>
+	    <textarea class="form-control" rows="15" name="content" id="content" placeholder="提示信息">
+	<{/if}>
+	</textarea>
+    <center>
+      <button type="button" class="btn btn-success" style="margin:10px;" onclick="clickSave()">保存</button>
+      <button type="button" class="btn btn-danger" style="margin:10px;" onclick="clickCommit()">提交</button>
+    </center>
+  </div>
+</div>
+</div>
+<{include file='footer.html'}>
+  </body>
+</html>

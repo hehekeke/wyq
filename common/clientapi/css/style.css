@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+body{ font-family: "Lucida Grande", Helvetica, Arial,Verdana, sans-serif; padding: 0; margin: 0; line-height:1.5em; font-size: medium; color: #222f37; width: 100%; height: auto; overflow-x:hidden;}
+
+.item{ font-size: 1.2em;  width:91%; padding:4px 2% 3px ; margin:auto 2%; }
+.centertitle{font-size: 1.3em; text-align:center;}
+.source{font-size:1em; color:7d7d7d;}
+#title{border-bottom:#999999 dotted 1px;font-weight: bold;}
+#address{border-bottom:#999999 dotted 1px;}
+#content{ text-indent: 1.8em;font-size:0.9em;font-weight:normal;}
+
+.imgdiv{width:91%; padding:4px 2% 3px ; margin:10px 2%;overflow:hidden;}
+.imgdiv img{ display: block; width: 100%; height: auto; }

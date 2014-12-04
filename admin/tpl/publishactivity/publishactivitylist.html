@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<title>辅学活动发布</title>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<style type="text/css">
+ .myth{height:10px;border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;
+  letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ } 
+.mytd{  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+</style> 
+<script>
+function manageall(){
+	if($("input[id='isnotcheck[]']").length==0){
+		alert('您没有要发布的年活动');
+		return false;
+	}
+	var returnArr=new Array();
+	//置
+	var notcheck=$("input[id='isnotcheck[]']");
+	for(var i=0;i<notcheck.length;i++){
+		returnArr[i]=notcheck[i].value;
+	}
+	$.post('<{$web_url}>/mannkgn.php/PublishActivity/publishYear',{"listArr":returnArr},function(data){
+		if(data==1){
+			alert('操作成功');
+			location.href="<{$web_url}>/mannkgn.php/PublishActivity/ActivityList";
+		}else{
+			alert('操作失败');
+			location.href="<{$web_url}>/mannkgn.php/PublishActivity/ActivityList";
+		}
+	});
+	
+}
+
+function submitall(){
+	if($("input[id='tijiaoall[]']").length=='0'){
+		alert('您没有可以发布的周活动');
+		return false;
+	}
+	var tijiaoreturnArr=new Array();
+	var tijiao=$("input[id='tijiaoall[]']");
+	for(var i=0;i<tijiao.length;i++){
+	    
+		tijiaoreturnArr[i]=tijiao[i].value;
+	}
+	
+	$.post('<{$web_url}>/mannkgn.php/PublishActivity/publishWeek',{"listArr":tijiaoreturnArr},function(data){
+		if(data==1){
+			alert('发布成功');
+			location.href="<{$web_url}>/mannkgn.php/PublishActivity/ActivityList";
+		}else{
+			alert('操作失败');
+			location.href="<{$web_url}>/mannkgn.php/PublishActivity/ActivityList";
+		}
+	});
+}
+
+</script>
+<div style="padding-left:30px;padding-top:0px;background-color:white;width:100px;height:30px; ">
+	
+</div>
+<form action="" method="post">
+<div id="search_activity" style="margin-left:20px;">
+		&nbsp;
+		活动类型:
+		<select name="source" id="source"> 
+		<option value="-1" >全部</option>
+		<option value="0" >学年活动</option>
+		<option value="1" >周活动</option>
+		</select>
+		&nbsp;
+		&nbsp;
+		审核状态:
+		<select name="publshStatus" id="publshStatus"> 
+		<option value="-1">全部</option>
+		<option value="0">未发布</option>
+		<option value="1">已发布</option>
+		</select>
+		<input id ="search_button" type="submit" value="查询" />
+</div>
+</form>
+</br>
+
+<div id="info" style=" margin-left:10px;">
+	<font color="#CC0000"><{$msg}></font>
+	<table cellspacing="0" >  
+  		<tr>  
+    		<th class="myth" width="60px;">id</th>
+    		<th class="myth" width="430px;">活动名称</th>   
+    		<th class="myth" width="60px;">类型</th>
+			<th class="myth" width="180px;">发布状态</th>
+    		<th class="myth" width="120;">数据来源</th>
+    		<th class="myth" width="250px;">操作</th>
+  		</tr> 
+		<{foreach $list.list as $listInfo}>
+		<{if $listInfo != false}>
+		<tr>  
+    		<td class="mytd" width="46px;"><{if $listInfo.activity_if_import == 1 }><font color="red">【重点】</font><{else}>【<{$listInfo.activity_id}>】<{/if}></td>  
+    		<td class="mytd" width="430px;"><{$listInfo.activity_title}></td>   
+    		<td class="mytd" width="120px;"><{$listInfo.at_name}></td>
+			<{if $listInfo.activity_ispublish eq 0}>
+				<td  class="mytd" width="120;">未发布</td>
+				<{if $listInfo.activity_class eq 0}>
+				<td class="mytd" width="120px;">年活动</td>
+				<td  class="mytd"  width="250px;">				
+					<input type="hidden" id="isnotcheck[]"  value="<{$listInfo.activity_id}>" />
+					[<a href="<{$web_url}>/mannkgn.php/PublishActivity/editPer/id/<{$listInfo.activity_id}>" >修改</a>]		
+				</td>		
+				<{else}>
+				<td class="mytd" width="120px;">周活动</td>
+				<td  class="mytd"  width="250px;">				
+					<input type="hidden" id="tijiaoall[]"  value="<{$listInfo.activity_id}>" />
+					[<a href="<{$web_url}>/mannkgn.php/PublishActivity/editPer/id/<{$listInfo.activity_id}>" >修改</a>]
+					<{if $listInfo.activity_if_import eq 0}>
+					[<a href="<{$web_url}>/mannkgn.php/PublishActivity/managePer/id/<{$listInfo.activity_id}>/flag/import" >重点推荐</a>]		
+					<{else}>
+					[<a href="<{$web_url}>/mannkgn.php/PublishActivity/managePer/id/<{$listInfo.activity_id}>/flag/noimport" ><font color="gray">取消推荐</font></a>]	
+					<{/if}>
+				</td>
+				<{/if}>				
+			<{elseif $listInfo.activity_ispublish eq 1}>
+				<td  class="mytd" width="120;"><font color="gray">已发布</font></td>
+				<{if $listInfo.activity_class eq 0}>				
+				<td  class="mytd"  width="120px;">年活动</td>
+				<td  class="mytd"  width="250px;">
+				[<a href="<{$web_url}>/mannkgn.php/PublishActivity/editPer/id/<{$listInfo.activity_id}>" >修改</a>]
+				<{elseif $listInfo.activity_class eq 1}>
+				<td  class="mytd"  width="120px;">周活动</td>
+				<td  class="mytd"  width="250px;">
+				[<a href="<{$web_url}>/mannkgn.php/PublishActivity/editPer/id/<{$listInfo.activity_id}>" >修改</a>]		
+				<{if $listInfo.activity_if_import eq 0}>
+					[<a href="<{$web_url}>/mannkgn.php/PublishActivity/managePer/id/<{$listInfo.activity_id}>/flag/import" >重点推荐</a>]		
+					<{else}>
+					[<a href="<{$web_url}>/mannkgn.php/PublishActivity/managePer/id/<{$listInfo.activity_id}>/flag/noimport" ><font color="gray">取消推荐</font></a>]	
+					<{/if}>
+				[<a href="<{$web_url}>/mannkgn.php/PublishActivity/removeActivity/id/<{$listInfo.activity_id}>" >撤销</a>]
+				<{/if}>				
+				</td>
+			<{/if}>   		
+  		</tr>
+		<{else}>
+		 <b>暂无需要发布活动</b></br>
+		<{/if}>
+		<{/foreach}>
+	</table>
+	
+	<input type="button" onclick="manageall()" value="发布年活动"> 
+	<input type="button" onclick="submitall()" value="发布周活动"> 
+	<span id="msg2"></span>
+	
+</div>
+<{page info=$list web_url=$web_url url="/mannkgn.php/publishAcivity/ActivityList"}>
+<div style="padding-left:30px;padding-top:0px;background-color:white;width:100px;height:30px; ">
+</div>
+</br>
+
+</body>
+</html>

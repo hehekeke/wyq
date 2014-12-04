@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<{$web_url}>/common/libs/jquery-migrate-1.1.0.min.js"></script>
+<LINK href="<{$web_url}>/common/admin/css/admin.css" type="text/css" rel="stylesheet">
+<title>辅学活动介绍维护列表</title>
+</head>
+<body>
+<style type="text/css">
+#info th {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ border-top: 1px solid #adceff;  
+ letter-spacing: 2px;  
+ text-transform: uppercase;  
+ text-align: left;  
+ padding: 6px 6px 6px 12px;  
+ background: #f4f7fc;  
+}  
+#info td {  
+ border-right: 1px solid #adceff;  
+ border-bottom: 1px solid #adceff;  
+ background: #fff;  
+ font-size:11px;  
+ padding: 6px 6px 6px 12px;  
+ 
+}  
+#info th.spec {  
+ border-left: 1px solid #adceff;  
+ border-top: 0;  
+ background: #fff;   
+}  
+</style> 
+
+<TABLE cellSpacing=0 cellPadding=0 width="100%" align=center border=0>
+  	<TR height=28><TD background=images/title_bg1.jpg>当前位置:辅学活动介绍维护--列表</TD></TR>
+  	<TR><TD bgColor=#b1ceef height=1></TD></TR>
+  	<TR height=20>
+    	<TD background="<{$web_url}>/common/admin/images/shadow_bg.jpg"></TD>
+	</TR>
+</TABLE>
+<div id="info" style=" margin-left:10px;">
+	<font color="#CC0000"><{$result|default:""}></font>
+	<table id="mytable" cellspacing="0" >  
+  		<tr>  
+    		<th scope="col" width="100px" style="border-left:1px solid #adceff;" >ID</th>  
+    		<th scope="col" width="250px" >活动类别</th> 
+    		<th scope="col" width="250px" >操作</th>
+  		</tr>
+  		<{section name=al loop=$assistactivitylist}>
+  		<tr >  
+    		<td style="border-left:1px solid #adceff;" ><{$assistactivitylist[al].sa_id}></td>
+   		    <td>
+			   <{if $assistactivitylist[al].secondary_class eq '1'}>周活动
+			   <{else}>年活动
+			   <{/if}>
+            </td>
+   		    <td><a href="<{$web_url}>/mannkgn.php/ActivityManage/Editfuactivity/id/<{$assistactivitylist[al].sa_id}>">修改活动介绍</a></td>
+  		</tr>
+  		<{sectionelse}>
+  		<tr >
+    		<th class="spec" colspan="5">暂无活动！</td>
+  		</tr>
+  		<{/section}>
+	</table>  
+</div>
+</body>
+</html>
